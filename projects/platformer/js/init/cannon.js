@@ -27,13 +27,14 @@
         // ALL YOUR CODE GOES BELOW HERE ///////////////////////////////////////
         
         // Left
-        createCannon("top", 250, 500);
-        
+        createCannon("bottom", 250);
+        createCannon("left", 100, 300)
+
         // Center
-        createCannon("top", 450);
+        createCannon("top", 450, 400);
         
         // Right
-        createCannon("top", 650, 500);
+        createCannon("bottom", 650);
         
         // ALL YOUR CODE GOES ABOVE HERE ///////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
