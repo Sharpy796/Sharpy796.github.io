@@ -36,10 +36,24 @@
         ////////////////////////////////////////////////////////////////////////
         // ALL YOUR CODE GOES BELOW HERE ///////////////////////////////////////
         
-        // example: 
-        createCollectable(type.steve, 200, 170, 6, 0.7);
+        // 0th Level:
+        createCollectable(type.db, 680, 575);
+        
+        // 1st Level:
+        createCollectable(type.max, 160, 375);
+        
+        // 2nd Level:
+        createCollectable(type.grace, 680, 375);
+        
+        // 3rd Level:
+        createCollectable(type.steve, 415, 275);
+
+        
+        // 4th Level:
         
         
+        // 5th Level:
+        createCollectable(type.kennedi, 425, 75);
         
         // ALL YOUR CODE GOES ABOVE HERE ///////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
