@@ -24,7 +24,7 @@
             
         }
         
-        /* 
+        
         // Fire on Spacebar Code:
         
         game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
@@ -35,7 +35,7 @@
             console.log('playerManager says to fire!');
             player.fire();
         }
-        */
+        
         
         function update() {
             // todo : fix states to include velocity or keyup/cursorLeft //

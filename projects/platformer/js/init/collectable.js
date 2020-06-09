@@ -3,13 +3,13 @@
     window.opspark = window.opspark || {};
     window.opspark.collectable = window.opspark.collectable || {};
     let collectable = window.opspark.collectable;
-
+    
     let type = {
-        db: {assetKey: 'db', points: 10},
-        max: {assetKey: 'max', points: 20},
-        steve: {assetKey: 'steve', points: 30},
-        grace: {assetKey: 'grace', points: 40},
-        kennedi: {assetKey: 'kennedi', points: 50}
+        max: {assetKey: 'max', points: 10},
+        steve: {assetKey: 'steve', points: 20},
+        grace: {assetKey: 'grace', points: 30},
+        kennedi: {assetKey: 'kennedi', points: 40},
+        db: {assetKey: 'db', points: 50}
     };
     
     /**
@@ -37,23 +37,23 @@
         // ALL YOUR CODE GOES BELOW HERE ///////////////////////////////////////
         
         // 0th Level:
-        createCollectable(type.db, 680, 575);
+        createCollectable(type.max, 680, 575);
         
         // 1st Level:
-        createCollectable(type.max, 160, 375);
+        createCollectable(type.steve, 160, 375);
         
         // 2nd Level:
-        createCollectable(type.grace, 680, 375);
+        createCollectable(type.kennedi, 680, 375);
         
         // 3rd Level:
-        createCollectable(type.steve, 415, 275);
+        createCollectable(type.grace, 415, 275);
 
         
         // 4th Level:
         
         
         // 5th Level:
-        createCollectable(type.kennedi, 425, 75);
+        createCollectable(type.db, 425, 75);
         
         // ALL YOUR CODE GOES ABOVE HERE ///////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
