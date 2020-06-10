@@ -57,9 +57,10 @@ $(document).ready(function () {
             setTimeout(() => game.lives.text = "Game Over: Refresh Your Browser to Play Again", 500);
         } 
     }
+    var youWon = false;
     function youWin() {
-        if(game.lives.text === "You Win!! Refresh Your Browser to Play Again") {
-            bomb.out;
+        while(i) {
+            setTimeout(() => game.lives.text = "You Win!! Refresh Your Browser to Play Again");
         }
     }
     function collectDb(player, collectable) {
@@ -67,15 +68,9 @@ $(document).ready(function () {
         collectable.kill();
         if(collectable.type.points < 50 ) {
         } else {
-            setTimeout(() => game.lives.text = "You Win!! Refresh Your Browser to Play Again", 500);
+            youWon = true;
         }
-        youWin()
-        youWin()
-        youWin()
-        youWin()
-        youWin()
-        youWin()
-        youWin()
     }
+        
 
 });
