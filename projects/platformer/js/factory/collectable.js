@@ -30,7 +30,9 @@
             }
             if (gravity) collectable.body.gravity.y = gravity;
             if (bounce) collectable.body.bounce.y = bounce + Math.random() * 0.2;
+            
         }
+        
         opspark.collectable.create = create;
     };
 })(window);

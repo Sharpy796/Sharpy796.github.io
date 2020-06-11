@@ -1,0 +1,172 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>ChrisChips's Amazing Website</title>
+        
+        <script>
+            function iceCream() {
+                var response =  prompt("Password:");
+                var flavor;
+                var flavor1;
+                var flavor2;
+                
+                if (response === "GreenPurpleDice15") {
+                    alert();
+                    alert("Correct! You get an ice cream cone!");
+                    
+                    flavor = prompt("What flavor?");
+                    if (flavor === "Operation Spark") {
+                        alert();
+                        alert("Ding Ding Ding! Here, come in and pick flavors for two cones!");
+                        
+                        flavor1 = prompt("What flavor do you want the first one to be?");
+                        flavor2 = prompt("And the second cone?");
+                        if (flavor1 === "Mint" || flavor1 === "mint" || flavor2 === "Mint" || flavor2 === "mint") {
+                            alert();
+                            alert("Yuck! We don't sell mint, go away.")
+                            alert();
+                            alert("...mint. Yuck.");
+                            
+                    } else if (flavor1 === "Peanut" || flavor1 === "peanut" || flavor2 === "Peanut" || flavor2 === "peanut") {
+                        alert();
+                        alert("I'm sorry, but we don't sell that. I'm allergic to it.")
+                        
+                    } else {
+                        alert();
+                        alert("Here is your " + flavor1 + " cone, and your second " + flavor2 + " cone!");
+                    }
+                    } else if (flavor === "Mint" || flavor === "mint") {
+                        alert();
+                        alert("Yuck! We don't sell that flavor, go away.")
+                        alert();
+                        alert("...mint. Yuck.");
+                        
+                    } else if (flavor === "Peanut" || flavor === "peanut") {
+                        alert();
+                        alert("I'm sorry, but we don't sell that. I'm allergic to it.")
+                        
+                    } else {
+                        alert();
+                        alert("Here is your " + flavor + " ice cream cone!");
+                    }
+                } else {
+                    alert("Go on! Scram!");
+                }
+            }
+        </script>
+        
+        <style>
+            body {
+                background: rgb(0, 35, 102);
+                color: rgb(45, 45, 45);
+                padding: 10px;
+                font-family: "Comic Sans MS";
+            }
+            header {
+                font-size: 1.5em;
+                font-weight: bold;
+            }
+            #all-contents {
+                max-width: 800px;
+                margin: auto;
+            }
+            
+            /* Navigation Menu */
+            nav {
+                background: rgb(34, 139, 34);
+                margin: 0 auto;
+                margin-bottom: 20px;
+                display: flex;
+                padding: 10px;
+                border-radius: 10px;
+            }
+            nav header {
+                display: flex;
+                align-items: center;
+                color: rgb(255, 255, 255);
+                flex: 1;
+            }
+            nav ul {
+                list-style-image: none;
+            }
+            nav li {
+                display: inline-block;
+                padding: 0 10px;
+            }
+            nav a {
+                text-decoration: none;
+                color: #fff;
+            }
+            
+            /* Main Container Area Beneath Menu */
+            main {
+                background: rgb(245, 238, 219);
+                display: flex;
+                border-radius: 5px;
+            }
+            button {
+                background-color: #14c5ff;
+                padding: 10px;
+                margin-bottom: 10px;
+                border-radius: 5px;
+                border-style: solid;
+                border-color: black;
+                box-shadow: 0px 2px 7px;
+            }
+            button:hover {
+                background-color: #54d0f7;
+                box-shadow: 0px 2px 8px;
+            }
+            button:active {
+                margin-top: 2px;
+                margin-bottom: 8px;
+                box-shadow: 0px 0px 8px;
+            }
+            .content {
+                flex: 1;
+                padding: 15px;
+            }
+            .secrets header {
+                font-size: 1.25em;
+            }
+            #school-link  {
+                color: forestgreen;
+                text-decoration: none
+            }
+            footer {
+                color: white;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <div id="all-contents">
+            <nav>
+                <header>ChrisChips's Amazing Website</header>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="portfolio.html">Portfolio</a></li>
+                    <li><a href="icecream.html">Ice Cream Parlor</a></li>
+                </ul>
+            </nav>
+            
+            <main>
+                <div class="content">
+                    <header>Ice Cream!</header>
+                    <p>Welcome to ChrisChip's Ice Cream Parlor! You can only get some ice cream if you know the password, though.</a></p>
+                    <button  onclick="iceCream()" type="button">Ask For Ice Cream!</button/>
+                    
+                    <section class="secrets">
+                        <header>Psst!</header>
+                        <p>The password is Green and Purple, and has 15 Dice.</p>
+                        <p>I'm also affiliated with Operaion Spark! Let me know you are too, and I'll give you a little extra something.</p>
+                    </section>
+                </div>
+            </main>
+            
+            <footer>
+                <p>&copy Christian Bankovic 2020</p>
+            </footer>
+        </div>
+    </body>
+</html>

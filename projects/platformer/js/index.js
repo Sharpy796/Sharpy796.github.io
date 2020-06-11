@@ -57,10 +57,19 @@ $(document).ready(function () {
             setTimeout(() => game.lives.text = "Game Over: Refresh Your Browser to Play Again", 500);
         } 
     }
+    /*global youWon*/
     var youWon = false;
-    function youWin() {
-        while(i) {
-            setTimeout(() => game.lives.text = "You Win!! Refresh Your Browser to Play Again");
+    // function youWin() {
+    //     while (!youWon) {
+    //     }
+    //     setTimeout(() => game.lives.text = "You Win!! Refresh Your Browser to Play Again");
+    //     break;
+    // }
+    function youWin(youWon) {
+        if (!youWon) {
+        } else {
+        setTimeout(() => game.lives.text = "You Win!! Refresh Your Browser to Play Again");
+        break;
         }
     }
     function collectDb(player, collectable) {
@@ -71,6 +80,7 @@ $(document).ready(function () {
             youWon = true;
         }
     }
+    youWin(youWon);
         
 
 });
