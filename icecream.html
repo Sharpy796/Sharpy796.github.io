@@ -11,42 +11,32 @@
                 var flavor2;
                 
                 if (response === "GreenPurpleDice15") {
-                    alert();
                     alert("Correct! You get an ice cream cone!");
                     
                     flavor = prompt("What flavor?");
                     if (flavor === "Operation Spark") {
-                        alert();
                         alert("Ding Ding Ding! Here, come in and pick flavors for two cones!");
                         
                         flavor1 = prompt("What flavor do you want the first one to be?");
                         flavor2 = prompt("And the second cone?");
                         if (flavor1 === "Mint" || flavor1 === "mint" || flavor2 === "Mint" || flavor2 === "mint") {
-                            alert();
                             alert("Yuck! We don't sell mint, go away.")
-                            alert();
                             alert("...mint. Yuck.");
                             
                     } else if (flavor1 === "Peanut" || flavor1 === "peanut" || flavor2 === "Peanut" || flavor2 === "peanut") {
-                        alert();
                         alert("I'm sorry, but we don't sell that. I'm allergic to it.")
                         
                     } else {
-                        alert();
                         alert("Here is your " + flavor1 + " cone, and your second " + flavor2 + " cone!");
                     }
                     } else if (flavor === "Mint" || flavor === "mint") {
-                        alert();
                         alert("Yuck! We don't sell that flavor, go away.")
-                        alert();
                         alert("...mint. Yuck.");
                         
                     } else if (flavor === "Peanut" || flavor === "peanut") {
-                        alert();
                         alert("I'm sorry, but we don't sell that. I'm allergic to it.")
                         
                     } else {
-                        alert();
                         alert("Here is your " + flavor + " ice cream cone!");
                     }
                 } else {
