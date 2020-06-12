@@ -57,15 +57,7 @@ $(document).ready(function () {
             setTimeout(() => game.lives.text = "Game Over: Refresh Your Browser to Play Again", 500);
         } 
     }
-    /*global youWon*/
     var youWon = false;
-    // function youWin(youWon) {
-    //     if (!youWon) {
-    //     } else {
-    //     setTimeout(() => game.lives.text = "You Win!! Refresh Your Browser to Play Again");
-    //     // break;
-    //     }
-    // }
     function collectDb(player, collectable) {
         game.score.text = 'Score: ' + (parseInt(/\s+(\S*)$/.exec(game.score.text)[1], 10) + collectable.type.points);
         collectable.kill();
@@ -76,7 +68,5 @@ $(document).ready(function () {
 
         }
     }
-    // youWin(youWon);
-        
-
+    
 });
