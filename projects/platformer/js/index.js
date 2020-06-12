@@ -59,28 +59,24 @@ $(document).ready(function () {
     }
     /*global youWon*/
     var youWon = false;
-    // function youWin() {
-    //     while (!youWon) {
-    //     }
+    // function youWin(youWon) {
+    //     if (!youWon) {
+    //     } else {
     //     setTimeout(() => game.lives.text = "You Win!! Refresh Your Browser to Play Again");
-    //     break;
+    //     // break;
+    //     }
     // }
-    function youWin(youWon) {
-        if (!youWon) {
-        } else {
-        setTimeout(() => game.lives.text = "You Win!! Refresh Your Browser to Play Again");
-        break;
-        }
-    }
     function collectDb(player, collectable) {
         game.score.text = 'Score: ' + (parseInt(/\s+(\S*)$/.exec(game.score.text)[1], 10) + collectable.type.points);
         collectable.kill();
         if(collectable.type.points < 50 ) {
         } else {
             youWon = true;
+            setTimeout(() => game.lives.text = "You Win!! Refresh Your Browser to Play Again");
+
         }
     }
-    youWin(youWon);
+    // youWin(youWon);
         
 
 });
