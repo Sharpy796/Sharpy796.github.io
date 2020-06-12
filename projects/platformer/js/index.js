@@ -50,10 +50,10 @@ $(document).ready(function () {
         } 
     }
     function decrementLives(){
-        if(lives !== 0){
+        if(lives !== 0 && !youWon){
             lives--;
             game.lives.text = 'Lives ' + lives;            
-        } else {
+        } else if (!youWon) {
             setTimeout(() => game.lives.text = "Game Over: Refresh Your Browser to Play Again", 500);
         } 
     }
