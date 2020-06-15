@@ -41,6 +41,7 @@
         
         // 1st Level:
         createCollectable(type.steve, 160, 375);
+        // createCollectable(type.db, 425, 475);
         
         // 2nd Level:
         createCollectable(type.kennedi, 680, 375);
