@@ -22,10 +22,6 @@ $(document).ready(function () {
         
         opspark.player.init(game);
         
-        // game.score = game.add.text(16, 16, 'Score: 0', textOpts);
-        // game.lives = game.add.text(16, 70, 'Lives: ' + lives, textOpts);
-        // game.score = game.add.text(700, 16, 'Score: 0', textOpts);
-        // game.lives = game.add.text(700, 70, 'Lives: ' + lives, textOpts);
         game.score = game.add.text(500, 16, 'Score: 0', textOpts);
         game.lives = game.add.text(500, 70, 'Lives: ' + lives, textOpts);
     }
