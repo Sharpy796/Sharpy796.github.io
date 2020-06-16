@@ -16,10 +16,6 @@
     Hey, good job finding this!
             ~(:D)
 
-           Fun Fact:
-        HTML stands for
-       Hypertext Markup
-           Language
 -->
 
 <!DOCTYPE HTML>
@@ -27,7 +23,19 @@
     <head>
         <title>ChrisChips's Amazing Website</title>
         <meta name="author" content="Christian Bankovic">
-        <meta name="description" content="The main page for my website.">
+        <meta name="description" content="Stoplights!">
+        
+        <script>
+            function stopLightRed() {
+                alert("Stop!");
+            }
+            function stopLightYellow() {
+                alert("Slow down...");
+            }
+            function stopLightGreen() {
+                alert("Go!");
+            }
+        </script>
         
         <style>
             body {
@@ -67,10 +75,6 @@
                 display: inline-block;
                 padding: 0 10px;
             }
-            nav a {
-                text-decoration: none;
-                color: #fff;
-            }
             
             /* Main Container Area Beneath Menu */
             main {
@@ -78,29 +82,60 @@
                 display: flex;
                 border-radius: 5px;
             }
-            .sidebar {
-                margin-right: 25px;
-                padding: 10px;
-            }
-            .sidebar img {
-                width: 200px;
-                margin-top: 10px;
-                margin-left: 10px;
-                border-radius: 5px;
-                border-color: black;
-                border-style: solid;
-                box-shadow: 0px 0px 15px;
-            }
             .content {
                 flex: 1;
                 padding: 15px;
             }
-            .interests header {
-                font-size: 1.25em;
+            .stoplight {
+                background-color: #333;
+                margin: auto;
+                margin-top: 20px;
+                margin-bottom: 30px;
+                width: 50%;
+                height: 750px;
+                position: relative;
+                border-radius: 10px;
             }
-            #school-link  {
-                color: forestgreen;
-                text-decoration: none
+            .center {
+                margin: 0;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                -ms-transform: translate(-50%, -50%);
+                transform: translate(-50%, -50%);
+            }
+            button {
+                padding: 100px;
+                margin-top: 15px;
+                margin-bottom: 15px;
+                border-radius: 100%;
+                border-style: none; 
+                cursor: pointer;
+                outline: none;
+            }
+            #red {
+                background-color: red;
+                box-shadow: 0px 20px #800;
+            }
+            #red:active {
+                box-shadow: 0px 5px #800; 
+                transform: translateY(15px);
+            }
+            #yellow {
+                background-color: yellow;  
+                box-shadow: 0px 20px #880;
+            }
+            #yellow:active {
+                box-shadow: 0px 5px #880; 
+                transform: translateY(15px);
+            }
+            #green {
+                background-color: lime;
+                box-shadow: 0px 20px #080;
+            }
+            #green:active {
+                box-shadow: 0px 5px #080; 
+                transform: translateY(15px);
             }
             footer {
                 color: white;
@@ -113,29 +148,22 @@
             <nav>
                 <header>ChrisChips's Amazing Website</header>
                 <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="portfolio.html">Portfolio</a></li>
+                    <li></li>
                 </ul>
             </nav>
             
             <main>
-                <div class="sidebar">
-                    <img src="https://s3.amazonaws.com/s3images.classcreator.com/9867/001/1746505/795508.jpg">
-                </div>
-                
                 <div class="content">
-                    <header>Christian Bankovic</header>
-                    <p>Student at <a id="school-link" href="https://www.tangischools.org/phs">Ponchatoula High School</a></p>
-                    <section class="interests">
-                        <header>Interests</header>
-                        <ul>
-                            <li>Reading</li>
-                            <li>Learning</li>
-                            <li>Working math problems</li>
-                            <li>Playing guitar</li>
-                            <li>Singing</li>
-                            <li>Working with tech</li>
-                        </ul>
+                    <header>Stoplight!</header>
+                    
+                    <section>
+                        <div class="stoplight">
+                            <div class="center">
+                                <button onclick="stopLightRed()" id="red"></button>
+                                <button onclick="stopLightYellow()" id="yellow"></button>
+                                <button onclick="stopLightGreen()" id="green"></button>
+                            </div>
+                        </div>
                     </section>
                 </div>
             </main>
