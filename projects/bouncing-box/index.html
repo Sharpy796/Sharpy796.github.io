@@ -5,16 +5,22 @@
 	<title>Bouncing Box</title>
 	<script src="jquery.min.js"></script>
 	<style>
+		.board{
+			background-image: url(https://cdn.wallpapersafari.com/8/86/dMuhLi.gif);
+			background-color: teal;
+			background-size: cover;
+		}
 		.box {
 			width: 70px;
 			height: 70px;
-			background-color: teal;
+			background-color: darkorange;
+			font-family: "Comic Sans MS";
 			font-size: 300%;
 			text-align: center;
 			display: block;
 			position: absolute;
 			top: 100px;
-			left: 0;  /* <--- Change me! */
+			left: 0px;  /* <--- Change me! */
 		}
 	</style>
 	<!-- 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> -->
@@ -44,8 +50,9 @@
 			box.on('click', handleBoxClick);
 
 			// moves the Box to a new position on the screen along the X-Axis
-			function moveBoxTo(newPositionX) {
-				box.css("left", newPositionX);
+			function moveBoxTo(newPositionX, newPositionY) {
+				box.css('left', newPositionX);
+				box.css('top', newPositionY);
 			}
 
 			// changes the text displayed on the Box
@@ -58,9 +65,32 @@
 			//////////////////////////////////////////////////////////////////
 			
 			// TODO 2 - Variable declarations 
+			var boardHeight = jQuery(window).height(); 
 			var positionX = 0;
+			var positionY = 100;
+			var speedX = 0;
+			var speedY = 0;
 			var points = 0;
-			var speed = 0;
+			var clickPoints = 0;
+			
+			/*
+			This Function generated a randomm number between 0 and 255.
+			*/
+			function randRGBVal() {
+				var randomRGBVal = Math.random() * 255;
+				return randomRGBVal;
+			}
+			
+			/*
+			This Function takes the value from randRGBVal() and puts three of them into a string.
+			*/
+			function getRandomColor() {
+				var red = randRGBVal();
+				var green = randRGBVal();
+				var blue = randRGBVal();
+				var colorStr = "rgb(" + red + ", " + green + ", " + blue + ")";
+				return colorStr;
+			}
 			
 			/* 
 			This Function will be called 20 times/second. Each time it is called,
@@ -68,10 +98,14 @@
 			turn it around! 
 			*/
 			function update() {
-				positionX += speed;
-				moveBoxTo(positionX);
+				positionX += speedX;
+				positionY += speedY;
+				moveBoxTo(positionX, positionY);
 				if (positionX < 0 || positionX > boardWidth) {
-					speed *= -1;
+					speedX *= -1;
+				}
+				if (positionY < 0 || positionY > boardHeight) {
+					speedY *= -1;
 				}
 			}
 
@@ -81,11 +115,28 @@
 			the left side of the screen.
 			*/
 			function handleBoxClick() {
-				positionX = 0;
+				positionX = Math.floor(Math.random() * boardWidth);
+				positionY = Math.floor(Math.random() * boardHeight);
 				points ++;
+				clickPoints ++;
 				changeBoxText(points);
-				speed += 3;
-
+				
+				if (clickPoints === 3) {
+					if (speedX >= 0) {
+						speedX += 3;
+					} else if (speedX < 0) {
+						speedX *= -1;
+						speedX += 3;
+					}
+					if (speedY >= 0) {
+						speedY *= -1;
+						speedY -= 3;
+					} else if (speedY < 0) {
+						speedY -= 3;
+					}
+					box.css('background-color', getRandomColor());
+					clickPoints = 0;
+				}
 			}
 		})();
 	</script>
