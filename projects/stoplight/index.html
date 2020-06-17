@@ -25,18 +25,6 @@
         <meta name="author" content="Christian Bankovic">
         <meta name="description" content="Stoplights!">
         
-        <script>
-            function stopLightRed() {
-                alert("Stop!");
-            }
-            function stopLightYellow() {
-                alert("Slow down...");
-            }
-            function stopLightGreen() {
-                alert("Go!");
-            }
-        </script>
-        
         <style>
             body {
                 background: rgb(0, 35, 102);
@@ -99,7 +87,7 @@
             .center {
                 margin: 0;
                 position: absolute;
-                top: 50%;
+                top: 47.5%;
                 left: 50%;
                 -ms-transform: translate(-50%, -50%);
                 transform: translate(-50%, -50%);
@@ -114,26 +102,29 @@
                 outline: none;
             }
             #red {
-                background-color: red;
-                box-shadow: 0px 20px #800;
+                background-color: darkred;
+                box-shadow: 0px 20px #3b0000, 0px 10px #3b0000;
             }
             #red:active {
-                box-shadow: 0px 5px #800; 
+                background-color: red;
+                box-shadow: 0px 5px darkred; 
                 transform: translateY(15px);
             }
             #yellow {
-                background-color: yellow;  
-                box-shadow: 0px 20px #880;
+                background-color: darkorange;
+                box-shadow: 0px 20px #a15900, 0px 10px #a15900;
             }
             #yellow:active {
+                background-color: yellow;
                 box-shadow: 0px 5px #880; 
                 transform: translateY(15px);
             }
             #green {
-                background-color: lime;
-                box-shadow: 0px 20px #080;
+                background-color: green;
+                box-shadow: 0px 20px darkgreen, 0px 10px darkgreen;
             }
             #green:active {
+                background-color: lime;
                 box-shadow: 0px 5px #080; 
                 transform: translateY(15px);
             }
@@ -159,9 +150,9 @@
                     <section>
                         <div class="stoplight">
                             <div class="center">
-                                <button onclick="stopLightRed" id="red"></button>
-                                <button onclick="stopLightYellow" id="yellow"></button>
-                                <button onclick="stopLightGreen" id="green"></button>
+                                <button id="red"></button>
+                                <button id="yellow"></button>
+                                <button id="green"></button>
                             </div>
                         </div>
                     </section>
