@@ -16,11 +16,15 @@
 			background-color: darkorange;
 			font-family: "Comic Sans MS";
 			font-size: 300%;
+			-webkit-user-select: none; /* Safari */
+			-moz-user-select: none; /* Firefox */
+			-ms-user-select: none; /* IE10+/Edge */
+			user-select: none; /* Standard */
 			text-align: center;
 			display: block;
 			position: absolute;
 			top: 100px;
-			left: 0px;  /* <--- Change me! */
+			left: 0px;
 		}
 	</style>
 	<!-- 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> -->
@@ -40,14 +44,17 @@
 			//////////////////////////////////////////////////////////////////
 			
 			var box = jQuery('.box');	// reference to the HTML .box element
-			var board = jQuery('.board');	// reference to the HTML .board element
+			// var board = jQuery('.board');	// reference to the HTML .board element
 			var boardWidth = board.width();	// the maximum X-Coordinate of the screen
 
 			// Every 50 milliseconds, call the update Function (see below)
-			setInterval(update, 50);
+			var interval = setInterval(update, 50);
 			
 			// Every time the box is clicked, call the handleBoxClick Function (see below)
 			box.on('click', handleBoxClick);
+			
+			// Every time the board is clicked, call the handleBoardClick Function (see below)
+			board.on('click', handleBoardClick);
 
 			// moves the Box to a new position on the screen along the X-Axis
 			function moveBoxTo(newPositionX, newPositionY) {
@@ -72,6 +79,7 @@
 			var speedY = 0;
 			var points = 0;
 			var clickPoints = 0;
+			var misClickPoints = 0;
 			
 			/*
 			This Function generated a randomm number between 0 and 255.
@@ -111,10 +119,11 @@
 
 			/* 
 			This Function will be called each time the box is clicked. Each time it is called,
-			it should increase the points total, increase the speed, and move the box to
-			the left side of the screen.
+			it should increase the points total and move the box to a random spot the screen.
+			Every third time it is called, it should increase the speed and change the color of the box.
 			*/
 			function handleBoxClick() {
+				console.log("Click!");
 				positionX = Math.floor(Math.random() * boardWidth);
 				positionY = Math.floor(Math.random() * boardHeight);
 				points ++;
@@ -136,6 +145,24 @@
 					}
 					box.css('background-color', getRandomColor());
 					clickPoints = 0;
+				}
+			}
+			
+			/*
+			This Function...
+			*/
+			function handleBoardClick() {
+				console.log("Misclick!");
+				misClickPoints ++;
+				endGame();
+			}
+			
+			/*
+			This Function ends the game.
+			*/
+			function endGame() {
+				if (misClickPoints >= 10) {
+					clearInterval(interval);
 				}
 			}
 		})();
