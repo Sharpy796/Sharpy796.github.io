@@ -18,7 +18,7 @@ var level01 = function (window) {
             "gameItems": [  
                 { "type": "spikeBall" , "x": 400 , "y": groundY - 25  },
                 { "type": "goomba"    , "x": 450 , "y": groundY - 23  },
-                { "type": "spikeBall" , "x": 650 , "y": groundY - 100 },
+                { "type": "spikeBall" , "x": 650 , "y": groundY - 120 },
                 { "type": "spikeBall" , "x": 900 , "y": groundY - 25  },
                 { "type": "mushroom"  , "x": 925 , "y": groundY - 130 },
                 { "type": "spikeBall" , "x": 950 , "y": groundY - 25  },
