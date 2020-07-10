@@ -20,12 +20,12 @@ var level01 = function (window) {
                 { "type": "goomba"    , "x": 450 , "y": groundY - 23  },
                 { "type": "spikeBall" , "x": 650 , "y": groundY - 120 },
                 { "type": "spikeBall" , "x": 900 , "y": groundY - 25  },
-                { "type": "spikeBall" , "x": 950 , "y": groundY       },
+                { "type": "spikeBall" , "x": 910 , "y": groundY - 25  },
                 { "type": "goomba"    , "x": 1000, "y": groundY - 23  },
                 { "type": "mushroom"  , "x": 1125, "y": groundY - 140 },
                 { "type": "bossGoomba", "x": 1250, "y": groundY - 48  },
-                { "type": "spikeBall" , "x": 1500, "y": groundY       },
-                { "type": "spikeBall" , "x": 1700, "y": groundY       },
+                { "type": "spikeBall" , "x": 1500, "y": groundY - 25  },
+                { "type": "spikeBall" , "x": 1700, "y": groundY - 25  },
                 { "type": "spikeBall" , "x": 2000, "y": groundY - 120 },
                 { "type": "star"      , "x": 2500, "y": groundY - 150 },
             ]
@@ -63,7 +63,7 @@ var level01 = function (window) {
                 console.log('Halle has collected a Mushroom!');
                 game.changeIntegrity(20);
                 game.increaseScore(200)
-                mushroom.fadeOut();
+                mushroom.shrink();
             };
             mushroom.onProjectileCollision = function() {}
         }
