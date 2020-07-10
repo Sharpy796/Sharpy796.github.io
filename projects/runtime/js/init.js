@@ -11,7 +11,7 @@ var init = function (window) {
         app = opspark.makeApp(world.makeRules()),
         canvas = app.canvas, 
         view = app.view,
-        fps = draw.fps('#000');
+        fps = draw.fps('#FFF');
     
     var 
         space, 

@@ -44,21 +44,21 @@ var background = function (window) {
             
             // TODO: 3 - Add a moon and starfield
             var circle;
-            for(var i=0;i<1000;i++) {
-                var divideFive = i % 5;
-                if (divideFive === 0) {
-                    circle = draw.circle(0.5,'white','Pink',2);
-                } else if (divideFive === 1) {
-                    circle = draw.circle(0.5,'white','LightBlue',2);
-                } else if (divideFive === 2) {
-                    circle = draw.circle(0.5,'white','Yellow',2);
-                } else if (divideFive === 3) {
-                    circle = draw.circle(0.5,'white','LightGreen',2);
-                }
-                circle.x = canvasWidth*Math.random();
-                circle.y = groundY*Math.random();
-                background.addChild(circle);
-            }
+            // for(var i=0;i<1000;i++) {
+            //     var divideFive = i % 5;
+            //     if (divideFive === 0) {
+            //         circle = draw.circle(0.5,'white','Pink',2);
+            //     } else if (divideFive === 1) {
+            //         circle = draw.circle(0.5,'white','LightBlue',2);
+            //     } else if (divideFive === 2) {
+            //         circle = draw.circle(0.5,'white','Yellow',2);
+            //     } else if (divideFive === 3) {
+            //         circle = draw.circle(0.5,'white','LightGreen',2);
+            //     }
+            //     circle.x = canvasWidth*Math.random();
+            //     circle.y = groundY*Math.random();
+            //     background.addChild(circle);
+            // }
             
             var moon = draw.bitmap('img/moon.png');
             moon.x = 1100;
@@ -91,13 +91,13 @@ var background = function (window) {
             }
             
             // TODO 4: Part 1 - Add a tree
-            // for (var i = -1; i < 7; i++) {
-            //     var tree = draw.bitmap('img/otherTree.png');
-            //     tree.x = i * 200;
-            //     tree.y = groundY - 210;
-            //     background.addChild(tree);
-            //     trees.push(tree);
-            // }
+            for (var i = -1; i < 7; i++) {
+                var tree = draw.bitmap('img/otherTree.png');
+                tree.x = i * 200;
+                tree.y = groundY - 210;
+                background.addChild(tree);
+                trees.push(tree);
+            }
             
             
         } // end of render function - DO NOT DELETE
