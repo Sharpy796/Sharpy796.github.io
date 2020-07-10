@@ -91,6 +91,7 @@ var level01 = function (window) {
             }
         }
         
+        var hits = 0;
         function createBossGoomba(x, y) {
             var bossGoomba = game.createGameItem('enemy',25);
             var bossGoombaImage = draw.bitmap('img/Goomba.gif');
@@ -109,9 +110,13 @@ var level01 = function (window) {
                 game.changeIntegrity(-80);
             };
             bossGoomba.onProjectileCollision = function() {
-                console.log('Halle has defeated the Boss Goomba!');
-                game.increaseScore(500);
-                bossGoomba.flyTo(1000, 0);
+                hits++;
+                if (hits <= 5) {
+                    console.log('Halle has defeated the Boss Goomba!');
+                    game.increaseScore(1000);
+                    bossGoomba.flyTo(1000, 0);
+                }
+                
             }
         }
         
@@ -130,7 +135,7 @@ var level01 = function (window) {
             star.onPlayerCollision = function() {
                 console.log('Halle has collected the Super Star!');
                 console.log('You won!');
-                game.increaseScore()
+                game.increaseScore(game.health * 100);
                 star.shrink();
             };
             star.onProjectileCollision = function() {}

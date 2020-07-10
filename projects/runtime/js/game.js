@@ -271,6 +271,7 @@
             increaseScore: increaseScore,
             getScore: getScore,
             changeIntegrity: changeIntegrity,
+            health: health,
             createGameItem: createGameItem,
             addGameItem: addGameItem,
             removeGameItem: removeGameItem,
