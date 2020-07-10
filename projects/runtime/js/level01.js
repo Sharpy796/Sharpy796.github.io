@@ -42,7 +42,7 @@ var level01 = function (window) {
             var spikeBallHitZone = game.createObstacle(hitZoneSize, damageFromObstacle);
             spikeBallHitZone.x = x;
             spikeBallHitZone.y = y;
-            spikeBallHitZone.rotationalVelocity = -20;
+            spikeBallHitZone.rotationalVelocity = -10;
             game.addGameItem(spikeBallHitZone);
             var obstacleImage = draw.bitmap('img/SpikeBall.png');
             spikeBallHitZone.addChild(obstacleImage);
@@ -111,11 +111,11 @@ var level01 = function (window) {
             };
             bossGoomba.onProjectileCollision = function() {
                 hits++;
-                if (hits >= 5) {
+                // if (hits >= 5) {
                     console.log('Halle has defeated the Boss Goomba!');
                     game.increaseScore(1000);
                     bossGoomba.flyTo(1000, 0);
-                }
+                // }
                 
             }
         }
