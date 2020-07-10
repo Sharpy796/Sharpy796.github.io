@@ -33,7 +33,7 @@ var level01 = function (window) {
         };
         window.levelData = levelData;
         // set this to true or false depending on if you want to see hitzones
-        game.setDebugMode(false);
+        game.setDebugMode(true);
 
         // BEGIN EDITING YOUR CODE HERE
         function createSpikeBall(x, y) {
@@ -130,7 +130,7 @@ var level01 = function (window) {
             star.onPlayerCollision = function() {
                 console.log('Halle has collected the Super Star!');
                 console.log('You won!');
-                game.increaseScore(10000)
+                game.increaseScore()
                 star.shrink();
             };
             star.onProjectileCollision = function() {}
