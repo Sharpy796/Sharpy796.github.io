@@ -91,7 +91,7 @@ var background = function (window) {
             }
             
             // TODO 4: Part 1 - Add a tree
-            for (var i = -1; i < 7; i++) {
+            for (var i = -1; i < 8; i++) {
                 var tree = draw.bitmap('img/otherTree.png');
                 tree.x = i * 200;
                 tree.y = groundY - 210;
