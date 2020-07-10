@@ -44,7 +44,7 @@ var background = function (window) {
             
             // TODO: 3 - Add a moon and starfield
             var circle;
-            for(var i=0;i<200;i++) {
+            for(var i = 0; i < 200; i++) {
                 var divideFive = i % 5;
                 if (divideFive === 0) {
                     circle = draw.circle(0.5,'white','Pink',2);

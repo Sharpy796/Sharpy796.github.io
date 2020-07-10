@@ -111,7 +111,7 @@ var level01 = function (window) {
             };
             bossGoomba.onProjectileCollision = function() {
                 hits++;
-                if (hits <= 5) {
+                if (hits >= 5) {
                     console.log('Halle has defeated the Boss Goomba!');
                     game.increaseScore(1000);
                     bossGoomba.flyTo(1000, 0);
