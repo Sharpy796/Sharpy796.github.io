@@ -124,8 +124,8 @@ var level01 = function (window) {
             star.addChild(starImage);
             star.x = x;
             star.y = y;
-            star.scaleX = 1.5;
-            star.scaleY = 1.5;
+            // star.scaleX = 1.5;
+            // star.scaleY = 1.5;
             game.addGameItem(star);
             star.velocityX = -2;
             star.onPlayerCollision = function() {
