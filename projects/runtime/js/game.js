@@ -52,6 +52,10 @@
                         view.removeChild(halle);
                     });
                     halle.die();
+                    setTimeout(function() {
+                        document.location.reload()
+                        alert("press enter to start over");
+                    }, 1100);
                 }
             }
         }
