@@ -16,10 +16,10 @@ var level01 = function (window) {
             "number": 1, 
             "speed": -3,
             "gameItems": [  
-                { "type": "spikeBall" , "x": 400 , "y": groundY - 25  },
+                { "type": "spikeBall" , "x": 400 , "y": groundY - 20  },
                 { "type": "goomba"    , "x": 450 , "y": groundY - 23  },
                 { "type": "spikeBall" , "x": 650 , "y": groundY - 120 },
-                { "type": "spikeBall" , "x": 900 , "y": groundY - 25  },
+                { "type": "spikeBall" , "x": 900 , "y": groundY - 20  },
                 { "type": "goomba"    , "x": 1000, "y": groundY - 23  },
                 { "type": "mushroom"  , "x": 1125, "y": groundY - 140 },
                 { "type": "bossGoomba", "x": 1250, "y": groundY - 48  },
@@ -40,12 +40,14 @@ var level01 = function (window) {
             var spikeBallHitZone = game.createObstacle(hitZoneSize, damageFromObstacle);
             spikeBallHitZone.x = x;
             spikeBallHitZone.y = y;
+            spikeBallHitZone.scaleX = 0.75;
+            spikeBallHitZone.scaleY = 0.75;
             spikeBallHitZone.rotationalVelocity = -10;
             game.addGameItem(spikeBallHitZone);
-            var obstacleImage = draw.bitmap('img/SpikeBall.png');
-            spikeBallHitZone.addChild(obstacleImage);
-            obstacleImage.x = -25;
-            obstacleImage.y = -25;
+            var spikeBallImage = draw.bitmap('img/SpikeBall.png');
+            spikeBallHitZone.addChild(spikeBallImage);
+            spikeBallImage.x = -25;
+            spikeBallImage.y = -25;
         }
         
         function createMushroom(x, y) {
