@@ -66,7 +66,7 @@ var level01 = function (window) {
                 game.increaseScore(200)
                 mushroom.shrink();
             };
-            mushroom.onProjectileCollision = function() {}
+            // mushroom.onProjectileCollision = function() {}
         }
         
         function createGoomba(x, y) {
@@ -134,7 +134,7 @@ var level01 = function (window) {
                 game.increaseScore(game.health * 100);
                 star.shrink();
             };
-            star.onProjectileCollision = function() {}
+            // star.onProjectileCollision = function() {}
         }
         
         function createError(x, y) {
