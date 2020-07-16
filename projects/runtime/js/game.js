@@ -54,7 +54,7 @@
                     halle.die();
                     setTimeout(function() {
                         document.location.reload()
-                        alert("press enter to start over");
+                        alert("Press enter to start over.");
                     }, 1100);
                 }
             }
