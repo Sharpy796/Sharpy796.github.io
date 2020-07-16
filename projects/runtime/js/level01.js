@@ -17,14 +17,18 @@ var level01 = function (window) {
             "speed": -3,
             "gameItems": [  
                 { "type": "spikeBall" , "x": 400 , "y": groundY - 10  },
+                { "type": "coin"      , "x": 400 , "y": groundY - 140 },
                 { "type": "goomba"    , "x": 450 , "y": groundY - 23  },
                 { "type": "spikeBall" , "x": 650 , "y": groundY - 105 },
+                { "type": "coin"      , "x": 650 , "y": groundY - 40  },
                 { "type": "spikeBall" , "x": 900 , "y": groundY - 10  },
                 { "type": "goomba"    , "x": 1000, "y": groundY - 23  },
                 { "type": "mushroom"  , "x": 1125, "y": groundY - 140 },
                 { "type": "bossGoomba", "x": 1250, "y": groundY - 48  },
                 { "type": "spikeBall" , "x": 1500, "y": groundY - 10  },
+                { "type": "coin"      , "x": 1500, "y": groundY - 140 },
                 { "type": "spikeBall" , "x": 1700, "y": groundY - 10  },
+                { "type": "coin"      , "x": 1700, "y": groundY - 140 },
                 { "type": "spikeBall" , "x": 2000, "y": groundY - 105 },
                 { "type": "star"      , "x": 2500, "y": groundY - 140 },
             ]
@@ -66,7 +70,25 @@ var level01 = function (window) {
                 game.increaseScore(200)
                 mushroom.shrink();
             };
-            // mushroom.onProjectileCollision = function() {}
+        }
+        
+        function createCoin(x, y) {
+            var coin = game.createGameItem('enemy',25);
+            var coinImage = draw.bitmap('img/Coin.png');
+            coinImage.x = -25;
+            coinImage.y = -25;
+            coin.addChild(coinImage);
+            coin.x = x;
+            coin.y = y;
+            coin.scaleX = 0.625;
+            coin.scaleY = 0.625;
+            game.addGameItem(coin);
+            coin.velocityX = -2;
+            coin.onPlayerCollision = function() {
+                console.log('Halle has collected a Coin!');
+                game.increaseScore(200)
+                coin.shrink();
+            };
         }
         
         function createGoomba(x, y) {
@@ -124,8 +146,6 @@ var level01 = function (window) {
             star.addChild(starImage);
             star.x = x;
             star.y = y;
-            // star.scaleX = 1.5;
-            // star.scaleY = 1.5;
             game.addGameItem(star);
             star.velocityX = -2;
             star.onPlayerCollision = function() {
@@ -134,7 +154,6 @@ var level01 = function (window) {
                 game.increaseScore(game.health * 100);
                 star.shrink();
             };
-            // star.onProjectileCollision = function() {}
         }
         
         function createError(x, y) {
@@ -154,6 +173,8 @@ var level01 = function (window) {
                 createSpikeBall(gameItem.x, gameItem.y);
             } else if (gameItem.type === "mushroom") {
                 createMushroom(gameItem.x, gameItem.y);
+            } else if (gameItem.type === "coin") {
+                createCoin(gameItem.x, gameItem.y);
             } else if (gameItem.type === "goomba") {
                 createGoomba(gameItem.x, gameItem.y);
             } else if (gameItem.type === "bossGoomba") {
