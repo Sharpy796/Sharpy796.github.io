@@ -18,14 +18,14 @@ var level01 = function (window) {
             "gameItems": [  
                 { "type": "spikeBall" , "x": 400 , "y": groundY - 10  },
                 { "type": "goomba"    , "x": 450 , "y": groundY - 23  },
-                { "type": "spikeBall" , "x": 650 , "y": groundY - 100 },
+                { "type": "spikeBall" , "x": 650 , "y": groundY - 105 },
                 { "type": "spikeBall" , "x": 900 , "y": groundY - 10  },
                 { "type": "goomba"    , "x": 1000, "y": groundY - 23  },
                 { "type": "mushroom"  , "x": 1125, "y": groundY - 140 },
                 { "type": "bossGoomba", "x": 1250, "y": groundY - 48  },
                 { "type": "spikeBall" , "x": 1500, "y": groundY - 10  },
                 { "type": "spikeBall" , "x": 1700, "y": groundY - 10  },
-                { "type": "spikeBall" , "x": 2000, "y": groundY - 100 },
+                { "type": "spikeBall" , "x": 2000, "y": groundY - 105 },
                 { "type": "star"      , "x": 2500, "y": groundY - 140 },
             ]
         };
