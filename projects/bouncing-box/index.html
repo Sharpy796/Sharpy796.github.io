@@ -82,22 +82,19 @@
 			var misClickPoints = 0;
 			
 			/*
-			This Function generated a randomm number between 0 and 255.
-			*/
-			function randRGBVal() {
-				var randomRGBVal = Math.floor(Math.random() * 255);
-				return randomRGBVal;
-			}
-			
-			/*
 			This Function takes the value from randRGBVal() and puts three of them into a string.
-			*/
+            */
+            var h = 0;
+            var s = "100%";
+            var l = "50%";
 			function getRandomColor() {
-				var red = randRGBVal();
-				var green = randRGBVal();
-				var blue = randRGBVal();
-				var colorStr = "rgb(" + red + ", " + green + ", " + blue + ")";
-				return colorStr;
+                // var h = Math.floor(Math.random() * 360);
+                h++;
+                if (h > 360) {
+                    h = 0;
+                }
+                var hslString = "hsl(" + h + "," + s + "," + l + ")";
+                return hslString;
 			}
 			
 			/* 
@@ -115,6 +112,7 @@
 				if (positionY < 0 || positionY > boardHeight) {
 					speedY *= -1;
 				}
+				box.css('background-color', getRandomColor());
 			}
 
 			/* 
@@ -143,7 +141,6 @@
 					} else if (speedY < 0) {
 						speedY -= 3;
 					}
-					box.css('background-color', getRandomColor());
 					clickPoints = 0;
 				}
 			}

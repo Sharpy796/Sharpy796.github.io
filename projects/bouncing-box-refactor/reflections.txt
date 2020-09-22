@@ -1,0 +1,13 @@
+>> Reflections <<
+
+ ~ How is the jQuery file being loaded into this project: direct download or Content Delivery Network (CDN)?
+I think it's a Content Dlivery Network, because the link being used to load the jQuery is a link.
+
+ ~ If you load the index.js file before the jquery file our program doesn't work. Why? Open the preview in a new tab and look at the console to help you find out why.
+I've noticed in the past that when using jQuery, it does matter what order the code is in. I believe the program doesn't work if index.js is loaded before the jQuery because when index.js runs, it can't run properly because it jQuery hasn't loaded yet. I mean, that's basically the obvious, but it's what's happening.
+
+ ~ In your opinion, what are the pros of refactoring your HTML, CSS, and JavaScript into separate files? What are the cons?
+Pros are being able to easily identify which parts of my code are for what, and being able to indentify better where errors are. A con might be that it takes some time to do. But, it's worth it in the long run!
+
+ ~ In your opinion, what are the pros of refactoring your JavaScript code into separate functions? What are the cons?
+The pros of this are being able to understand your code better, and navigate it easier. A con, again, is that it may take some time to refactor it.
