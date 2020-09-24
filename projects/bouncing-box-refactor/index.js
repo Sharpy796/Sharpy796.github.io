@@ -6,6 +6,7 @@ $(document).ready(function(){
     //////////////////////////////////////////////////////////////////
 
     var BOARD_WIDTH = $('#board').width();	// Number: the maximum X-Coordinate of the screen
+    var BOARD_HEIGHT = $('#board').width(); // Number: the maximum Y-Coordinate of the screen
 
 	// Every 50 milliseconds, call the update Function (see below)
 	setInterval(update, 50);
@@ -14,8 +15,16 @@ $(document).ready(function(){
 	$('#box').on('click', handleBoxClick);
 
 	var positionX = 0;
-	var speedX = 10;
+    var positionY = 100;
+	var speedX = 1;
+    var speedY = 1;
 	var points = 0;
+
+    var clicks = 0;
+
+    var h = 0;
+    var s = "100%";
+    var l = "50%";
 
 	//////////////////////////////////////////////////////////////////
 	///////////////////////// CORE LOGIC /////////////////////////////
@@ -33,9 +42,14 @@ $(document).ready(function(){
 	the left side of the screen.
 	*/
 	function handleBoxClick() {
+        updateClicks();
         increasePoints();
-        increaseSpeed();
         resetPosition();
+        // randomPosition();
+        if (clicks >= 3) {
+            increaseSpeed();
+            clicks = 0;
+        }
         // changeColor();
 	}
 
@@ -45,7 +59,9 @@ $(document).ready(function(){
 
     function updatePosition() {
 		positionX += speedX;
+        positionY += speedY;
         $('#box').css("left", positionX);
+        $('#box').css("top", positionY);
     }
 
     function bounceBox() {
@@ -54,6 +70,12 @@ $(document).ready(function(){
 		}
 		else if (positionX < 0) {
 			speedX = -speedX;
+        }
+        if (positionY > BOARD_HEIGHT) {
+            speedY = -speedY;
+        }
+        else if (positionY < 0) {
+            speedY = -speedY;
         }
     }
 
@@ -64,6 +86,10 @@ $(document).ready(function(){
     
     function changeTextToColor(color) {
         $('#box').text(color);
+    }
+
+    function updateClicks() {
+        clicks++;
     }
 
     function increasePoints() {
@@ -78,15 +104,24 @@ $(document).ready(function(){
 		else if (speedX < 0) {
 			speedX -= 3;
         }
+        if (speedY >= 0) {
+            speedY += 3;
+        }
+        else if (speedY < 0) {
+            speedY -= 3;
+        }
     }
 
     function resetPosition() {
         positionX = 0;
+        positionY = 100;
     }
 
-    var h = 0;
-    var s = "100%";
-    var l = "50%";
+    function randomPosition() {
+        positionX = Math.floor(Math.random * BOARD_WIDTH);
+        positionY = Math.floor(Math.random * BOARD_HEIGHT);
+    }
+
     function randomColor() {
         // var h = Math.floor(Math.random() * 360);
         h++;
