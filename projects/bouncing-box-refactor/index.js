@@ -43,10 +43,6 @@ $(document).ready(function(){
 	/////////////////////// HELPER FUNCTIONS /////////////////////////
     //////////////////////////////////////////////////////////////////
 
-    function changeTextToColor(color) {
-        $('#box').text(color);
-    }
-
     function updatePosition() {
 		positionX += speedX;
         $('#box').css("left", positionX);
@@ -59,6 +55,15 @@ $(document).ready(function(){
 		else if (positionX < 0) {
 			speedX = -speedX;
         }
+    }
+
+    function changeColor() {
+        $('#box').css("background-color", randomColor());
+        return randomColor();
+    }
+    
+    function changeTextToColor(color) {
+        $('#box').text(color);
     }
 
     function increasePoints() {
@@ -90,11 +95,6 @@ $(document).ready(function(){
         }
         var hslString = "hsl(" + h + "," + s + "," + l + ")";
         return hslString;
-    }
-
-    function changeColor() {
-        $('#box').css("background-color", randomColor());
-        return randomColor();
     }
 
 	/* 
