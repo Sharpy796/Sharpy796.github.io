@@ -44,8 +44,8 @@ $(document).ready(function(){
 	function handleBoxClick() {
         updateClicks();
         increasePoints();
-        resetPosition();
-        // randomPosition();
+        // resetPosition();
+        randomPosition();
         if (clicks >= 3) {
             increaseSpeed();
             clicks = 0;
