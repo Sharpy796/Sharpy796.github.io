@@ -79,9 +79,9 @@ function runProgram(){
   */
   function newFrame() {
       repositionGameItem();
-    //   updatePlayerBorders();
+      updatePlayerBorders();
       handleCollisions();
-    //   doSomething("thing");
+      doSomething("thing");
       redrawGameItem();
   }
   
