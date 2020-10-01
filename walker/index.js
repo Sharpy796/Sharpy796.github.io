@@ -202,13 +202,11 @@ function runProgram() {
             //   alert("bottom passed");
         }
         if (
-            (BORDER_P1.BOTTOM > BORDER_P2.TOP && BORDER_P1.RIGHT > BORDER_P2.LEFT) ||
-            (BORDER_P1.BOTTOM > BORDER_P2.TOP && BORDER_P1.LEFT < BORDER_P2.RIGHT) ||
-            (BORDER_P1.TOP < BORDER_P2.BOTTOM && BORDER_P1.RIGHT > BORDER_P2.LEFT) ||
+            // (BORDER_P1.BOTTOM < BORDER_P2.TOP && BORDER_P1.RIGHT < BORDER_P2.LEFT) ||
             (BORDER_P1.TOP < BORDER_P2.BOTTOM && BORDER_P1.LEFT < BORDER_P2.RIGHT)) {
-            $("#player1").css(background - color, "lime");
+            $("#playerOne").css("background-color", "lime");
         } else {
-            $("#player1").css(background - color, "teal");
+            $("#playerOne").css("background-color", "teal");
         }
     }
 
