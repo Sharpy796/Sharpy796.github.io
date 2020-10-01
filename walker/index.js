@@ -79,9 +79,9 @@ function runProgram(){
   */
   function newFrame() {
       repositionGameItem();
-      updatePlayerBorders();
+    //   updatePlayerBorders();
       handleCollisions();
-      doSomething("thing");
+    //   doSomething("thing");
       redrawGameItem();
   }
   
@@ -213,6 +213,7 @@ function runProgram(){
       function doSomething(stuff) {
           console.log(stuff);
       }
+      updatePlayerBorders();
 
       function updatePlayerBorders() {
           playerOne.positionX = 0;
