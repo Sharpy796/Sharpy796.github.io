@@ -15,12 +15,18 @@ function runProgram(){
       "RIGHT": $("#board").width() - 50,
       "BOTTOM": $("#board").height() - 50
   }
-//   var BORDER_P1 = {
-//       "LEFT": playerOne.positionX,
+//   var stuff = {
+//     //   "somethingstuffothersthing": 0,
+//     //   "TOP": 0,
+//     //   "RIGHT": $("#board").width() - 50,
+//     //   "BOTTOM": $("#board").height() - 50
+//   }
+  var BORDER_P1 = {
+      "LEFT": 0,
 //       "TOP": playerOne.positionY,
 //       "RIGHT": playerOne.positionX + 50,
 //       "BOTTOM": playerOne.positionY + 50
-//   }
+  }
 //   var BORDER_P2 = {
 //       "LEFT": playerTwo.positionX,
 //       "TOP": playerTwo.positionY,
@@ -61,7 +67,7 @@ function runProgram(){
   var interval = setInterval(newFrame, FRAMES_PER_SECOND_INTERVAL);   // execute newFrame every 0.0166 seconds (60 Frames per second)
   $(document).on("keydown", handleKeyDown);
   $(document).on("keyup", handleKeyUp);
-//   giveDimensions();
+  giveDimensions();
 
   ////////////////////////////////////////////////////////////////////////////////
   ///////////////////////// CORE LOGIC ///////////////////////////////////////////
@@ -73,7 +79,9 @@ function runProgram(){
   */
   function newFrame() {
       repositionGameItem();
+      updatePlayerBorders();
       handleCollisions();
+      doSomething("thing");
       redrawGameItem();
   }
   
@@ -200,6 +208,18 @@ function runProgram(){
           playerTwo.positionY -= 5;
           console.log("p2: bottom passed");
         //   alert("bottom passed");
+      }
+
+      function doSomething(stuff) {
+          console.log(stuff);
+      }
+
+      function updatePlayerBorders() {
+          playerOne.positionX = 0
+          var stuff = "stuff";
+          console.log(stuff);
+          return stuff;
+        //   BORDER_P1.LEFT = playerOne.positionX;
       }
 
     //   if (
