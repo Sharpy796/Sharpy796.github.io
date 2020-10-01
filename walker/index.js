@@ -215,7 +215,7 @@ function runProgram(){
       }
 
       function updatePlayerBorders() {
-          playerOne.positionX = 0
+          playerOne.positionX = 0;
           var stuff = "stuff";
           console.log(stuff);
           return stuff;
