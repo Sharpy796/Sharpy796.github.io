@@ -7,7 +7,7 @@
  ~ Beginning Conditions:
     > The ball is going to start in the center of the screen
     > The two paddles start in the middle of the screen, one on the very left and the other on the very right.
-    > The ball will then move toward the left paddle at an angle
+    > The ball will then move toward the left paddle at an angle (speedY = random number)
     > Each player will also start with 0 points.
  ~ Endgame:
     > The game ends when one player reaches 10 points
