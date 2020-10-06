@@ -57,6 +57,7 @@
  ~ If down is pressed, make the right paddle go down
  ~ If W is pressed, make the left paddle go up
  ~ If S is pressed, make the left paddle go down
+ ~ If any of these keys are released, make their respective objects stop moving
  ~ If R is pressed, restart the game (reload the page or reset the scores?)
  ~ If the ball touches the right of the left paddle:
     > Reverse the horizontal speed

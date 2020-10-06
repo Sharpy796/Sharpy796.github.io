@@ -56,6 +56,9 @@ function runProgram() {
         "speed": 0,
     }
 
+    var P1IsIt = false;
+    var i = 1;
+
     // one-time setup
     var interval = setInterval(newFrame, FRAMES_PER_SECOND_INTERVAL);   // execute newFrame every 0.0166 seconds (60 Frames per second)
     $(document).on("keydown", handleKeyDown);
@@ -74,6 +77,8 @@ function runProgram() {
         repositionGameItem();
         updatePlayerBorders();
         handleCollisions();
+        whoIsIt();
+        handleColorChanges();
         redrawGameItem();
     }
 
@@ -85,38 +90,30 @@ function runProgram() {
         ///// PLAYER ONE KEYDOWNS \\\\\
         if (event.which === KEY.LEFT) {
             console.log("left pressed");
-            //   alert("left pressed");
             playerOne.speedX = -5;
         } if (event.which === KEY.UP) {
             console.log("up pressed");
-            //   alert("up pressed");
             playerOne.speedY = -5;
         } if (event.which === KEY.RIGHT) {
             console.log("right pressed");
-            //   alert("right pressed");
             playerOne.speedX = 5;
         } if (event.which === KEY.DOWN) {
             console.log("down pressed");
-            //   alert("down pressed");
             playerOne.speedY = 5;
         }
 
         ///// PLAYER TWO KEYDOWNS \\\\\
         if (event.which === KEY.A) {
             console.log("a pressed");
-            //   alert("a pressed");
             playerTwo.speedX = -5;
         } if (event.which === KEY.W) {
             console.log("w pressed");
-            //   alert("w pressed");
             playerTwo.speedY = -5;
         } if (event.which === KEY.D) {
             console.log("d pressed");
-            //   alert("d pressed");
             playerTwo.speedX = 5;
         } if (event.which === KEY.S) {
             console.log("s pressed");
-            //   alert("s pressed");
             playerTwo.speedY = 5;
         }
     }
@@ -126,38 +123,30 @@ function runProgram() {
         ///// PLAYER ONE KEYUPS \\\\\
         if (event.which === KEY.LEFT) {
             console.log("left released");
-            //   alert("left released");
             playerOne.speedX = 0;
         } if (event.which === KEY.UP) {
             console.log("up released");
-            //   alert("up released");
             playerOne.speedY = 0;
         } if (event.which === KEY.RIGHT) {
             console.log("right released");
-            //   alert("right released");
             playerOne.speedX = 0;
         } if (event.which === KEY.DOWN) {
             console.log("down released");
-            //   alert("down released");
             playerOne.speedY = 0;
         }
 
         ///// PLAYER TWO KEYUPS \\\\\
         if (event.which === KEY.A) {
             console.log("a released");
-            //   alert("a released");
             playerTwo.speedX = 0;
         } if (event.which === KEY.W) {
             console.log("up released");
-            //   alert("w released");
             playerTwo.speedY = 0;
         } if (event.which === KEY.D) {
             console.log("d released");
-            //   alert("d released");
             playerTwo.speedX = 0;
         } if (event.which === KEY.S) {
             console.log("s released");
-            //   alert("s released");
             playerTwo.speedY = 0;
         }
     }
@@ -168,49 +157,30 @@ function runProgram() {
         if (playerOne.positionX < BORDER.LEFT) {
             playerOne.positionX -= -5;
             console.log("p1: left passed");
-            //   alert("left passed");
         } if (playerOne.positionY < BORDER.TOP) {
             playerOne.positionY -= -5;
             console.log("p1: top passed");
-            //   alert("top passed");
         } if (playerOne.positionX > BORDER.RIGHT) {
             playerOne.positionX -= 5;
             console.log("p1: right passed");
-            //   alert("right passed");
         } if (playerOne.positionY > BORDER.BOTTOM) {
             playerOne.positionY -= 5;
             console.log("p1: bottom passed");
-            //   alert("bottom passed");
         }
 
         ///// PLAYER TWO BORDER COLLISION \\\\\
         if (playerTwo.positionX < BORDER.LEFT) {
             playerTwo.positionX -= -5;
             console.log("p2: left passed");
-            //   alert("left passed");
         } if (playerTwo.positionY < BORDER.TOP) {
             playerTwo.positionY -= -5;
             console.log("p2: top passed");
-            //   alert("top passed");
         } if (playerTwo.positionX > BORDER.RIGHT) {
             playerTwo.positionX -= 5;
             console.log("p2: right passed");
-            //   alert("right passed");
         } if (playerTwo.positionY > BORDER.BOTTOM) {
             playerTwo.positionY -= 5;
             console.log("p2: bottom passed");
-            //   alert("bottom passed");
-        }
-        if (
-            (BORDER_P1.BOTTOM > BORDER_P2.TOP &&
-            BORDER_P1.LEFT < BORDER_P2.RIGHT) &&
-            (BORDER_P1.TOP < BORDER_P2.BOTTOM &&
-            BORDER_P1.RIGHT > BORDER_P2.LEFT)) {
-            // (BORDER_P1.BOTTOM < BORDER_P2.TOP && BORDER_P1.RIGHT < BORDER_P2.LEFT) ||
-            // (BORDER_P1.TOP < BORDER_P2.BOTTOM && BORDER_P1.LEFT < BORDER_P2.RIGHT)) {
-            $("#playerOne").css("background-color", "lime");
-        } else {
-            $("#playerOne").css("background-color", "teal");
         }
     }
 
@@ -226,6 +196,44 @@ function runProgram() {
         BORDER_P2.BOTTOM = playerTwo.positionY + 50;
     }
 
+    function P1IsInCollision() {
+        if ((BORDER_P1.BOTTOM > BORDER_P2.TOP &&
+            BORDER_P1.LEFT < BORDER_P2.RIGHT) &&
+            (BORDER_P1.TOP < BORDER_P2.BOTTOM &&
+                BORDER_P1.RIGHT > BORDER_P2.LEFT)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function whoIsIt() {
+        if (P1IsInCollision()) {
+            if (i < 2) {
+                if (!P1IsIt) {
+                    P1IsIt = true;
+                    handleColorChanges();
+                } if (P1IsIt) {
+                    P1IsIt = false;
+                    handleColorChanges();
+                }
+            }
+            i += 1;
+        } else {
+            i = 1;
+        }
+    }
+
+    function handleColorChanges() {
+        if (!P1IsIt) {
+            $("#playerOne").css("background-color", "lime");
+            $("#playerTwo").css("background-color", "maroon");
+        } if (P1IsIt) {
+            $("#playerTwo").css("background-color", "lime");
+            $("#playerOne").css("background-color", "teal");
+        }
+
+    }
 
     function giveDimensions() {
         alert(
