@@ -1,0 +1,60 @@
+
+>> User Story/Gameplay <<
+
+ ~ The ball will bounce back and forth across the screen, being hit by the paddles. If the ball gets past a paddle, the other player gets a point.
+ ~ The ball is going to start in the center of the screen, with the two paddles in the middle of the screen, on on the very left and the other on the very right. The ball will then move toward the left paddle. Each player will also start with 0 points.
+ ~ The game ends when one player reaches 10 points. Then the screen will read either "P1 WINS!" or "P2 WINS!"
+ ~ If Statements:
+    > If P1 has 10 points, P1 wins
+    > If P2 has 10 points, P2 wins
+    > If the ball touches the top or bottom of the screen, reverse the vertical speed
+    > If the ball touches the left of the screen, give P2 a point
+    > If the ball touches the right of the screen, give P1 a point
+    > If the ball touches a paddle, reverse the horizontal speed
+
+
+>> Visual Game Components <<
+
+ ~ The board (Static)
+    > BOARD_WIDTH
+    > BOARD_HEIGHT
+    > BOARD.LEFT
+    > BOARD.RIGHT
+    > BOARD.TOP
+    > BOARD.BOTTOM
+ ~ The ball (Animated)
+    > positionX
+    > positionY
+    > speedX
+    > speedY
+    > BALL.LEFT
+    > BALL.RIGHT
+    > BALL.TOP
+    > BALL.BOTTOM
+ ~ The paddles (Animated)
+    > paddleLeft = {}
+    > paddleRight = {}
+    > positionX
+    > positionY
+    > LEFT
+    > RIGHT
+ ~ The score (Static)
+    > P1.score
+    > P2.score
+
+
+>> Events/Logic <<
+
+ ~ If up is pressed, make the right paddle go up
+ ~ If down is pressed, make the right paddle go down
+ ~ If W is pressed, make the left paddle go up
+ ~ If S is pressed, make the left paddle go down
+ ~ If R is pressed, restart the game (reload the page or reset the scores?)
+ ~ If the ball touches the right of the left paddle, reverse the horizontal speed, and increase the speed slightly
+ ~ If the ball touches the left of the right paddle, reverse the horizontal speed, and increase the speed slightly
+ ~ If the ball touches the left of the screen, make the ball disappear, increase P2's score by 1, reset the speed, and wait a few seconds. Then make the ball reappear at the center of the screen
+ ~ If the ball touches the right of the screen, make the ball disappear, increase P1's score by 1, reset the speed, and wait a few seconds. Then make the ball reappear at the center of the screen
+ ~ If the ball touches the top of the screen, reverse the vertical speed
+ ~ If the ball touches the bottom of the screen, reverse the vertical speed
+ ~ If P1 reaches 10 or more points, make the ball disappear, and display text saying "P1 WINS! Press R to Play Again"
+ ~ If P2 reaches 10 or more points, make the ball disappear, and display text saying "P2 WINS! Press R to Play Again"
