@@ -6,7 +6,7 @@
     > If the ball gets past a paddle, the other player gets a point.
  ~ Beginning Conditions:
     > The ball is going to start in the center of the screen
-    > the two paddles start in the middle of the screen, on on the very left and the other on the very right.
+    > The two paddles start in the middle of the screen, one on the very left and the other on the very right.
     > The ball will then move toward the left paddle at an angle
     > Each player will also start with 0 points.
  ~ Endgame:
@@ -59,28 +59,28 @@
  ~ If S is pressed, make the left paddle go down
  ~ If R is pressed, restart the game (reload the page or reset the scores?)
  ~ If the ball touches the right of the left paddle:
-    > reverse the horizontal speed
-    > increase the speed slightly
+    > Reverse the horizontal speed
+    > Increase the speed slightly
  ~ If the ball touches the left of the right paddle:
-    > reverse the horizontal speed
-    > increase the speed slightly
+    > Reverse the horizontal speed
+    > Increase the speed slightly
  ~ If the ball touches the left of the screen:
-    > make the ball disappear
-    > increase P2's score by 1
-    > reset the speed
-    > wait a few seconds
-    > Then make the ball reappear at the center of the screen
+    > Make the ball disappear
+    > Increase P2's score by 1
+    > Reset the speed
+    > Wait a few seconds
+    > Make the ball reappear at the center of the screen
  ~ If the ball touches the right of the screen:
-    > make the ball disappear
-    > increase P1's score by 1
-    > reset the speed
-    > wait a few seconds
-    > Then make the ball reappear at the center of the screen
+    > Make the ball disappear
+    > Increase P1's score by 1
+    > Reset the speed
+    > Wait a few seconds
+    > Make the ball reappear at the center of the screen
  ~ If the ball touches the top of the screen, reverse the vertical speed
  ~ If the ball touches the bottom of the screen, reverse the vertical speed
  ~ If P1 reaches 10 or more points:
-    > make the ball disappear
-    > display text saying "P1 WINS! Press R to Play Again"
+    > Make the ball disappear
+    > Display text saying "P1 WINS! Press R to Play Again"
  ~ If P2 reaches 10 or more points:
-    > make the ball disappear
-    > display text saying "P2 WINS! Press R to Play Again"
+    > Make the ball disappear
+    > Display text saying "P2 WINS! Press R to Play Again"
