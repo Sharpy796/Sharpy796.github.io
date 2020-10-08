@@ -121,36 +121,29 @@ function runProgram() {
         /* general controls */
         if (keycode === KEY.ENTER) {
             console.log("enter released");
-        }
-        if (keycode === KEY.R) {
+        } if (keycode === KEY.R) {
             console.log("r released");
         }
 
         /* P1 controls */
         if (keycode === KEY.W) {
             console.log("w released");
-        }
-        if (keycode === KEY.A) {
+        } if (keycode === KEY.A) {
             console.log("a released");
-        }
-        if (keycode === KEY.UP) {
+        } if (keycode === KEY.UP) {
             console.log("s released");
-        }
-        if (keycode === KEY.UP) {
+        } if (keycode === KEY.UP) {
             console.log("d released");
         }
 
         /* P2 controls */
         if (keycode === KEY.UP) {
             console.log("up released");
-        }
-        if (keycode === KEY.LEFT) {
+        } if (keycode === KEY.LEFT) {
             console.log("left released");
-        }
-        if (keycode === KEY.DOWN) {
+        } if (keycode === KEY.DOWN) {
             console.log("down released");
-        }
-        if (keycode === KEY.RIGHT) {
+        } if (keycode === KEY.RIGHT) {
             console.log("right released");
         }
     }
