@@ -10,7 +10,21 @@ function runProgram(){
   // Constant Variables
   const FRAMES_PER_SECOND_INTERVAL = 1000 / 60;
   var KEY = {
-      
+      /* general controls */
+      ENTER: 16,
+      R: 82,
+
+      /* P1 controls */
+      UP: 38,
+      LEFT: 37,
+      DOWN: 40,
+      RIGHT: 39,
+
+      /* P2 controls */
+      W: 87,
+      A: 65,
+      S: 83,
+      D: 68,
   }
   
   // Game Item Objects
@@ -61,6 +75,10 @@ function runProgram(){
   */
   function handleEvent(event) {
 
+  }
+
+  funtion handleKeyDown() {
+      
   }
 
   ////////////////////////////////////////////////////////////////////////////////

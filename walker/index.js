@@ -63,7 +63,6 @@ function runProgram() {
     var interval = setInterval(newFrame, FRAMES_PER_SECOND_INTERVAL);   // execute newFrame every 0.0166 seconds (60 Frames per second)
     $(document).on("keydown", handleKeyDown);
     $(document).on("keyup", handleKeyUp);
-    giveDimensions();
 
     ////////////////////////////////////////////////////////////////////////////////
     ///////////////////////// CORE LOGIC ///////////////////////////////////////////
@@ -236,15 +235,6 @@ function runProgram() {
             $("#playerOne").css("background-color", "teal");
         }
 
-    }
-
-    function giveDimensions() {
-        alert(
-            "Left: " + BOARD.LEFT + "\n" +
-            "Top: " + BOARD.TOP + "\n" +
-            "Right: " + BOARD.RIGHT + "\n" +
-            "Bottom: " + BOARD.BOTTOM
-        )
     }
 
     ////////////////////////////////////////////////////////////////////////////////
