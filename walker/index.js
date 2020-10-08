@@ -78,7 +78,6 @@ function runProgram() {
         updatePlayerBorders();
         handleCollisions();
         whoIsIt();
-        handleColorChanges();
         redrawGameItem();
     }
 
@@ -213,13 +212,14 @@ function runProgram() {
                 if (!P1IsIt) {
                     P1IsIt = true;
                     handleColorChanges();
-                } if (P1IsIt) {
+                } else if (P1IsIt) {
                     P1IsIt = false;
                     handleColorChanges();
                 }
             }
             i += 1;
         } else {
+            handleColorChanges();
             i = 1;
         }
     }
