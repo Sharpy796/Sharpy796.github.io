@@ -8,9 +8,35 @@ function runProgram(){
   ////////////////////////////////////////////////////////////////////////////////
 
   // Constant Variables
-  var FRAMES_PER_SECOND_INTERVAL = 1000 / 60;
+  const FRAMES_PER_SECOND_INTERVAL = 1000 / 60;
+  var KEY = {
+      
+  }
   
   // Game Item Objects
+  var paddleLeft = {
+      x: 0,
+      y: 0,
+      speedX: 0,
+      speedY: 0,
+      id: "#paddleLeft"
+  }
+
+  var paddleRight = {
+      x: 0,
+      y: 0,
+      speedX: 0,
+      speedY: 0,
+      id: "#paddleRight"
+  }
+
+  var ball = {
+      x: 0,
+      y: 0,
+      speedX: 0,
+      speedY: 0,
+      id: "#ball"
+  }
 
 
   // one-time setup
