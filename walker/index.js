@@ -201,6 +201,7 @@ function runProgram() {
             (BORDER_P1.TOP < BORDER_P2.BOTTOM &&
                 BORDER_P1.RIGHT > BORDER_P2.LEFT)) {
             return true;
+            console.log("players are in collision");
         } else {
             return false;
         }
@@ -211,9 +212,11 @@ function runProgram() {
             if (i < 2) {
                 if (!P1IsIt) {
                     P1IsIt = true;
+                    console.log("p1 is it");
                     handleColorChanges();
                 } else if (P1IsIt) {
                     P1IsIt = false;
+                    console.log("p2 is it");
                     handleColorChanges();
                 }
             }
