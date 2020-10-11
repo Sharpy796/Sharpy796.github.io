@@ -67,7 +67,7 @@ function runProgram() {
     var text = {
         P1: "P1 WINS!",
         P2: "P2 WINS!",
-        restart: "Press R to restart",
+        restart: "Press R to Restart",
         pause = "PAUSED",
         error = "ERROR",
     }
