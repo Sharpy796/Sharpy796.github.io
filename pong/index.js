@@ -12,6 +12,7 @@ function runProgram() {
     var KEY = {
         /* general controls */
         ENTER: 16,
+        P: 80,
         R: 82,
 
         /* P1 controls */
@@ -58,6 +59,19 @@ function runProgram() {
         bounced: 0,
     }
 
+    var pause = {
+        speedX: 0,
+        speedY: 0,
+    }
+
+    var text = {
+        P1: "P1 WINS!",
+        P2: "P2 WINS!",
+        restart: "Press R to restart",
+        pause = "PAUSED",
+        error = "ERROR",
+    }
+
 
     // one-time setup
     var interval = setInterval(newFrame, FRAMES_PER_SECOND_INTERVAL);   // execute newFrame every 0.0166 seconds (60 Frames per second)
@@ -87,6 +101,8 @@ function runProgram() {
         /* general controls */
         if (keycode === KEY.ENTER) {
             console.log("enter pressed");
+        } if (keycode === KEY.P) {
+            console.log("p pressed");
         } if (keycode === KEY.R) {
             console.log("r pressed");
         }
@@ -121,6 +137,8 @@ function runProgram() {
         /* general controls */
         if (keycode === KEY.ENTER) {
             console.log("enter released");
+        } if (keycode === KEY.P) {
+            console.log("p released");
         } if (keycode === KEY.R) {
             console.log("r released");
         }

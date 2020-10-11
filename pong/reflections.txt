@@ -35,20 +35,30 @@
     > positionY
     > speedX
     > speedY
-    > BALL.LEFT
-    > BALL.RIGHT
-    > BALL.TOP
-    > BALL.BOTTOM
+    > ball.left
+    > ball.right
+    > ball.top
+    > ball.bottom
  ~ The paddles (Animated)
     > paddleLeft = {}
     > paddleRight = {}
     > positionX
     > positionY
+    > speedX
+    > speedY
     > LEFT
     > RIGHT
  ~ The score (Static)
     > P1.score
     > P2.score
+ ~ The words (Static)
+    > "P1 WINS!"
+    > "P2 WINS!"
+    > "Press R to restart"
+    > "PAUSED"
+ ~ Pause components (Not Visual)
+    > speedX = 0
+    > speedy = 0
 
 
 >> Events/Logic <<
@@ -59,6 +69,11 @@
  ~ If S is pressed, make the left paddle go down
  ~ If any of these keys are released, make their respective objects stop moving
  ~ If R is pressed, restart the game (reload the page or reset the scores?)
+ ~ If P is pressed, pause the game by temporarily:
+    > Setting the ball speed to 0
+    > Locking the paddle speeds at 0
+    > Displaying "PAUSED" in the center of the screen
+ ~ Once P is pressed again, return all values to what they were before the game was paused
  ~ If the ball touches the right of the left paddle:
     > Reverse the horizontal speed
     > Increase the speed slightly
