@@ -249,7 +249,7 @@ function runProgram() {
         $(document).off();
     }
 
-    function repositionGameItem() {
+function repositionGameItem() {
         playerOne.positionX += playerOne.speedX; // update the position of the box along the x-axis
         playerOne.positionY += playerOne.speedY; // update the position of the box along the y-axis
         playerTwo.positionX += playerTwo.speedX; // update the position of the box along the x-axis

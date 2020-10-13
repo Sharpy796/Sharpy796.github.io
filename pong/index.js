@@ -8,7 +8,7 @@ function runProgram() {
     ////////////////////////////////////////////////////////////////////////////////
 
     // Constant Variables
-    const FRAMES_PER_SECOND_INTERVAL = 1000 / 60;
+    var FRAMES_PER_SECOND_INTERVAL = 1000 / 60;
     var KEY = {
         /* general controls */
         ENTER: 16,
@@ -48,8 +48,8 @@ function runProgram() {
     var ball = {
         x: 0,
         y: 0,
-        speedX: 0,
-        speedY: 0,
+        speedX: 5,
+        speedY: 5,
         id: "#ball",
     }
 
@@ -87,8 +87,9 @@ function runProgram() {
     by calling this function and executing the code inside.
     */
     function newFrame() {
+        repositionGameItem();
 
-
+        redrawGameItem();
     }
 
     /* 
@@ -109,21 +110,25 @@ function runProgram() {
 
         /* P1 controls */
         if (keycode === KEY.W) {
+            paddleLeft.speedY = -5;
             console.log("w pressed");
         } if (keycode === KEY.A) {
             console.log("a pressed");
-        } if (keycode === KEY.UP) {
+        } if (keycode === KEY.S) {
+            paddleLeft.speedY = 5;
             console.log("s pressed");
-        } if (keycode === KEY.UP) {
+        } if (keycode === KEY.D) {
             console.log("d pressed");
         }
 
         /* P2 controls */
         if (keycode === KEY.UP) {
+            paddleRight.speedY = -5;
             console.log("up pressed");
         } if (keycode === KEY.LEFT) {
             console.log("left pressed");
         } if (keycode === KEY.DOWN) {
+            paddleRight.speedY = 5;
             console.log("down pressed");
         } if (keycode === KEY.RIGHT) {
             console.log("right pressed");
@@ -145,23 +150,31 @@ function runProgram() {
 
         /* P1 controls */
         if (keycode === KEY.W) {
+            paddleLeft.speedY = 0;
             console.log("w released");
         } if (keycode === KEY.A) {
+            paddleLeft.speedX = 0;
             console.log("a released");
-        } if (keycode === KEY.UP) {
+        } if (keycode === KEY.S) {
+            paddleLeft.speedY = 0;
             console.log("s released");
-        } if (keycode === KEY.UP) {
+        } if (keycode === KEY.D) {
+            paddleLeft.speedX = 0;
             console.log("d released");
         }
 
         /* P2 controls */
         if (keycode === KEY.UP) {
+            paddleRight.speedY = 0;
             console.log("up released");
         } if (keycode === KEY.LEFT) {
+            paddleRight.speedY = 0;
             console.log("left released");
         } if (keycode === KEY.DOWN) {
+            paddleRight.speedY = 0;
             console.log("down released");
         } if (keycode === KEY.RIGHT) {
+            paddleRight.speedY = 0;
             console.log("right released");
         }
     }
@@ -177,6 +190,22 @@ function runProgram() {
 
         // turn off event handlers
         $(document).off();
+    }
+
+    function repositionGameItem() {
+        paddleLeft.positionX += paddleLeft.speedX;
+        paddleLeft.positionY += paddleLeft.speedY;
+        paddleRight.positionX += paddleRight.speedX;
+        paddleRight.positionY += paddleRight.speedY;
+        ball.positionX += ball.speedX;
+        ball.positionY += ball.speedY;
+    }
+    
+    function redrawGameItem() {
+        $("#paddleLeft").css("left", paddleLeft.positionX);
+        $("#paddleLeft").css("top", paddleLeft.positionY);
+        $("#paddleRight").css("left", paddleRight.positionX);
+        $("#paddleRight").css("top", paddleRight.positionY);
     }
 
 }
