@@ -76,6 +76,7 @@ function runProgram() {
     // one-time setup
     var interval = setInterval(newFrame, FRAMES_PER_SECOND_INTERVAL);   // execute newFrame every 0.0166 seconds (60 Frames per second)
     $(document).on("keydown", handleKeyDown);
+    $(document).on("click", doStuff);
     $(document).on("keyup", handleKeyUp);
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -112,15 +113,18 @@ function runProgram() {
         /* P1 controls */
         if (keycode === KEY.W) {
             paddleLeft.speedY = -5;
-            alert("w pressed");
             console.log("w pressed");
+            alert("w pressed");
         } if (keycode === KEY.A) {
             console.log("a pressed");
+            alert("w pressed");
         } if (keycode === KEY.S) {
             paddleLeft.speedY = 5;
             console.log("s pressed");
+            alert("w pressed");
         } if (keycode === KEY.D) {
             console.log("d pressed");
+            alert("w pressed");
         }
 
         /* P2 controls */
