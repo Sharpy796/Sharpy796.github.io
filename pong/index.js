@@ -29,29 +29,12 @@ function runProgram() {
     }
 
     // Game Item Objects
-    var paddleLeft = {
-        x: 0,
-        y: 0,
-        speedX: 0,
-        speedY: 0,
-        id: "#paddleLeft",
-    }
 
-    var paddleRight = {
-        x: 0,
-        y: 0,
-        speedX: 0,
-        speedY: 0,
-        id: "#paddleRight",
-    }
+    var paddleLeft = createGameObject(50, 180, 0, 0, "#paddleLeft");
 
-    var ball = {
-        x: 0,
-        y: 0,
-        speedX: 5,
-        speedY: 5,
-        id: "#ball",
-    }
+    var paddleRight = createGameObject(630, 180, 0, 0, "#paddleRight");
+
+    var ball = createGameObject(340, 210, 5, 5, "#ball");
 
     var score = {
         p1: 0,
@@ -68,15 +51,14 @@ function runProgram() {
         p1: "P1 WINS!",
         p2: "P2 WINS!",
         restart: "Press R to Restart",
-        pause = "PAUSED",
-        error = "ERROR",
+        pause: "PAUSED",
+        error: "ERROR",
     }
 
 
     // one-time setup
     var interval = setInterval(newFrame, FRAMES_PER_SECOND_INTERVAL);   // execute newFrame every 0.0166 seconds (60 Frames per second)
-    $(document).on("keydown", handleKeyDown);
-    $(document).on("click", doStuff);
+    $(document).on("keydown", handleKeyDown);   
     $(document).on("keyup", handleKeyUp);
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -88,16 +70,21 @@ function runProgram() {
     by calling this function and executing the code inside.
     */
     function newFrame() {
-        // repositionGameItem();
-        moveElement("#paddleLeft", paddleLeft);
+        // repositionGameItems();
+        repositionGameItem(paddleLeft);
+        repositionGameItem(paddleRight);
+        // moveGameItem(ball);
 
         // redrawGameItem();
+        redrawGameItem("#paddleLeft", paddleLeft);
+        redrawGameItem("#paddleRight", paddleRight);
+        redrawGameItem("#ball", ball);
     }
 
     /* 
     Called in response to events.
     */
-    function handleKeyDown() {
+    function handleKeyDown(event) {
         var keycode = event.which;
         console.log(keycode);
 
@@ -114,17 +101,13 @@ function runProgram() {
         if (keycode === KEY.W) {
             paddleLeft.speedY = -5;
             console.log("w pressed");
-            alert("w pressed");
         } if (keycode === KEY.A) {
             console.log("a pressed");
-            alert("w pressed");
         } if (keycode === KEY.S) {
             paddleLeft.speedY = 5;
             console.log("s pressed");
-            alert("w pressed");
         } if (keycode === KEY.D) {
             console.log("d pressed");
-            alert("w pressed");
         }
 
         /* P2 controls */
@@ -141,7 +124,7 @@ function runProgram() {
         }
     }
 
-    function handleKeyUp() {
+    function handleKeyUp(event) {
         var keycode = event.which;
         console.log(keycode);
 
@@ -155,7 +138,7 @@ function runProgram() {
         }
 
         /* P1 controls */
-        if (keycode === KEY.W) {
+        if (event.which === KEY.W) {
             paddleLeft.speedY = 0;
             console.log("w released");
         } if (keycode === KEY.A) {
@@ -189,13 +172,6 @@ function runProgram() {
     ////////////////////////// HELPER FUNCTIONS ////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
 
-    function moveElement(id, element) {
-        element.x += element.speedX;
-        element.y += element.speedY;
-        $(id).css("left", element.positionX);
-        $(id).css("top", element.positionY);
-    }
-
     function endGame() {
         // stop the interval timer
         clearInterval(interval);
@@ -204,20 +180,23 @@ function runProgram() {
         $(document).off();
     }
 
-    function repositionGameItem() {
-        paddleLeft.positionX += paddleLeft.speedX;
-        paddleLeft.positionY += paddleLeft.speedY;
-        paddleRight.positionX += paddleRight.speedX;
-        paddleRight.positionY += paddleRight.speedY;
-        ball.positionX += ball.speedX;
-        ball.positionY += ball.speedY;
-    }
-    
-    function redrawGameItem() {
-        $("#paddleLeft").css("left", paddleLeft.positionX);
-        $("#paddleLeft").css("top", paddleLeft.positionY);
-        $("#paddleRight").css("left", paddleRight.positionX);
-        $("#paddleRight").css("top", paddleRight.positionY);
+    function createGameObject(x, y, speedX, speedY, id) {
+        var gameObject = {};
+        gameObject.x = x;
+        gameObject.y = y;
+        gameObject.speedX = speedX;
+        gameObject.speedY = speedY;
+        gameObject.id = id;
+        return gameObject;
     }
 
+    function repositionGameItem(gameItem) {
+        gameItem.x += gameItem.speedX;
+        gameItem.y += gameItem.speedY;
+    }
+
+    function redrawGameItem(id, gameItem) {
+        $(id).css("left", gameItem.x);
+        $(id).css("top", gameItem.y);
+    }
 }
