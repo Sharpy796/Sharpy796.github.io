@@ -50,3 +50,18 @@ body {
   left: 340px;
   top: 210px;
 }
+
+#cheatIcon {
+    /* appearance */
+    width: 50px;
+    height: 50px;
+    border-radius: 30px;
+    background-color: darkgrey;
+    border-style: solid;
+    border-color: grey;
+    border-width: 4px;
+
+    /* positioning */
+    left: 10px;
+    top: 10px;
+}
