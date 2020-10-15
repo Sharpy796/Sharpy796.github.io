@@ -65,8 +65,8 @@ function runProgram() {
     }
 
     var text = {
-        P1: "P1 WINS!",
-        P2: "P2 WINS!",
+        p1: "P1 WINS!",
+        p2: "P2 WINS!",
         restart: "Press R to Restart",
         pause = "PAUSED",
         error = "ERROR",
@@ -87,9 +87,10 @@ function runProgram() {
     by calling this function and executing the code inside.
     */
     function newFrame() {
-        repositionGameItem();
+        // repositionGameItem();
+        moveElement("#paddleLeft", paddleLeft);
 
-        redrawGameItem();
+        // redrawGameItem();
     }
 
     /* 
@@ -111,6 +112,7 @@ function runProgram() {
         /* P1 controls */
         if (keycode === KEY.W) {
             paddleLeft.speedY = -5;
+            alert("w pressed");
             console.log("w pressed");
         } if (keycode === KEY.A) {
             console.log("a pressed");
@@ -183,6 +185,12 @@ function runProgram() {
     ////////////////////////// HELPER FUNCTIONS ////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
 
+    function moveElement(id, element) {
+        element.x += element.speedX;
+        element.y += element.speedY;
+        $(id).css("left", element.positionX);
+        $(id).css("top", element.positionY);
+    }
 
     function endGame() {
         // stop the interval timer
