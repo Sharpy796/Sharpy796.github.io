@@ -73,11 +73,11 @@ function runProgram() {
     by calling this function and executing the code inside.
     */
     function newFrame() {
-        repositionGameItem();
-        updatePlayerBorders();
-        handleCollisions();
-        whoIsIt();
-        redrawGameItem();
+        repositionGameItem();   // moves the players' positions
+        updatePlayerBorders();  // updates the players' borders
+        handleCollisions();     // checks to see if the players are out of boudes, and corrects it if they are
+        whoIsIt();              // checks to see if the players are colliding with each other, and changes who is "it"
+        redrawGameItem();       // draws all the new changes for the users to see
     }
 
     /* 

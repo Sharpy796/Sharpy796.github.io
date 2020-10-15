@@ -70,12 +70,10 @@ function runProgram() {
     by calling this function and executing the code inside.
     */
     function newFrame() {
-        // repositionGameItems();
         repositionGameItem(paddleLeft);
         repositionGameItem(paddleRight);
         // moveGameItem(ball);
 
-        // redrawGameItem();
         redrawGameItem("#paddleLeft", paddleLeft);
         redrawGameItem("#paddleRight", paddleRight);
         redrawGameItem("#ball", ball);
