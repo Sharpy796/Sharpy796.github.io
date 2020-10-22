@@ -12,8 +12,9 @@ function runProgram() {
     var BORDERS = {
         TOP: 0,
         LEFT: 0,
-        BOTTOM: $("#board").width(),
-        RIGHT: ($("#board").height() - $("#ball").width()),
+        // BOTTOM: $("#board").height(),
+        BOTTOM: 440,
+        RIGHT: $("#board").width(),
     }
     var KEY = {
         /* general controls */
@@ -32,6 +33,12 @@ function runProgram() {
         LEFT: 37,   // left
         DOWN: 40,   // down
         RIGHT: 39,  // right
+
+        /* ball controls */
+        I: 73,      // up
+        J: 74,      // left
+        K: 75,      // down
+        L: 76,      // right
     }
 
     // Game Item Objects
@@ -40,7 +47,7 @@ function runProgram() {
 
     var paddleRight = createGameObject(630, 180, 0, 0, "#paddleRight"); // player 2
 
-    var ball = createGameObject(340, 210, 5, 5, "#ball");               // ball
+    var ball = createGameObject(340, 210, -5, 0, "#ball");              // ball
 
     var pause = createGameObject(10, 10, 0, 0, "#cheatIcon");           // cheat icon
 
@@ -65,7 +72,7 @@ function runProgram() {
 
     var isPaused = false;
     var pIsDown = false;
-
+    var cheatModeActivated = false;
 
     // one-time setup
     var interval = setInterval(newFrame, FRAMES_PER_SECOND_INTERVAL);   // execute newFrame every 0.0166 seconds (60 Frames per second)
@@ -73,7 +80,6 @@ function runProgram() {
     $(document).on("keyup", handleKeyUp);       // listen for keyup events
     $("#cheatIcon").on("click", activateCheatMode);       // listen for click events
     $("#cheatIcon").hide();
-
 
     ////////////////////////////////////////////////////////////////////////////////
     ///////////////////////// CORE LOGIC ///////////////////////////////////////////
@@ -85,12 +91,12 @@ function runProgram() {
     */
     function newFrame() {
         pauseGame();
+        handleCollisions();
+        redrawAllGameItems();
         if (isPaused) {
         } else {
             repositionAllGameItems();
         }
-
-        redrawAllGameItems();
     }
 
     /* 
@@ -134,6 +140,23 @@ function runProgram() {
             console.log("down pressed");
         } if (keycode === KEY.RIGHT) {      // right
             console.log("right pressed");
+        }
+
+        /* ball controls */
+        if (cheatModeActivated) {
+            if (keycode === KEY.I) {        // up
+                ball.speedY = -5;
+                console.log("i pressed");
+            } if (keycode === KEY.J) {      // left
+                ball.speedX = -5;
+                console.log("j pressed");
+            } if (keycode === KEY.K) {      // down
+                ball.speedY = 5;
+                console.log("k pressed");
+            } if (keycode === KEY.L) {      // right
+                console.log("l pressed");
+                ball.speedX = 5;
+            }
         }
     }
 
@@ -180,6 +203,51 @@ function runProgram() {
             paddleRight.speedY = 0;
             console.log("right released");
         }
+
+        /* ball controls */
+        if (cheatModeActivated) {
+            if (keycode === KEY.I) {
+                ball.speedY = 0;
+                console.log("i released");
+            } if (keycode === KEY.J) {
+                ball.speedX = 0;
+                console.log("j released");
+            } if (keycode === KEY.K) {
+                ball.speedY = 0;
+                console.log("k released");
+            } if (keycode === KEY.L) {
+                console.log("l released");
+                ball.speedX = 0;
+            }
+        }
+    }
+
+    function handleCollisions() {
+        // update object borders
+        updateObjectBorders(paddleLeft);
+        updateObjectBorders(paddleRight);
+        updateObjectBorders(ball);
+
+        // keep the objects in the borders
+        enforceNoNoZone(paddleLeft);
+        enforceNoNoZone(paddleRight);
+        if (cheatModeActivated) {
+            enforceNoNoZone(ball);
+        } else {
+            bounceBall(ball);
+        }
+
+        // check if the ball is touching the left paddle
+        if (doCollide(ball, paddleLeft)) {
+            ball.speedX *= -1;
+            $(paddleLeft.id).css("background-color", "orange");
+        }
+
+        // check if the ball is touching the right paddle
+        if (doCollide(ball, paddleRight)) {
+            ball.speedX *= -1;
+            $(paddleRight.id).css("background-color", "orange");
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -194,6 +262,63 @@ function runProgram() {
         gameObject.speedY = speedY;
         gameObject.id = id;
         return gameObject;
+    }
+
+    function updateObjectBorders(obj) {
+        obj.leftX = obj.x;
+        obj.topY = obj.y;
+        obj.rightX = obj.x + $(obj.id).width();
+        obj.bottomY = obj.y + $(obj.id).height();
+    }
+
+    function enforceNoNoZone(obj) {
+        if (obj.leftX < BORDERS.LEFT) {
+            obj.x -= -5;
+            console.log(obj.id + " passed left border")
+        }
+        if (obj.topY < BORDERS.TOP) {
+            obj.y -= -5;
+            console.log(obj.id + " passed top border")
+        }
+        if (obj.rightX > BORDERS.RIGHT) {
+            obj.x -= 5;
+            console.log(obj.id + " passed right border")
+        }
+        if (obj.bottomY > BORDERS.BOTTOM) {
+            obj.y -= 5;
+            console.log(obj.id + " passed bottom border")
+        }
+    }
+
+    function bounceBall(obj) {
+        if (obj.leftX < BORDERS.LEFT) {
+            obj.speedX *= -1;
+            console.log(obj.id + " bounced left border")
+        }
+        if (obj.topY < BORDERS.TOP) {
+            obj.speedY *= -1;
+            console.log(obj.id + " bounced top border")
+        }
+        if (obj.rightX > BORDERS.RIGHT) {
+            obj.speedX *= -1;
+            console.log(obj.id + " bounced right border")
+        }
+        if (obj.bottomY > BORDERS.BOTTOM) {
+            obj.speedY *= -1;
+            console.log(obj.id + " bounced bottom border")
+        }
+    }
+
+    function doCollide(obj1, obj2) {
+        // return true if colliding, else, return false
+        if ((obj1.leftX < obj2.rightX &&
+            obj1.topY < obj2.bottomY) &&
+            (obj1.rightX > obj2.leftX &&
+                obj1.bottomY > obj2.topY)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     function repositionGameItem(gameItem) {
@@ -217,7 +342,7 @@ function runProgram() {
         redrawGameItem("#paddleRight", paddleRight);
         redrawGameItem("#ball", ball);
     }
-    
+
     var i = 1;
     function pauseGame() {
         if (pIsDown) {
@@ -243,9 +368,11 @@ function runProgram() {
     function activateCheatMode() {
         var answer = prompt("Password:");
         if (answer === "^^vv<><>ba") {
+            cheatModeActivated = true;
             alert("Cheat Mode Activated!");
         } else {
             alert("Wrong Password.");
+            cheatModeActivated = false;
         }
     }
 
