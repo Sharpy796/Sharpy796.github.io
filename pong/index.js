@@ -91,9 +91,7 @@ function runProgram() {
     by calling this function and executing the code inside.
     */
     function newFrame() {
-        if (!isPaused && !cheatModeActivated) {
-            ball.temporarySpeedX = ball.speedX;
-        }
+        updateTemporarySpeed();
         pauseGame();
         handleCollisions();
         redrawAllGameItems();
@@ -267,6 +265,12 @@ function runProgram() {
         gameObject.speedY = speedY;
         gameObject.id = id;
         return gameObject;
+    }
+
+    function updateTemporarySpeed() {
+        if (!isPaused && !cheatModeActivated) {
+            ball.temporarySpeedX = ball.speedX;
+        }
     }
 
     function updateObjectBorders(obj) {
