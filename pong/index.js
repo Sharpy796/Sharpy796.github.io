@@ -48,6 +48,7 @@ function runProgram() {
     var paddleRight = createGameObject(630, 180, 0, 0, "#paddleRight"); // player 2
 
     var ball = createGameObject(340, 210, -5, 0, "#ball");              // ball
+    ball.temporarySpeedX = ball.speedX;
 
     var pause = createGameObject(10, 10, 0, 0, "#cheatIcon");           // cheat icon
 
@@ -90,6 +91,13 @@ function runProgram() {
     by calling this function and executing the code inside.
     */
     function newFrame() {
+        if (!isPaused && !cheatModeActivated) {
+            ball.temporarySpeedX = ball.speedX;
+            $("#ball").css("background-color", "yellow");
+            if (ball.temporarySpeedX === 0) {
+                $("#ball").css("background-color", "red");
+            }
+        }
         pauseGame();
         handleCollisions();
         redrawAllGameItems();
@@ -144,6 +152,7 @@ function runProgram() {
 
         /* ball controls */
         if (cheatModeActivated) {
+            ball.speedX = 0;
             if (keycode === KEY.I) {        // up
                 ball.speedY = -5;
                 console.log("i pressed");
@@ -157,6 +166,8 @@ function runProgram() {
                 console.log("l pressed");
                 ball.speedX = 5;
             }
+        } else {
+            ball.speedX = ball.temporarySpeedX;
         }
     }
 
@@ -240,13 +251,11 @@ function runProgram() {
         // check if the ball is touching the left paddle
         if (doCollide(ball, paddleLeft)) {
             ball.speedX *= -1;
-            $(paddleLeft.id).css("background-color", "orange");
         }
 
         // check if the ball is touching the right paddle
         if (doCollide(ball, paddleRight)) {
             ball.speedX *= -1;
-            $(paddleRight.id).css("background-color", "orange");
         }
     }
 
@@ -306,6 +315,14 @@ function runProgram() {
         if (obj.bottomY > BORDERS.BOTTOM) {
             obj.speedY *= -1;
             console.log(obj.id + " bounced bottom border")
+        }
+    }
+
+    function cheatSpeed() {
+        if (cheatModeActivated) {
+            ball.speedX = 0;
+        } else {
+            ball.speedX = ball.temporarySpeedX;
         }
     }
 
