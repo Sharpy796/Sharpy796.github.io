@@ -93,10 +93,6 @@ function runProgram() {
     function newFrame() {
         if (!isPaused && !cheatModeActivated) {
             ball.temporarySpeedX = ball.speedX;
-            $("#ball").css("background-color", "yellow");
-            if (ball.temporarySpeedX === 0) {
-                $("#ball").css("background-color", "red");
-            }
         }
         pauseGame();
         handleCollisions();
