@@ -47,8 +47,9 @@ function runProgram() {
 
     var paddleRight = createGameObject(630, 180, 0, 0, "#paddleRight"); // player 2
 
-    var ball = createGameObject(340, 210, -5, 0, "#ball");              // ball
+    var ball = createGameObject(340, 210, -5, -2.5, "#ball");              // ball
     ball.temporarySpeedX = ball.speedX;
+    ball.temporarySpeedY = ball.speedY;
 
     var pause = createGameObject(10, 10, 0, 0, "#cheatIcon");           // cheat icon
 
@@ -147,6 +148,7 @@ function runProgram() {
         /* ball controls */
         if (cheatModeActivated) {
             ball.speedX = 0;
+            ball.speedY = 0;
             if (keycode === KEY.I) {        // up
                 ball.speedY = -5;
                 console.log("i pressed");
@@ -162,6 +164,7 @@ function runProgram() {
             }
         } else {
             ball.speedX = ball.temporarySpeedX;
+            ball.speedY = ball.temporarySpeedY
         }
     }
 
@@ -270,6 +273,7 @@ function runProgram() {
     function updateTemporarySpeed() {
         if (!isPaused && !cheatModeActivated) {
             ball.temporarySpeedX = ball.speedX;
+            ball.temporarySpeedY = ball.speedY;
         }
     }
 
@@ -315,14 +319,6 @@ function runProgram() {
         if (ball.bottomY > BORDERS.BOTTOM) {
             ball.speedY *= -1;
             console.log("ball bounced bottom border")
-        }
-    }
-
-    function cheatSpeed() {
-        if (cheatModeActivated) {
-            ball.speedX = 0;
-        } else {
-            ball.speedX = ball.temporarySpeedX;
         }
     }
 
