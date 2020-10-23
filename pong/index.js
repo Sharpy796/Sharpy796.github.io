@@ -12,8 +12,7 @@ function runProgram() {
     var BORDERS = {
         TOP: 0,
         LEFT: 0,
-        // BOTTOM: $("#board").height(),
-        BOTTOM: 440,
+        BOTTOM: $("#board").height(),
         RIGHT: $("#board").width(),
     }
     var KEY = {
@@ -78,9 +77,9 @@ function runProgram() {
 
     // one-time setup
     var interval = setInterval(newFrame, FRAMES_PER_SECOND_INTERVAL);   // execute newFrame every 0.0166 seconds (60 Frames per second)
-    $(document).on("keydown", handleKeyDown);   // listen for keydown events
-    $(document).on("keyup", handleKeyUp);       // listen for keyup events
-    $("#cheatIcon").on("click", activateCheatMode);       // listen for click events
+    $(document).on("keydown", handleKeyDown);       // listen for keydown events
+    $(document).on("keyup", handleKeyUp);           // listen for keyup events
+    $("#cheatIcon").on("click", activateCheatMode); // listen for click events
     $("#cheatIcon").hide();
 
     ////////////////////////////////////////////////////////////////////////////////
