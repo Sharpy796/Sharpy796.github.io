@@ -299,22 +299,22 @@ function runProgram() {
         }
     }
 
-    function bounceBall(obj) {
-        if (obj.leftX < BORDERS.LEFT) {
-            obj.speedX *= -1;
-            console.log(obj.id + " bounced left border")
+    function bounceBall() {
+        if (ball.leftX < BORDERS.LEFT) {
+            ball.speedX *= -1;
+            console.log("ball bounced left border")
         }
-        if (obj.topY < BORDERS.TOP) {
-            obj.speedY *= -1;
-            console.log(obj.id + " bounced top border")
+        if (ball.topY < BORDERS.TOP) {
+            ball.speedY *= -1;
+            console.log("ball bounced top border")
         }
-        if (obj.rightX > BORDERS.RIGHT) {
-            obj.speedX *= -1;
-            console.log(obj.id + " bounced right border")
+        if (ball.rightX > BORDERS.RIGHT) {
+            ball.speedX *= -1;
+            console.log("ball bounced right border")
         }
-        if (obj.bottomY > BORDERS.BOTTOM) {
-            obj.speedY *= -1;
-            console.log(obj.id + " bounced bottom border")
+        if (ball.bottomY > BORDERS.BOTTOM) {
+            ball.speedY *= -1;
+            console.log("ball bounced bottom border")
         }
     }
 
