@@ -11,11 +11,25 @@ body {
   position: relative;
 }
 
-#gameItem {
-  background-color: teal;
-  width: 50px;
-  height: 50px;
+.gameItem {
+  width: 20px;
+  height: 20px;
   position: absolute;
-/*   left: 100px; */  /* Uncomment if you want to set a "starting" position */
-/*   top: 100px;  */  /* Uncomment if you want to set a "starting" position */
 }
+
+#head {
+  background-color: green;
+  left: 20px;
+  top: 20px;
+}
+
+#tail {
+  background-color: lightgreen;
+  left: 40px;
+  top: 20px;
+}
+ #apple {
+  background-color: red;
+  left: 100px;
+  top: 100px;
+ }
