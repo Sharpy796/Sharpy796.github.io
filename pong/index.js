@@ -392,27 +392,26 @@ function runProgram() {
     }
 
     function resetGame() {
-        paddleLeft.x = x;
-        paddleLeft.y = y;
-        paddleLeft.speedX = speedX;
-        paddleLeft.speedY = speedY;
-        paddleLeft.score = score;
-        paddleLeft.id = id;
+        // paddleLeft.x = x;
+        // paddleLeft.y = y;
+        // paddleLeft.speedX = speedX;
+        // paddleLeft.speedY = speedY;
+        // paddleLeft.score = score;
+        // paddleLeft.id = id;
 
-        paddleRight.x = x;
-        paddleRight.y = y;
-        paddleRight.speedX = speedX;
-        paddleRight.speedY = speedY;
-        paddleRight.score = score;
-        paddleRight.id = id;
+        // paddleRight.x = x;
+        // paddleRight.y = y;
+        // paddleRight.speedX = speedX;
+        // paddleRight.speedY = speedY;
+        // paddleRight.score = score;
+        // paddleRight.id = id;
 
-        ball.x = x;
-        ball.y = y;
-        ball.speedX = speedX;
-        ball.speedY = speedY;
-        ball.score = score;
-        ball.id = id;
-
+        // ball.x = x;
+        // ball.y = y;
+        // ball.speedX = speedX;
+        // ball.speedY = speedY;
+        // ball.score = score;
+        // ball.id = id;
     }
 
     function endGame() {
