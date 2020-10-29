@@ -42,19 +42,17 @@ function runProgram() {
 
     // Game Item Objects
 
-    var paddleLeft = createGameObject(50, 180, 0, 0, "#paddleLeft");    // player 1
+    var paddleLeft = createGameObject(50, 180, 0, 0, 0, "#paddleLeft");     // player 1
 
-    var paddleRight = createGameObject(630, 180, 0, 0, "#paddleRight"); // player 2
+    var paddleRight = createGameObject(630, 180, 0, 0, 0, "#paddleRight");  // player 2
 
-    var ball = createGameObject(340, 210, -5, -2.5, "#ball");              // ball
+    var ball = createGameObject(340, 210, -5, -2.5, 0, "#ball");            // ball
     ball.temporarySpeedX = ball.speedX;
     ball.temporarySpeedY = ball.speedY;
 
-    var pause = createGameObject(10, 10, 0, 0, "#cheatIcon");           // cheat icon
+    var pause = createGameObject(10, 10, 0, 0, "#cheatIcon");               // cheat icon
 
     var score = {
-        p1: 0,
-        p2: 0,
         bounced: 0,
     }
 
@@ -247,11 +245,15 @@ function runProgram() {
         // check if the ball is touching the left paddle
         if (doCollide(ball, paddleLeft)) {
             ball.speedX *= -1;
+            score.bounced += 1;
+            console.log("bounced p1");
         }
 
         // check if the ball is touching the right paddle
         if (doCollide(ball, paddleRight)) {
             ball.speedX *= -1;
+            score.bounced += 1;
+            console.log("bounced p2");
         }
     }
 
@@ -259,12 +261,13 @@ function runProgram() {
     ////////////////////////// HELPER FUNCTIONS ////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
 
-    function createGameObject(x, y, speedX, speedY, id) {
+    function createGameObject(x, y, speedX, speedY, score, id) {
         var gameObject = {};
         gameObject.x = x;
         gameObject.y = y;
         gameObject.speedX = speedX;
         gameObject.speedY = speedY;
+        gameObject.score = score;
         gameObject.id = id;
         return gameObject;
     }
