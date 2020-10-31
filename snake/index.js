@@ -8,7 +8,7 @@ function runProgram() {
     ////////////////////////////////////////////////////////////////////////////////
 
     // Constant Variables
-    var FRAMES_PER_SECOND_INTERVAL = 1000 / 60;
+    var FRAMES_PER_SECOND_INTERVAL = 1000 / 10;
     var BORDERS = {
         TOP: 0,
         LEFT: 0,
@@ -16,6 +16,10 @@ function runProgram() {
         RIGHT: $("#board").width(),
     }
     var KEY = {
+        /* general controls */
+        P: 80,      // pause
+
+        /* player controls */
         UP: 38,     // up
         LEFT: 37,   // left
         DOWN: 40,   // down
@@ -35,8 +39,11 @@ function runProgram() {
 
 
     // one-time setup
-    var interval = setInterval(newFrame, FRAMES_PER_SECOND_INTERVAL);   // execute newFrame every 0.0166 seconds (60 Frames per second)
-    $(document).on('keydown', handleKeyDown);                           // change 'eventType' to the type of event you want to handle
+    var interval = setInterval(newFrame, FRAMES_PER_SECOND_INTERVAL);   // execute newFrame every 0.01 seconds (10 Frames per second)
+    $(document).on('keydown', handleKeyDown);
+
+    var isPaused = false;
+    var pIsDown = false;
 
     ////////////////////////////////////////////////////////////////////////////////
     ///////////////////////// CORE LOGIC ///////////////////////////////////////////
@@ -47,7 +54,9 @@ function runProgram() {
     by calling this function and executing the code inside.
     */
     function newFrame() {
-        repositionAllGameItems();
+        if (!isPaused) {
+            repositionAllGameItems();
+        }
         redrawAllGameItems();
 
     }
@@ -59,14 +68,40 @@ function runProgram() {
         var keycode = event.which;
         console.log(keycode);
 
+        /* general controls */
+        if (keycode === KEY.P) {
+            pIsDown = true;
+            console.log("p pressed");
+        }
+
+        /* player controls */
         if (keycode === KEY.UP) {           // up
+            head.speedX = 0;
+            head.speedY = -1;
             console.log("up pressed");
         } if (keycode === KEY.LEFT) {       // left
+            head.speedX = -1;
+            head.speedY = 0;
             console.log("left pressed");
         } if (keycode === KEY.DOWN) {       // down
+            head.speedX = 0;
+            head.speedY = 1;
             console.log("down pressed");
         } if (keycode === KEY.RIGHT) {      // right
+            head.speedX = 1;
+            head.speedY = 0;
             console.log("right pressed");
+        }
+    }
+
+    function handleKeyUp(event) {
+        var keycode = event.which;
+        console.log(keycode);
+
+        /* general controls */
+        if (keycode === KEY.P) {
+            pIsDown = false;
+            console.log("p released");
         }
     }
 
@@ -86,10 +121,12 @@ function runProgram() {
         gameObject.id = id;
         return gameObject;
     }
-    
+
     function repositionGameItem(gameItem) {
-        gameItem.x += gameItem.speedX;
-        gameItem.y += gameItem.speedY;
+        gameItem.row += gameItem.speedX;
+        gameItem.column += gameItem.speedY;
+        gameItem.x = gameItem.row * 20;
+        gameItem.y = gameItem.column * 20;
     }
 
     function redrawGameItem(id, gameItem) {
@@ -103,6 +140,26 @@ function runProgram() {
 
     function redrawAllGameItems() {
         redrawGameItem(head.id, head);
+    }
+
+    var num = 1;
+    function pauseGame() {
+        if (pIsDown) {
+            if (num < 2) {
+                if (isPaused) {
+                    isPaused = false;
+                    $(head.id).css("background-color", "green");
+                    console.log("unpause");
+                } else {
+                    isPaused = true;
+                    $(head.id).css("background-color", "fuchsia");
+                    console.log("pause");
+                }
+            }
+            num += 1;
+        } else {
+            num = 1;
+        }
     }
 
     function endGame() {

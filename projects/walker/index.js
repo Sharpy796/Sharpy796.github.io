@@ -43,17 +43,27 @@ function runProgram() {
     var playerOne = {
         "positionX": 290,
         "positionY": 100,
+        "speed": {
+            "up": 0,
+            "left": 0,
+            "down": 0,
+            "right": 0,
+        },
         "speedX": 0,
         "speedY": 0,
-        "speed": 0,
     }
 
     var playerTwo = {
         "positionX": 100,
         "positionY": 100,
+        "speed": {
+            "up": 0,
+            "left": 0,
+            "down": 0,
+            "right": 0,
+        },
         "speedX": 0,
         "speedY": 0,
-        "speed": 0,
     }
 
     var P1IsIt = false;
@@ -73,9 +83,10 @@ function runProgram() {
     by calling this function and executing the code inside.
     */
     function newFrame() {
-        repositionGameItem();   // moves the players' positions
+        handleSpeed();          // updates the players' speeds
+        repositionGameItem();   // updates the players' positions
         updatePlayerBorders();  // updates the players' borders
-        handleCollisions();     // checks to see if the players are out of boudes, and corrects it if they are
+        handleCollisions();     // checks to see if the players are out of bounds, and corrects it if they are
         whoIsIt();              // checks to see if the players are colliding with each other, and changes who is "it"
         redrawGameItem();       // draws all the new changes for the users to see
     }
@@ -84,68 +95,72 @@ function runProgram() {
     Called in response to events.
     */
     function handleKeyDown(event) {
+        var keycode = event.which;
+        console.log(keycode);
 
         ///// PLAYER ONE KEYDOWNS \\\\\
-        if (event.which === KEY.LEFT) {
-            console.log("left pressed");
-            playerOne.speedX = -5;
-        } if (event.which === KEY.UP) {
+        if (keycode === KEY.UP) {           // up
             console.log("up pressed");
-            playerOne.speedY = -5;
-        } if (event.which === KEY.RIGHT) {
-            console.log("right pressed");
-            playerOne.speedX = 5;
-        } if (event.which === KEY.DOWN) {
+            playerOne.speed.up = -5;
+        } if (keycode === KEY.LEFT) {       // left
+            console.log("left pressed");
+            playerOne.speed.left = -5;
+        } if (keycode === KEY.DOWN) {       // down
             console.log("down pressed");
-            playerOne.speedY = 5;
+            playerOne.speed.down = 5;
+        } if (keycode === KEY.RIGHT) {      // right
+            console.log("right pressed");
+            playerOne.speed.right = 5;
         }
 
         ///// PLAYER TWO KEYDOWNS \\\\\
-        if (event.which === KEY.A) {
-            console.log("a pressed");
-            playerTwo.speedX = -5;
-        } if (event.which === KEY.W) {
+        if (keycode === KEY.W) {            // up
             console.log("w pressed");
-            playerTwo.speedY = -5;
-        } if (event.which === KEY.D) {
-            console.log("d pressed");
-            playerTwo.speedX = 5;
-        } if (event.which === KEY.S) {
+            playerTwo.speed.up = -5;
+        } if (keycode === KEY.A) {          // left
+            console.log("a pressed");
+            playerTwo.speed.left = -5;
+        } if (keycode === KEY.S) {          // down
             console.log("s pressed");
-            playerTwo.speedY = 5;
+            playerTwo.speed.down = 5;
+        } if (keycode === KEY.D) {          // right
+            console.log("d pressed");
+            playerTwo.speed.right = 5;
         }
     }
 
     function handleKeyUp(event) {
+        var keycode = event.which;
+        console.log(keycode);
 
         ///// PLAYER ONE KEYUPS \\\\\
-        if (event.which === KEY.LEFT) {
-            console.log("left released");
-            playerOne.speedX = 0;
-        } if (event.which === KEY.UP) {
+        if (keycode === KEY.UP) {           // up
             console.log("up released");
-            playerOne.speedY = 0;
-        } if (event.which === KEY.RIGHT) {
-            console.log("right released");
-            playerOne.speedX = 0;
-        } if (event.which === KEY.DOWN) {
+            playerOne.speed.up = 0;
+        } if (keycode === KEY.LEFT) {       // left
+            console.log("left released");
+            playerOne.speed.left = 0;
+        } if (keycode === KEY.DOWN) {       // down
             console.log("down released");
-            playerOne.speedY = 0;
+            playerOne.speed.down = 0;
+        } if (keycode === KEY.RIGHT) {      // right
+            console.log("right released");
+            playerOne.speed.right = 0;
         }
 
         ///// PLAYER TWO KEYUPS \\\\\
-        if (event.which === KEY.A) {
+        if (keycode === KEY.W) {            // up
+            console.log("w released");
+            playerTwo.speed.up = 0;
+        } if (keycode === KEY.A) {          // left
             console.log("a released");
-            playerTwo.speedX = 0;
-        } if (event.which === KEY.W) {
-            console.log("up released");
-            playerTwo.speedY = 0;
-        } if (event.which === KEY.D) {
-            console.log("d released");
-            playerTwo.speedX = 0;
-        } if (event.which === KEY.S) {
+            playerTwo.speed.left = 0;
+        } if (keycode === KEY.S) {          // down
             console.log("s released");
-            playerTwo.speedY = 0;
+            playerTwo.speed.down = 0;
+        } if (keycode === KEY.D) {          // right
+            console.log("d released");
+            playerTwo.speed.right = 0;
         }
     }
 
@@ -236,6 +251,16 @@ function runProgram() {
 
     }
 
+    function handleSpeed() {
+        // p1 speed
+        playerOne.speedX = playerOne.speed.left + playerOne.speed.right;
+        playerOne.speedY = playerOne.speed.up + playerOne.speed.down;
+
+        // p2 speed
+        playerTwo.speedX = playerTwo.speed.left + playerTwo.speed.right;
+        playerTwo.speedY = playerTwo.speed.up + playerTwo.speed.down;
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     ////////////////////////// HELPER FUNCTIONS ////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
@@ -249,7 +274,7 @@ function runProgram() {
         $(document).off();
     }
 
-function repositionGameItem() {
+    function repositionGameItem() {
         playerOne.positionX += playerOne.speedX; // update the position of the box along the x-axis
         playerOne.positionY += playerOne.speedY; // update the position of the box along the y-axis
         playerTwo.positionX += playerTwo.speedX; // update the position of the box along the x-axis
