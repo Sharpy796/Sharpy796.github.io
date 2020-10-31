@@ -47,8 +47,10 @@ function runProgram() {
     var paddleRight = createGameObject(630, 180, 0, 0, 0, "#paddleRight");  // player 2
 
     var ball = createGameObject(340, 210, -5, -2.5, 0, "#ball");            // ball
-    ball.temporarySpeedX = ball.speedX;
-    ball.temporarySpeedY = ball.speedY;
+    // ball.temporarySpeed.up = ball.speed.up;
+    // ball.temporarySpeed.left = ball.speed.left;
+    // ball.temporarySpeed.down = ball.speed.down;
+    // ball.temporarySpeed.right = ball.speed.right;
 
     var pause = createGameObject(10, 10, 0, 0, null, "#cheatIcon");               // cheat icon
 
@@ -90,6 +92,7 @@ function runProgram() {
         handleCollisions();
         redrawAllGameItems();
         if (!isPaused) {
+            handleSpeed();
             repositionAllGameItems();
         }
     }
@@ -113,12 +116,12 @@ function runProgram() {
 
         /* P1 controls */
         if (keycode === KEY.W) {            // up
-            paddleLeft.speedY = -5;
+            paddleLeft.speed.up = -5;
             console.log("w pressed");
         } if (keycode === KEY.A) {          // left
             console.log("a pressed");
         } if (keycode === KEY.S) {          // down
-            paddleLeft.speedY = 5;
+            paddleLeft.speed.down = 5;
             console.log("s pressed");
         } if (keycode === KEY.D) {          // right
             console.log("d pressed");
@@ -126,12 +129,12 @@ function runProgram() {
 
         /* P2 controls */
         if (keycode === KEY.UP) {           // up
-            paddleRight.speedY = -5;
+            paddleRight.speed.up = -5;
             console.log("up pressed");
         } if (keycode === KEY.LEFT) {       // left
             console.log("left pressed");
         } if (keycode === KEY.DOWN) {       // down
-            paddleRight.speedY = 5;
+            paddleRight.speed.down = 5;
             console.log("down pressed");
         } if (keycode === KEY.RIGHT) {      // right
             console.log("right pressed");
@@ -140,26 +143,30 @@ function runProgram() {
         /* ball controls */
         if (cheatModeActivated) {
             if (firstTime) {
-                ball.speedX = 0;
-                ball.speedY = 0;
+                ball.speed.up = 0;
+                ball.speed.left = 0;
+                ball.speed.down = 0;
+                ball.speed.right = 0;
             }
             firstTime = false;
             if (keycode === KEY.U) {        // up
-                ball.speedY = -5;
+                ball.speed.up = -5;
                 console.log("u pressed");
             } if (keycode === KEY.H) {      // left
-                ball.speedX = -5;
+                ball.speed.left = -5;
                 console.log("h pressed");
             } if (keycode === KEY.J) {      // down
-                ball.speedY = 5;
+                ball.speed.down = 5;
                 console.log("j pressed");
             } if (keycode === KEY.K) {      // right
-                ball.speedX = 5;
+                ball.speed.right = 5;
                 console.log("k pressed");
             }
         } else {
-            ball.speedX = ball.temporarySpeedX;
-            ball.speedY = ball.temporarySpeedY;
+            ball.speed.up = ball.temporarySpeed.up;
+            ball.speed.left = ball.temporarySpeed.left;
+            ball.speed.down = ball.temporarySpeed.down;
+            ball.speed.right = ball.temporarySpeed.right;
             firstTime = true;
         }
     }
@@ -180,50 +187,64 @@ function runProgram() {
 
         /* P1 controls */
         if (event.which === KEY.W) {
-            paddleLeft.speedY = 0;
+            paddleLeft.speed.up = 0;
             console.log("w released");
         } if (keycode === KEY.A) {
-            paddleLeft.speedX = 0;
+            paddleLeft.speed.left = 0;
             console.log("a released");
         } if (keycode === KEY.S) {
-            paddleLeft.speedY = 0;
+            paddleLeft.speed.down = 0;
             console.log("s released");
         } if (keycode === KEY.D) {
-            paddleLeft.speedX = 0;
+            paddleLeft.speed.right = 0;
             console.log("d released");
         }
 
         /* P2 controls */
         if (keycode === KEY.UP) {
-            paddleRight.speedY = 0;
+            paddleRight.speed.up = 0;
             console.log("up released");
         } if (keycode === KEY.LEFT) {
-            paddleRight.speedX = 0;
+            paddleRight.speed.left = 0;
             console.log("left released");
         } if (keycode === KEY.DOWN) {
-            paddleRight.speedY = 0;
+            paddleRight.speed.down = 0;
             console.log("down released");
         } if (keycode === KEY.RIGHT) {
-            paddleRight.speedX = 0;
+            paddleRight.speed.right = 0;
             console.log("right released");
         }
 
         /* ball controls */
         if (cheatModeActivated) {
             if (keycode === KEY.U) {
-                ball.speedY = 0;
+                ball.speed.up = 0;
                 console.log("u released");
             } if (keycode === KEY.H) {
-                ball.speedX = 0;
+                ball.speed.left = 0;
                 console.log("h released");
             } if (keycode === KEY.J) {
-                ball.speedY = 0;
+                ball.speed.down = 0;
                 console.log("j released");
             } if (keycode === KEY.K) {
-                ball.speedX = 0;
+                ball.speed.right = 0;
                 console.log("k released");
             }
         }
+    }
+
+    function handleSpeed() {
+        // p1 speed
+        paddleLeft.speedX = paddleLeft.speed.left + paddleLeft.speed.right;
+        paddleLeft.speedY = paddleLeft.speed.up + paddleLeft.speed.down;
+
+        // p2 speed
+        paddleRight.speedX = paddleRight.speed.left + paddleRight.speed.right;
+        paddleRight.speedY = paddleRight.speed.up + paddleRight.speed.down;
+
+        // ball speed
+        ball.speedX = ball.speed.left + ball.speed.right;
+        ball.speedY = ball.speed.up + ball.speed.down;
     }
 
     function handleCollisions() {
@@ -264,17 +285,41 @@ function runProgram() {
         var gameObject = {};
         gameObject.x = x;
         gameObject.y = y;
-        gameObject.speedX = speedX;
-        gameObject.speedY = speedY;
+        gameObject.speed = {}
+        if (speedX < 0) {
+            gameObject.speed.left = speedX;
+            gameObject.speed.right = 0;
+        } else {
+            gameObject.speed.left = 0;
+            gameObject.speed.right = speedX;
+        }
+        if (speedY < 0) {
+            gameObject.speed.up = speedY;
+            gameObject.speed.down = 0;
+        } else {
+            gameObject.speed.up = 0;
+            gameObject.speed.down = speedY;
+        }
+        gameObject.speedX = gameObject.speed.left + gameObject.speed.right;
+        gameObject.speedY = gameObject.speed.up + gameObject.speed.down;
+        gameObject.temporarySpeed = {}
         gameObject.score = score;
         gameObject.id = id;
+        if (gameObject.id === "#ball") {
+            gameObject.temporarySpeed.up = gameObject.speed.up;
+            gameObject.temporarySpeed.left = gameObject.speed.left;
+            gameObject.temporarySpeed.down = gameObject.speed.down;
+            gameObject.temporarySpeed.right = gameObject.speed.right;
+        }
         return gameObject;
     }
 
     function updateTemporarySpeed() {
         if (!isPaused && !cheatModeActivated) {
-            ball.temporarySpeedX = ball.speedX;
-            ball.temporarySpeedY = ball.speedY;
+            ball.temporarySpeed.up = ball.speed.up;
+            ball.temporarySpeed.left = ball.speed.left;
+            ball.temporarySpeed.down = ball.speed.down;
+            ball.temporarySpeed.right = ball.speed.right;
         }
     }
 
