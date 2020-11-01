@@ -47,12 +47,8 @@ function runProgram() {
     var paddleRight = createGameObject(630, 180, 0, 0, 0, "#paddleRight");  // player 2
 
     var ball = createGameObject(340, 210, -5, -2.5, 0, "#ball");            // ball
-    // ball.temporarySpeed.up = ball.speed.up;
-    // ball.temporarySpeed.left = ball.speed.left;
-    // ball.temporarySpeed.down = ball.speed.down;
-    // ball.temporarySpeed.right = ball.speed.right;
 
-    var pause = createGameObject(10, 10, 0, 0, null, "#cheatIcon");               // cheat icon
+    var pause = createGameObject(10, 10, 0, 0, null, "#cheatIcon");         // cheat icon
 
     var score = {
         bounced: 0,
@@ -273,7 +269,8 @@ function runProgram() {
             ball.speed.right = 0;
             console.log("ball bounced left paddle border");
         }
-        if (whichBorder(ball, paddle) === "right") {;
+        if (whichBorder(ball, paddle) === "right") {
+            ;
             ball.speed.left = 0;
             ball.speed.right = 5;
             console.log("ball bounced right paddle border");
@@ -428,10 +425,10 @@ function runProgram() {
         redrawGameItem("#ball", ball);
     }
 
-    var i = 1;
+    var num = 1;
     function pauseGame() {
         if (pIsDown) {
-            if (i < 2) {
+            if (num < 2) {
                 if (isPaused) {
                     isPaused = false;
                     $("#ball").css("background-color", "fuchsia");
@@ -444,9 +441,9 @@ function runProgram() {
                     console.log("pause");
                 }
             }
-            i += 1;
+            num += 1;
         } else {
-            i = 1;
+            num = 1;
         }
     }
 

@@ -31,7 +31,7 @@ function runProgram() {
     var head = createGameObject(1, 1, 0, 0, 0, '#head');
     // var tail = createGameObject(2, 1, 0, 0, 0, '#tail');
 
-    var apple = createGameObject(5, 5, 0, 0, 0, '#apple');
+    var apple = createGameObject(5, 5, 0, 0, null, '#apple');
 
     var snakeArray = [];
     snakeArray[0] = head;
