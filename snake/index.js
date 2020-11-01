@@ -54,6 +54,7 @@ function runProgram() {
     by calling this function and executing the code inside.
     */
     function newFrame() {
+        pauseGame();
         if (!isPaused) {
             repositionAllGameItems();
         }
