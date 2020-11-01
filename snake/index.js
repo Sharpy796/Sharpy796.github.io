@@ -41,6 +41,7 @@ function runProgram() {
     // one-time setup
     var interval = setInterval(newFrame, FRAMES_PER_SECOND_INTERVAL);   // execute newFrame every 0.01 seconds (10 Frames per second)
     $(document).on('keydown', handleKeyDown);
+    $(document).on('keyup', handleKeyUp);
 
     var isPaused = false;
     var pIsDown = false;
@@ -76,22 +77,24 @@ function runProgram() {
         }
 
         /* player controls */
-        if (keycode === KEY.UP) {           // up
-            head.speedX = 0;
-            head.speedY = -1;
-            console.log("up pressed");
-        } if (keycode === KEY.LEFT) {       // left
-            head.speedX = -1;
-            head.speedY = 0;
-            console.log("left pressed");
-        } if (keycode === KEY.DOWN) {       // down
-            head.speedX = 0;
-            head.speedY = 1;
-            console.log("down pressed");
-        } if (keycode === KEY.RIGHT) {      // right
-            head.speedX = 1;
-            head.speedY = 0;
-            console.log("right pressed");
+        if (!isPaused) {
+            if (keycode === KEY.UP) {           // up
+                head.speedX = 0;
+                head.speedY = -1;
+                console.log("up pressed");
+            } if (keycode === KEY.LEFT) {       // left
+                head.speedX = -1;
+                head.speedY = 0;
+                console.log("left pressed");
+            } if (keycode === KEY.DOWN) {       // down
+                head.speedX = 0;
+                head.speedY = 1;
+                console.log("down pressed");
+            } if (keycode === KEY.RIGHT) {      // right
+                head.speedX = 1;
+                head.speedY = 0;
+                console.log("right pressed");
+            }
         }
     }
 
