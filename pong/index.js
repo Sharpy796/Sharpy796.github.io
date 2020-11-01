@@ -116,7 +116,7 @@ function runProgram() {
 
         /* P1 controls */
         if (keycode === KEY.W) {            // up
-            paddleLeft.speed.up = -5;
+            paddleLeft.speed.up = 5;
             console.log("w pressed");
         } if (keycode === KEY.A) {          // left
             console.log("a pressed");
@@ -129,7 +129,7 @@ function runProgram() {
 
         /* P2 controls */
         if (keycode === KEY.UP) {           // up
-            paddleRight.speed.up = -5;
+            paddleRight.speed.up = 5;
             console.log("up pressed");
         } if (keycode === KEY.LEFT) {       // left
             console.log("left pressed");
@@ -150,10 +150,10 @@ function runProgram() {
             }
             firstTime = false;
             if (keycode === KEY.U) {        // up
-                ball.speed.up = -5;
+                ball.speed.up = 5;
                 console.log("u pressed");
             } if (keycode === KEY.H) {      // left
-                ball.speed.left = -5;
+                ball.speed.left = 5;
                 console.log("h pressed");
             } if (keycode === KEY.J) {      // down
                 ball.speed.down = 5;
@@ -235,16 +235,16 @@ function runProgram() {
 
     function handleSpeed() {
         // p1 speed
-        paddleLeft.speedX = paddleLeft.speed.left + paddleLeft.speed.right;
-        paddleLeft.speedY = paddleLeft.speed.up + paddleLeft.speed.down;
+        paddleLeft.speedX = paddleLeft.speed.right - paddleLeft.speed.left;
+        paddleLeft.speedY = paddleLeft.speed.down - paddleLeft.speed.up;
 
         // p2 speed
-        paddleRight.speedX = paddleRight.speed.left + paddleRight.speed.right;
-        paddleRight.speedY = paddleRight.speed.up + paddleRight.speed.down;
+        paddleRight.speedX = paddleRight.speed.right - paddleRight.speed.left;
+        paddleRight.speedY = paddleRight.speed.down - paddleRight.speed.up;
 
         // ball speed
-        ball.speedX = ball.speed.left + ball.speed.right;
-        ball.speedY = ball.speed.up + ball.speed.down;
+        ball.speedX = ball.speed.right - ball.speed.left;
+        ball.speedY = ball.speed.down - ball.speed.up;
     }
 
     function handleCollisions() {
@@ -262,19 +262,30 @@ function runProgram() {
             bounceBall(ball);
         }
 
-        // check if the ball is touching the left paddle
-        if (doCollide(ball, paddleLeft)) {
-            ball.speedX *= -1;
-            score.bounced += 1;
-            console.log("bounced p1");
-        }
+        // check if the ball is touching the paddles
+        handlePaddleCollisions(paddleLeft);     // left paddle
+        handlePaddleCollisions(paddleRight);    // right paddle
+    }
 
-        // check if the ball is touching the right paddle
-        if (doCollide(ball, paddleRight)) {
-            ball.speedX *= -1;
-            score.bounced += 1;
-            console.log("bounced p2");
+    function handlePaddleCollisions(paddle) {
+        if (whichBorder(ball, paddle) === "left") {
+            ball.speed.left = 5;
+            ball.speed.right = 0;
+            console.log("ball bounced left paddle border");
         }
+        if (whichBorder(ball, paddle) === "right") {;
+            ball.speed.left = 0;
+            ball.speed.right = 5;
+            console.log("ball bounced right paddle border");
+        }
+        if (paddle === paddleLeft) {
+            console.log("ball bounced p1");
+        } else if (paddle === paddleRight) {
+            console.log("ball bounced p2");
+        } else {
+            console.log("ball bounced ??");
+        }
+        score.bounced++;
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -287,14 +298,14 @@ function runProgram() {
         gameObject.y = y;
         gameObject.speed = {}
         if (speedX < 0) {
-            gameObject.speed.left = speedX;
+            gameObject.speed.left = -speedX;
             gameObject.speed.right = 0;
         } else {
             gameObject.speed.left = 0;
             gameObject.speed.right = speedX;
         }
         if (speedY < 0) {
-            gameObject.speed.up = speedY;
+            gameObject.speed.up = -speedY;
             gameObject.speed.down = 0;
         } else {
             gameObject.speed.up = 0;
@@ -351,19 +362,23 @@ function runProgram() {
 
     function bounceBall() {
         if (ball.leftX < BORDERS.LEFT) {
-            ball.speedX *= -1;
+            ball.speed.right = ball.speed.left;
+            ball.speed.left = 0;
             console.log("ball bounced left border")
         }
         if (ball.topY < BORDERS.TOP) {
-            ball.speedY *= -1;
+            ball.speed.down = ball.speed.up;
+            ball.speed.up = 0;
             console.log("ball bounced top border")
         }
         if (ball.rightX > BORDERS.RIGHT) {
-            ball.speedX *= -1;
+            ball.speed.left = ball.speed.right;
+            ball.speed.right = 0;
             console.log("ball bounced right border")
         }
         if (ball.bottomY > BORDERS.BOTTOM) {
-            ball.speedY *= -1;
+            ball.speed.up = ball.speed.down;
+            ball.speed.down = 0;
             console.log("ball bounced bottom border")
         }
     }
@@ -377,6 +392,17 @@ function runProgram() {
             return true;
         } else {
             return false;
+        }
+    }
+
+    function whichBorder(obj1, obj2) {
+        if ((obj1.leftX < obj2.rightX && obj1.rightX > (obj2.leftX + $(obj2.id).width() / 2)) &&    // left border is in the right border and the right border in halfway in the left border
+            (obj1.topY < obj2.bottomY && obj1.bottomY > obj2.topY)) {                               // and the top and bottom borders are between the other's top and bottom borders
+            return "right";
+        }
+        if ((obj1.rightX > obj2.leftX && obj1.leftX < (obj2.rightX - $(obj2.id).width() / 2)) &&    // right border is in the left border
+            (obj1.topY < obj2.bottomY && obj1.bottomY > obj2.topY)) {                               // and the top and bottom borders are between the other's top and bottom borders
+            return "left";
         }
     }
 
@@ -427,8 +453,15 @@ function runProgram() {
     function activateCheatMode() {
         var answer = prompt("Password:");
         if (answer === "^^vv<><>ba") {
+            if (cheatModeActivated) {
+                alert("Cheat Mode is already activated.\nType anything but the password to deactivate it.");
+            } else {
+                alert("Cheat Mode Activated!\nUse these controls to move the ball:\nU: Up\nH: Left\nJ: Down\nK: Right\nType anything but the password to deactivate Cheat Mode.");
+            }
             cheatModeActivated = true;
-            alert("Cheat Mode Activated!");
+        } else if (cheatModeActivated) {
+            alert("Cheat Mode Deactivated");
+            cheatModeActivated = false;
         } else {
             alert("Wrong Password.");
             cheatModeActivated = false;
