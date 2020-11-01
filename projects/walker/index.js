@@ -66,13 +66,15 @@ function runProgram() {
         "speedY": 0,
     }
 
-    var P1IsIt = false;
-    var i = 1;
-
     // one-time setup
     var interval = setInterval(newFrame, FRAMES_PER_SECOND_INTERVAL);   // execute newFrame every 0.0166 seconds (60 Frames per second)
     $(document).on("keydown", handleKeyDown);
     $(document).on("keyup", handleKeyUp);
+
+    var P1IsIt = false;
+    var i = 1;
+
+    alert("Welcome to Walker!\nP1 Controls: W A S D\nP2 Controls: Up Down Left Right")
 
     ////////////////////////////////////////////////////////////////////////////////
     ///////////////////////// CORE LOGIC ///////////////////////////////////////////
