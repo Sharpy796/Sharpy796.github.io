@@ -408,9 +408,9 @@ function runProgram() {
         gameItem.y += gameItem.speedY;
     }
 
-    function redrawGameItem(id, gameItem) {
-        $(id).css("left", gameItem.x);
-        $(id).css("top", gameItem.y);
+    function redrawGameItem(gameItem) {
+        $(gameItem.id).css("left", gameItem.x);
+        $(gameItem.id).css("top", gameItem.y);
     }
 
     function repositionAllGameItems() {
@@ -420,9 +420,9 @@ function runProgram() {
     }
 
     function redrawAllGameItems() {
-        redrawGameItem("#paddleLeft", paddleLeft);
-        redrawGameItem("#paddleRight", paddleRight);
-        redrawGameItem("#ball", ball);
+        redrawGameItem(paddleLeft);
+        redrawGameItem(paddleRight);
+        redrawGameItem(ball);
     }
 
     var num = 1;

@@ -72,7 +72,7 @@ function runProgram() {
         /* general controls */
         if (keycode === KEY.P) {
             pIsDown = true;
-            console.log("p pressed");
+            console.log("p pressed");       // pause
         }
 
         /* player controls */
@@ -130,9 +130,9 @@ function runProgram() {
         gameItem.y = gameItem.column * 20;
     }
 
-    function redrawGameItem(id, gameItem) {
-        $(id).css("left", gameItem.x);
-        $(id).css("top", gameItem.y);
+    function redrawGameItem(gameItem) {
+        $(gameItem.id).css("left", gameItem.x);
+        $(gameItem.id).css("top", gameItem.y);
     }
 
     function repositionAllGameItems() {
@@ -140,7 +140,7 @@ function runProgram() {
     }
 
     function redrawAllGameItems() {
-        redrawGameItem(head.id, head);
+        redrawGameItem(head);
     }
 
     var num = 1;
