@@ -29,13 +29,13 @@ function runProgram() {
     // Game Item Objects
 
     var head = createGameObject(1, 1, 0, 0, 0, '#head');
-    // var tail = createGameObject(2, 1, 0, 0, 0, '#tail');
+    var tail = createGameObject(2, 1, 0, 0, null, '#tail');
 
     var apple = createGameObject(5, 5, 0, 0, null, '#apple');
 
     var snakeArray = [];
     snakeArray[0] = head;
-    // snakeArray[snakeArray.length - 1] = tail;
+    snakeArray[snakeArray.length] = tail;
 
 
     // one-time setup
@@ -45,6 +45,7 @@ function runProgram() {
 
     var isPaused = false;
     var pIsDown = false;
+    var direction = null;
 
     ////////////////////////////////////////////////////////////////////////////////
     ///////////////////////// CORE LOGIC ///////////////////////////////////////////
@@ -78,21 +79,25 @@ function runProgram() {
 
         /* player controls */
         if (!isPaused) {
-            if (keycode === KEY.UP) {           // up
+            if (keycode === KEY.UP && direction !== "down") {           // up
                 head.speedX = 0;
                 head.speedY = -1;
+                direction = "up";
                 console.log("up pressed");
-            } if (keycode === KEY.LEFT) {       // left
+            } if (keycode === KEY.LEFT && direction !== "right") {       // left
                 head.speedX = -1;
                 head.speedY = 0;
+                direction = "left";
                 console.log("left pressed");
-            } if (keycode === KEY.DOWN) {       // down
+            } if (keycode === KEY.DOWN && direction !== "up") {       // down
                 head.speedX = 0;
                 head.speedY = 1;
+                direction = "down";
                 console.log("down pressed");
-            } if (keycode === KEY.RIGHT) {      // right
+            } if (keycode === KEY.RIGHT && direction !== "left") {      // right
                 head.speedX = 1;
                 head.speedY = 0;
+                direction = "right";
                 console.log("right pressed");
             }
         }
@@ -133,17 +138,27 @@ function runProgram() {
         gameItem.y = gameItem.column * 20;
     }
 
+    function repositionTails() {
+        for (var i = snakeArray.length - 1; i > 0; i--) {
+            snakeArray[i].x = snakeArray[i - 1].x;
+            snakeArray[i].y = snakeArray[i - 1].y;
+        }
+    }
+
+    function repositionAllGameItems() {
+        repositionTails();
+        repositionGameItem(head);
+    }
+
     function redrawGameItem(gameItem) {
         $(gameItem.id).css("left", gameItem.x);
         $(gameItem.id).css("top", gameItem.y);
     }
 
-    function repositionAllGameItems() {
-        repositionGameItem(head);
-    }
-
     function redrawAllGameItems() {
         redrawGameItem(head);
+        redrawGameItem(tail);
+        redrawGameItem(apple);
     }
 
     var num = 1;
