@@ -12,8 +12,8 @@ function runProgram() {
     var BORDERS = {
         TOP: 0,
         LEFT: 0,
-        BOTTOM: $("#board").height(),
-        RIGHT: $("#board").width(),
+        BOTTOM: $("#board").height() - 20,
+        RIGHT: $("#board").width() - 20,
     }
     var KEY = {
         /* general controls */
@@ -45,6 +45,10 @@ function runProgram() {
 
     var isPaused = false;
     var pIsDown = false;
+    var upIsDown = false;
+    var leftIsDown = false;
+    var downIsDown = false;
+    var rightIsDown = false;
     var direction = null;
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -58,6 +62,8 @@ function runProgram() {
     function newFrame() {
         pauseGame();
         if (!isPaused) {
+            eatApple();
+            handleCollisions();
             repositionAllGameItems();
         }
         redrawAllGameItems();
@@ -74,30 +80,34 @@ function runProgram() {
         /* general controls */
         if (keycode === KEY.P) {
             pIsDown = true;
-            console.log("p pressed");       // pause
+            console.log("p pressed");   // pause
         }
 
         /* player controls */
         if (!isPaused) {
-            if (keycode === KEY.UP && direction !== "down") {           // up
+            if (keycode === KEY.UP && direction !== "down") {       // up
                 head.speedX = 0;
                 head.speedY = -1;
                 direction = "up";
+                upIsDown = true;
                 console.log("up pressed");
-            } if (keycode === KEY.LEFT && direction !== "right") {       // left
+            } if (keycode === KEY.LEFT && direction !== "right") {  // left
                 head.speedX = -1;
                 head.speedY = 0;
                 direction = "left";
+                leftIsDown = true;
                 console.log("left pressed");
-            } if (keycode === KEY.DOWN && direction !== "up") {       // down
+            } if (keycode === KEY.DOWN && direction !== "up") {     // down
                 head.speedX = 0;
                 head.speedY = 1;
                 direction = "down";
+                downIsDown = true;
                 console.log("down pressed");
-            } if (keycode === KEY.RIGHT && direction !== "left") {      // right
+            } if (keycode === KEY.RIGHT && direction !== "left") {  // right
                 head.speedX = 1;
                 head.speedY = 0;
                 direction = "right";
+                rightIsDown = true;
                 console.log("right pressed");
             }
         }
@@ -111,6 +121,36 @@ function runProgram() {
         if (keycode === KEY.P) {
             pIsDown = false;
             console.log("p released");
+        }
+
+        if (keycode === KEY.UP) {
+            upIsDown = false;
+            console.log("up released");
+        } if (keycode === KEY.LEFT) {
+            leftIsDown = false;
+            console.log("left released");
+        } if (keycode === KEY.DOWN) {
+            downIsDown = false;
+            console.log("down released");
+        } if (keycode === KEY.RIGHT) {
+            rightIsDown = false;
+            console.log("right released");
+        }
+    }
+
+    function handleCollisions() {
+        if (head.x < BORDERS.LEFT) {
+            head.x -= -20;
+            console.log("left passed");
+        } if (heaad.y < BORDERS.TOP) {
+            head.y -= -20;
+            console.log("top passed");
+        } if (head.x > BORDERS.RIGHT) {
+            head.x -= 20;
+            console.log("right passed");
+        } if (head.y > BORDERS.BOTTOM) {
+            head.y -= 20;
+            console.log("bottom passed");
         }
     }
 
@@ -131,9 +171,20 @@ function runProgram() {
         return gameObject;
     }
 
-    function repositionGameItem(gameItem) {
+    function eatApple() {
+        if (apple.x === snakeArray[0].x && apple.y === snakeArray[0].y) {
+            apple.row = Math.floor(Math.random() * 22);
+            apple.column = Math.floor(Math.random() * 22);
+            snakeArray.push[snakeArray[0]];
+        }
+    }
+
+    function moveGameItem(gameItem) {
         gameItem.row += gameItem.speedX;
         gameItem.column += gameItem.speedY;
+    }
+
+    function repositionGameItem(gameItem) {
         gameItem.x = gameItem.row * 20;
         gameItem.y = gameItem.column * 20;
     }
@@ -147,6 +198,8 @@ function runProgram() {
 
     function repositionAllGameItems() {
         repositionTails();
+        moveGameItem(head);
+        repositionGameItem(apple);
         repositionGameItem(head);
     }
 
