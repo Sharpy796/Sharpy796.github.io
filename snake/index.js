@@ -142,7 +142,7 @@ function runProgram() {
         if (head.x < BORDERS.LEFT) {
             head.x -= -20;
             console.log("left passed");
-        } if (heaad.y < BORDERS.TOP) {
+        } if (head.y < BORDERS.TOP) {
             head.y -= -20;
             console.log("top passed");
         } if (head.x > BORDERS.RIGHT) {
