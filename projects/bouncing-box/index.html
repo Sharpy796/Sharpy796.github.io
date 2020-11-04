@@ -45,7 +45,7 @@
 			
 			var box = jQuery('.box');	// reference to the HTML .box element
 			var board = jQuery('.board');	// reference to the HTML .board element
-			var boardWidth = board.width() - 50;	// the maximum X-Coordinate of the screen
+			var boardWidth = board.width();	// the maximum X-Coordinate of the screen
 
 			// Every 50 milliseconds, call the update Function (see below)
 			var interval = setInterval(update, 50);
@@ -72,7 +72,7 @@
 			//////////////////////////////////////////////////////////////////
 			
 			// TODO 2 - Variable declarations 
-			var boardHeight = jQuery(window).height() - 80; 
+			var boardHeight = jQuery(window).height(); 
 			var positionX = 0;
 			var positionY = 100;
 			var speedX = 0;
