@@ -169,7 +169,7 @@ function runProgram() {
             head.y > BORDERS.TOP &&
             head.x < BORDERS.RIGHT &&
             head.y < BORDERS.BOTTOM) {
-            $(head.id).css("background-color", "green");
+            $(head.id).css("background-color", "orange");
         }
     }
 
