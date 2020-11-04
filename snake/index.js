@@ -8,7 +8,8 @@ function runProgram() {
     ////////////////////////////////////////////////////////////////////////////////
 
     // Constant Variables
-    var FRAMES_PER_SECOND_INTERVAL = 1000 / 10;
+    setDifficulty();
+    var FRAMES_PER_SECOND_INTERVAL = 1000 / frameRate;
     var BORDERS = {
         TOP: 0,
         LEFT: 0,
@@ -43,6 +44,7 @@ function runProgram() {
     $(document).on('keydown', handleKeyDown);
     $(document).on('keyup', handleKeyUp);
 
+    var frameRate = 10;
     var isPaused = false;
     var pIsDown = false;
     var upIsDown = false;
@@ -170,6 +172,32 @@ function runProgram() {
     ////////////////////////////////////////////////////////////////////////////////
     ////////////////////////// HELPER FUNCTIONS ////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
+
+    function setDifficulty() {
+        var correctDifficulty;
+        var answer;
+
+        while (!correctDifficulty) {
+            answer = prompt("What difficulty?\nType either:\nEasy\nMedium\nHard");
+            if (answer === "Easy" || answer === "Medium" || answer === "Hard") {
+                alert("You chose the " + answer + " difficulty. Good luck, and have fun!");
+                correctDifficulty = true;
+            } else {
+                alert("That's not a difficulty!\n(Hint: Try making sure you use proper capitlization.)");
+                correctDifficulty = false;
+            }
+        }
+
+        if (answer === "Easy") {
+            frameRate = 5;
+        } else if (answer = "Medium") {
+            frameRate = 10;
+        } else if (answer = "Hard") {
+            frameRate = 1;
+        } else {
+            alert("Invalid difficulty: Please reload the page.");
+        }
+    }
 
     function createGameObject(column, row, speedX, speedY, score, id) {
         var gameObject = {};
