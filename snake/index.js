@@ -225,6 +225,7 @@ function runProgram() {
             apple.row = Math.floor(Math.random() * 22);
             apple.column = Math.floor(Math.random() * 22);
             snakeArray.push[snakeArray[0]];
+            head.score += 1;
         }
     }
 
