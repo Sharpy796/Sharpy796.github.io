@@ -49,6 +49,7 @@ function runProgram() {
     var leftIsDown = false;
     var downIsDown = false;
     var rightIsDown = false;
+    var keyWasDown = false;
     var direction = null;
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -62,12 +63,12 @@ function runProgram() {
     function newFrame() {
         pauseGame();
         if (!isPaused) {
-            eatApple();
-            handleCollisions();
             repositionAllGameItems();
+            handleCollisions();
+            eatApple();
         }
         redrawAllGameItems();
-
+        keyWasDown = false;
     }
 
     /* 
@@ -85,30 +86,36 @@ function runProgram() {
 
         /* player controls */
         if (!isPaused) {
-            if (keycode === KEY.UP && direction !== "down") {       // up
-                head.speedX = 0;
-                head.speedY = -1;
-                direction = "up";
-                upIsDown = true;
-                console.log("up pressed");
-            } if (keycode === KEY.LEFT && direction !== "right") {  // left
-                head.speedX = -1;
-                head.speedY = 0;
-                direction = "left";
-                leftIsDown = true;
-                console.log("left pressed");
-            } if (keycode === KEY.DOWN && direction !== "up") {     // down
-                head.speedX = 0;
-                head.speedY = 1;
-                direction = "down";
-                downIsDown = true;
-                console.log("down pressed");
-            } if (keycode === KEY.RIGHT && direction !== "left") {  // right
-                head.speedX = 1;
-                head.speedY = 0;
-                direction = "right";
-                rightIsDown = true;
-                console.log("right pressed");
+            if (!keyWasDown) {
+                if (keycode === KEY.UP && direction !== "down") {       // up
+                    head.speedX = 0;
+                    head.speedY = -1;
+                    direction = "up";
+                    upIsDown = true;
+                    keyWasDown = true;
+                    console.log("up pressed");
+                } if (keycode === KEY.LEFT && direction !== "right") {  // left
+                    head.speedX = -1;
+                    head.speedY = 0;
+                    direction = "left";
+                    leftIsDown = true;
+                    keyWasDown = true;
+                    console.log("left pressed");
+                } if (keycode === KEY.DOWN && direction !== "up") {     // down
+                    head.speedX = 0;
+                    head.speedY = 1;
+                    direction = "down";
+                    downIsDown = true;
+                    keyWasDown = true;
+                    console.log("down pressed");
+                } if (keycode === KEY.RIGHT && direction !== "left") {  // right
+                    head.speedX = 1;
+                    head.speedY = 0;
+                    direction = "right";
+                    rightIsDown = true;
+                    keyWasDown = true;
+                    console.log("right pressed");
+                }
             }
         }
     }
@@ -140,17 +147,23 @@ function runProgram() {
 
     function handleCollisions() {
         if (head.x < BORDERS.LEFT) {
-            head.x -= -20;
+            $(head.id).css("background-color", "red");
             console.log("left passed");
         } if (head.y < BORDERS.TOP) {
-            head.y -= -20;
+            $(head.id).css("background-color", "red");
             console.log("top passed");
         } if (head.x > BORDERS.RIGHT) {
-            head.x -= 20;
+            $(head.id).css("background-color", "red");
             console.log("right passed");
         } if (head.y > BORDERS.BOTTOM) {
-            head.y -= 20;
+            $(head.id).css("background-color", "red");
             console.log("bottom passed");
+        }
+        if (head.x > BORDERS.LEFT &&
+            head.y > BORDERS.TOP &&
+            head.x < BORDERS.RIGHT &&
+            head.y < BORDERS.BOTTOM) {
+            $(head.id).css("background-color", "green");
         }
     }
 
