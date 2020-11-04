@@ -64,7 +64,6 @@ function runProgram() {
     by calling this function and executing the code inside.
     */
     function newFrame() {
-        pauseGame();
         if (!isPaused) {
             repositionAllGameItems();
             handleCollisions();
@@ -72,6 +71,7 @@ function runProgram() {
         }
         redrawAllGameItems();
         keyWasDown = false;
+        pWasDown = false;
     }
 
     /* 
@@ -87,6 +87,7 @@ function runProgram() {
             pWasDown = true;
             console.log("p pressed");   // pause
         }
+        pauseGame();
 
         /* player controls */
         if (!isPaused) {
@@ -133,6 +134,7 @@ function runProgram() {
             pIsDown = false;
             console.log("p released");
         }
+        pauseGame();
 
         if (keycode === KEY.UP) {
             upIsDown = false;
@@ -182,7 +184,7 @@ function runProgram() {
         // ask for the desired difficulty
         while (!correctDifficulty) {
             answer = prompt("What difficulty?\nType either:\nEasy\nMedium\nHard");
-            if (answer === "Easy" || answer === "Medium" || answer === "Hard") {
+            if (answer === "Slow" || answer === "Easy" || answer === "Medium" || answer === "Hard") {
                 alert("You chose the " + answer + " difficulty. Good luck, and have fun!");
                 correctDifficulty = true;
             } else {
@@ -192,7 +194,9 @@ function runProgram() {
         }
 
         // set the frame rate for respective difficulty
-        if (answer === "Easy") {
+        if (answer === "Slow") {
+            frameRate = 1;
+        } else if (answer === "Easy") {
             frameRate = 5;
         } else if (answer === "Medium") {
             frameRate = 10;
