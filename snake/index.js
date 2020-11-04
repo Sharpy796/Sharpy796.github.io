@@ -52,6 +52,7 @@ function runProgram() {
     var downIsDown = false;
     var rightIsDown = false;
     var keyWasDown = false;
+    var pWasDown = false;
     var direction = null;
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -83,6 +84,7 @@ function runProgram() {
         /* general controls */
         if (keycode === KEY.P) {
             pIsDown = true;
+            pWasDown = true;
             console.log("p pressed");   // pause
         }
 
@@ -177,6 +179,7 @@ function runProgram() {
         var correctDifficulty;
         var answer;
 
+        // ask for the desired difficulty
         while (!correctDifficulty) {
             answer = prompt("What difficulty?\nType either:\nEasy\nMedium\nHard");
             if (answer === "Easy" || answer === "Medium" || answer === "Hard") {
@@ -188,12 +191,13 @@ function runProgram() {
             }
         }
 
+        // set the frame rate for respective difficulty
         if (answer === "Easy") {
             frameRate = 5;
-        } else if (answer = "Medium") {
+        } else if (answer === "Medium") {
             frameRate = 10;
-        } else if (answer = "Hard") {
-            frameRate = 1;
+        } else if (answer === "Hard") {
+            frameRate = 20;
         } else {
             alert("Invalid difficulty: Please reload the page.");
         }
