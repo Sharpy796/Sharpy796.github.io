@@ -270,11 +270,13 @@ function runProgram() {
             if (num < 2) {
                 if (isPaused) {
                     isPaused = false;
-                    $(head.id).css("background-color", "green");
+                    $(head.id).css("background-color", "orange");
+                    $(tail.id).css("background-color", "palegoldenrod");
                     console.log("unpause");
                 } else {
                     isPaused = true;
                     $(head.id).css("background-color", "fuchsia");
+                    $(tail.id).css("background-color", "lightpink");
                     console.log("pause");
                 }
             }
