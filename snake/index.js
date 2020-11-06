@@ -9,6 +9,7 @@ function runProgram() {
 
     // Constant Variables
     setDifficulty();
+    // var FRAMES_PER_SECOND_INTERVAL = 1000 / 10;
     var FRAMES_PER_SECOND_INTERVAL = 1000 / frameRate;
     var BORDERS = {
         TOP: 0,
@@ -30,13 +31,13 @@ function runProgram() {
     // Game Item Objects
 
     var head = createGameObject(1, 1, 0, 0, 0, '#head');
-    var tail = createGameObject(2, 1, 0, 0, null, '#tail');
+    var tail = createGameObject(2, 1, null, null, null, '#tail');
 
-    var apple = createGameObject(5, 5, 0, 0, null, '#apple');
+    var apple = createGameObject(5, 5, null, null, null, '#apple');
 
     var snakeArray = [];
-    snakeArray[0] = head;
-    snakeArray[snakeArray.length] = tail;
+    snakeArray.push(head);
+    snakeArray.push(tail);
 
 
     // one-time setup
@@ -153,29 +154,47 @@ function runProgram() {
 
     function handleCollisions() {
         if (head.x < BORDERS.LEFT) {
-            $(head.id).css("background-color", "red");
+            collide();
             console.log("left passed");
         } if (head.y < BORDERS.TOP) {
-            $(head.id).css("background-color", "red");
+            collide();
             console.log("top passed");
-        } if (head.x > BORDERS.RIGHT) {
-            $(head.id).css("background-color", "red");
+        } if (head.x >= BORDERS.RIGHT) {
+            collide();
             console.log("right passed");
-        } if (head.y > BORDERS.BOTTOM) {
-            $(head.id).css("background-color", "red");
+        } if (head.y >= BORDERS.BOTTOM) {
+            collide();
             console.log("bottom passed");
         }
-        if (head.x > BORDERS.LEFT &&
-            head.y > BORDERS.TOP &&
+        if (head.x >= BORDERS.LEFT &&
+            head.y >= BORDERS.TOP &&
             head.x < BORDERS.RIGHT &&
             head.y < BORDERS.BOTTOM) {
-            $(head.id).css("background-color", "orange");
+            stopCollide();
         }
+        for (var i = 1; i < snakeArray.length; i++) {
+            if (head.x === snakeArray[i].x && head.y === snakeArray[i].y) {
+                collide();
+            }
+        }
+
     }
 
     ////////////////////////////////////////////////////////////////////////////////
     ////////////////////////// HELPER FUNCTIONS ////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
+
+    function collide() {
+        $(head.id).css("background-color", "red");
+        $(tail.id).css("background-color", "lightsalmon");
+        $(".tails").css("background-color", "lightsalmon");
+    }
+
+    function stopCollide() {
+        $(head.id).css("background-color", "orange");
+        $(tail.id).css("background-color", "palegoldenrod");
+        $(".tails").css("background-color", "palegoldenrod");
+    }
 
     function setDifficulty() {
         var correctDifficulty;
@@ -183,9 +202,12 @@ function runProgram() {
 
         // ask for the desired difficulty
         while (!correctDifficulty) {
-            answer = prompt("What difficulty?\nType either:\nEasy\nMedium\nHard");
-            if (answer === "Slow" || answer === "Easy" || answer === "Medium" || answer === "Hard") {
-                alert("You chose the " + answer + " difficulty. Good luck, and have fun!");
+            answer = prompt("What difficulty?\nType either:\nEasy\nMedium\nHard\n\nClicking Cancel sets the difficulty to Medium.");
+            if (answer === "Slow" || answer === "Easy" || answer === "Medium" || answer === "Hard" || answer === null || answer === "") {
+                if (answer === null || answer === "") {
+                    answer = "Medium";
+                }
+                alert("You chose the " + answer + " difficulty.\nUse the arrow keys for movement\nPress P to pause\nGood luck, and have fun!");
                 correctDifficulty = true;
             } else {
                 alert("That's not a difficulty!\n(Hint: Try making sure you use proper capitlization.)");
@@ -220,23 +242,53 @@ function runProgram() {
         return gameObject;
     }
 
+    function createNewBody() {
+        var bodyId = 'midBody' + (snakeArray.length - 1);
+        var $newBody = $("<div>").appendTo('#board').addClass('gameItem').addClass('tails').attr("id", bodyId);
+        $newBody = createGameObject(snakeArray[0].column, snakeArray[0].row, null, null, null, '#' + bodyId);
+        snakeArray.push($newBody);
+    }
+
     function eatApple() {
+        // if the snake head is in the same spot as the apple
         if (apple.x === snakeArray[0].x && apple.y === snakeArray[0].y) {
-            apple.row = Math.floor(Math.random() * 22);
-            apple.column = Math.floor(Math.random() * 22);
-            snakeArray.push[snakeArray[0]];
+            // find a new valid random spot for the apple
+            var randRow = Math.floor(Math.random() * 22);
+            var randCol = Math.floor(Math.random() * 22);
+            var validPosition = false;
+            // loop until it finds a valid position
+            while (!validPosition) {
+                for (var i = 0; i < snakeArray.length; i++) {
+                    if (randRow === snakeArray[i].x && randCol === snakeArray[i].y) {
+                        validPosition = false;
+                        randRow = Math.floor(Math.random() * 22);
+                        randCol = Math.floor(Math.random() * 22);
+                        alert("invalid position");
+                    } else {
+                        validPosition = true;
+                    }
+                }
+            }
+            //reposition the apple
+            apple.row = randRow;
+            apple.column = randCol;
+            // create a new body box
+            createNewBody();
+            // increase the score
             head.score += 1;
+            console.log("apple eaten");
+            console.log("score: " + head.score);
         }
     }
 
     function moveGameItem(gameItem) {
-        gameItem.row += gameItem.speedX;
-        gameItem.column += gameItem.speedY;
+        gameItem.column += gameItem.speedX;
+        gameItem.row += gameItem.speedY;
     }
 
     function repositionGameItem(gameItem) {
-        gameItem.x = gameItem.row * 20;
-        gameItem.y = gameItem.column * 20;
+        gameItem.x = gameItem.column * 20;
+        gameItem.y = gameItem.row * 20;
     }
 
     function repositionTails() {
@@ -247,8 +299,8 @@ function runProgram() {
     }
 
     function repositionAllGameItems() {
-        repositionTails();
         moveGameItem(head);
+        repositionTails();
         repositionGameItem(apple);
         repositionGameItem(head);
     }
@@ -259,8 +311,11 @@ function runProgram() {
     }
 
     function redrawAllGameItems() {
-        redrawGameItem(head);
-        redrawGameItem(tail);
+        for (var i = 0; i < snakeArray.length; i++) {
+            redrawGameItem(snakeArray[i]);
+        }
+        // redrawGameItem(head);
+        // redrawGameItem(tail);
         redrawGameItem(apple);
     }
 
@@ -270,13 +325,15 @@ function runProgram() {
             if (num < 2) {
                 if (isPaused) {
                     isPaused = false;
-                    $(head.id).css("background-color", "orange");
+                    $(".tails").css("background-color", "palegoldenrod");
                     $(tail.id).css("background-color", "palegoldenrod");
+                    $(head.id).css("background-color", "orange");
                     console.log("unpause");
                 } else {
                     isPaused = true;
-                    $(head.id).css("background-color", "fuchsia");
+                    $(".tails").css("background-color", "lightpink");
                     $(tail.id).css("background-color", "lightpink");
+                    $(head.id).css("background-color", "fuchsia");
                     console.log("pause");
                 }
             }
