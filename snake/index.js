@@ -37,7 +37,7 @@ function runProgram() {
 
     var snakeArray = [];
     snakeArray.push(head);
-    snakeArray.push(tail);
+    // snakeArray.push(tail);
 
 
     // one-time setup
@@ -173,7 +173,7 @@ function runProgram() {
             stopCollide();
         }
         for (var i = 1; i < snakeArray.length; i++) {
-            if (head.x === snakeArray[i].x && head.y === snakeArray[i].y) {
+            if (inCollision(head, snakeArray[i])) {
                 collide();
             }
         }
@@ -188,12 +188,35 @@ function runProgram() {
         $(head.id).css("background-color", "red");
         $(tail.id).css("background-color", "lightsalmon");
         $(".tails").css("background-color", "lightsalmon");
+        var congrats;
+        if (points >= 100) {
+            congrats = "Incredible!!";
+        } else if (points >= 50) {
+            congrats = "Amazing!";
+        } else if (points >= 25) {
+            congrats = "Good Job!";
+        } else if (points >= 10) {
+            congrats = "Nice!";
+        } else {
+            congrats = "Better luck next time."
+        }
+        alert("You lost!\nPoints earned: " + head.score + "\n" + congrats);
+        alert("Refresh the page to play again.");
+        // endGame();
     }
 
     function stopCollide() {
         $(head.id).css("background-color", "orange");
         $(tail.id).css("background-color", "palegoldenrod");
         $(".tails").css("background-color", "palegoldenrod");
+    }
+
+    function inCollision(obj1, obj2) {
+        if (obj1.x === obj2.x && obj1.y === obj2.y) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     function setDifficulty() {
@@ -251,7 +274,7 @@ function runProgram() {
 
     function eatApple() {
         // if the snake head is in the same spot as the apple
-        if (apple.x === snakeArray[0].x && apple.y === snakeArray[0].y) {
+        if (inCollision(apple, head)) {
             // find a new valid random spot for the apple
             var randRow = Math.floor(Math.random() * 22);
             var randCol = Math.floor(Math.random() * 22);
@@ -314,8 +337,6 @@ function runProgram() {
         for (var i = 0; i < snakeArray.length; i++) {
             redrawGameItem(snakeArray[i]);
         }
-        // redrawGameItem(head);
-        // redrawGameItem(tail);
         redrawGameItem(apple);
     }
 
