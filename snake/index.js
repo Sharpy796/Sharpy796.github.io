@@ -9,7 +9,6 @@ function runProgram() {
 
     // Constant Variables
     setDifficulty();
-    // var FRAMES_PER_SECOND_INTERVAL = 1000 / 10;
     var FRAMES_PER_SECOND_INTERVAL = 1000 / frameRate;
     var BORDERS = {
         TOP: 0,
