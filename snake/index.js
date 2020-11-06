@@ -19,7 +19,7 @@ function runProgram() {
     }
     var KEY = {
         /* general controls */
-        P: 80,      // pause
+        SPACE: 32,  // pause
 
         /* player controls */
         UP: 38,     // up
@@ -31,13 +31,11 @@ function runProgram() {
     // Game Item Objects
 
     var head = createGameObject(1, 1, 0, 0, 0, '#head');
-    var tail = createGameObject(2, 1, null, null, null, '#tail');
 
     var apple = createGameObject(5, 5, null, null, null, '#apple');
 
     var snakeArray = [];
     snakeArray.push(head);
-    // snakeArray.push(tail);
 
 
     // one-time setup
@@ -47,13 +45,13 @@ function runProgram() {
 
     var frameRate = 10;
     var isPaused = false;
-    var pIsDown = false;
+    var spaceIsDown = false;
     var upIsDown = false;
     var leftIsDown = false;
     var downIsDown = false;
     var rightIsDown = false;
     var keyWasDown = false;
-    var pWasDown = false;
+    var spaceWasDown = false;
     var direction = null;
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -72,7 +70,7 @@ function runProgram() {
         }
         redrawAllGameItems();
         keyWasDown = false;
-        pWasDown = false;
+        spaceWasDown = false;
     }
 
     /* 
@@ -83,10 +81,10 @@ function runProgram() {
         console.log(keycode);
 
         /* general controls */
-        if (keycode === KEY.P) {
-            pIsDown = true;
-            pWasDown = true;
-            console.log("p pressed");   // pause
+        if (keycode === KEY.SPACE) {
+            spaceIsDown = true;
+            spaceWasDown = true;
+            console.log("space pressed");   // pause
         }
         pauseGame();
 
@@ -131,9 +129,9 @@ function runProgram() {
         console.log(keycode);
 
         /* general controls */
-        if (keycode === KEY.P) {
-            pIsDown = false;
-            console.log("p released");
+        if (keycode === KEY.SPACE) {
+            spaceIsDown = false;
+            console.log("space released");
         }
         pauseGame();
 
@@ -186,8 +184,8 @@ function runProgram() {
 
     function collide() {
         $(head.id).css("background-color", "red");
-        $(tail.id).css("background-color", "lightsalmon");
         $(".tails").css("background-color", "lightsalmon");
+        var points = head.score;
         var congrats;
         if (points >= 100) {
             congrats = "Incredible!!";
@@ -200,14 +198,13 @@ function runProgram() {
         } else {
             congrats = "Better luck next time."
         }
-        alert("You lost!\nPoints earned: " + head.score + "\n" + congrats);
+        alert("You lost!\nPoints earned: " + points + "\n" + congrats);
         alert("Refresh the page to play again.");
-        // endGame();
+        endGame();
     }
 
     function stopCollide() {
         $(head.id).css("background-color", "orange");
-        $(tail.id).css("background-color", "palegoldenrod");
         $(".tails").css("background-color", "palegoldenrod");
     }
 
@@ -230,7 +227,7 @@ function runProgram() {
                 if (answer === null || answer === "") {
                     answer = "Medium";
                 }
-                alert("You chose the " + answer + " difficulty.\nUse the arrow keys for movement\nPress P to pause\nGood luck, and have fun!");
+                alert("You chose the " + answer + " difficulty.\nUse the arrow keys for movement\nPress space to pause\nGood luck, and have fun!");
                 correctDifficulty = true;
             } else {
                 alert("That's not a difficulty!\n(Hint: Try making sure you use proper capitlization.)");
@@ -342,18 +339,16 @@ function runProgram() {
 
     var num = 1;
     function pauseGame() {
-        if (pIsDown) {
+        if (spaceIsDown) {
             if (num < 2) {
                 if (isPaused) {
                     isPaused = false;
                     $(".tails").css("background-color", "palegoldenrod");
-                    $(tail.id).css("background-color", "palegoldenrod");
                     $(head.id).css("background-color", "orange");
                     console.log("unpause");
                 } else {
                     isPaused = true;
                     $(".tails").css("background-color", "lightpink");
-                    $(tail.id).css("background-color", "lightpink");
                     $(head.id).css("background-color", "fuchsia");
                     console.log("pause");
                 }
