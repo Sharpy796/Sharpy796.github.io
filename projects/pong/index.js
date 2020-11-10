@@ -43,8 +43,10 @@ function runProgram() {
     // Game Item Objects
 
     var paddleLeft = createGameObject(50, 180, 0, 0, 0, "#paddleLeft");     // player 1
+    var p1 = paddleLeft;
 
     var paddleRight = createGameObject(630, 180, 0, 0, 0, "#paddleRight");  // player 2
+    var p2 = paddleRight;
 
     var ball = createGameObject(340, 210, -5, -2.5, 0, "#ball");            // ball
 
@@ -93,6 +95,8 @@ function runProgram() {
             handleSpeed();
             repositionAllGameItems();
         }
+        winGame("p1");
+        winGame("p2");
     }
 
     /* 
@@ -363,6 +367,7 @@ function runProgram() {
         if (ball.leftX < BORDERS.LEFT) {
             ball.speed.right = ball.speed.left;
             ball.speed.left = 0;
+            playerLose(p1.id);
             console.log("ball bounced left border")
         }
         if (ball.topY < BORDERS.TOP) {
@@ -373,12 +378,34 @@ function runProgram() {
         if (ball.rightX > BORDERS.RIGHT) {
             ball.speed.left = ball.speed.right;
             ball.speed.right = 0;
+            playerLose(p2.id);
             console.log("ball bounced right border")
         }
         if (ball.bottomY > BORDERS.BOTTOM) {
             ball.speed.up = ball.speed.down;
             ball.speed.down = 0;
             console.log("ball bounced bottom border")
+        }
+    }
+
+    function playerLose(player) {
+        if (player === p1.id) {         // player 1's side
+            p2.score++;
+            $("#ball").css("background-color", "orange");
+        } else if (player === p2.id) { // player 2's side
+            p1.score++;
+            $("#ball").css("background-color", "lime");
+        } else {
+            console.log("Error: ");
+        }
+        ball.x = 340;
+        ball.y = 210;
+    }
+
+    function winGame(player) {
+        if (player.score >= 10) {
+            alert(text.player);     // TODO: Fix this
+            endGame();
         }
     }
 
