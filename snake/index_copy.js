@@ -45,7 +45,12 @@ function runProgram() {
     var frameRate = 10;
     var isPaused = false;
     var spaceIsDown = false;
+    var upIsDown = false;
+    var leftIsDown = false;
+    var downIsDown = false;
+    var rightIsDown = false;
     var keyWasDown = false;
+    var spaceWasDown = false;
     var direction = null;
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -64,6 +69,7 @@ function runProgram() {
         }
         redrawAllGameItems();
         keyWasDown = false;
+        spaceWasDown = false;
     }
 
     /* 
@@ -76,6 +82,7 @@ function runProgram() {
         /* general controls */
         if (keycode === KEY.SPACE) {
             spaceIsDown = true;
+            spaceWasDown = true;
             console.log("space pressed");   // pause
         }
         pauseGame();
@@ -87,24 +94,28 @@ function runProgram() {
                     head.speedX = 0;
                     head.speedY = -1;
                     direction = "up";
+                    upIsDown = true;
                     keyWasDown = true;
                     console.log("up pressed");
                 } if (keycode === KEY.LEFT && direction !== "right") {  // left
                     head.speedX = -1;
                     head.speedY = 0;
                     direction = "left";
+                    leftIsDown = true;
                     keyWasDown = true;
                     console.log("left pressed");
                 } if (keycode === KEY.DOWN && direction !== "up") {     // down
                     head.speedX = 0;
                     head.speedY = 1;
                     direction = "down";
+                    downIsDown = true;
                     keyWasDown = true;
                     console.log("down pressed");
                 } if (keycode === KEY.RIGHT && direction !== "left") {  // right
                     head.speedX = 1;
                     head.speedY = 0;
                     direction = "right";
+                    rightIsDown = true;
                     keyWasDown = true;
                     console.log("right pressed");
                 }
@@ -122,6 +133,20 @@ function runProgram() {
             console.log("space released");
         }
         pauseGame();
+
+        if (keycode === KEY.UP) {
+            upIsDown = false;
+            console.log("up released");
+        } if (keycode === KEY.LEFT) {
+            leftIsDown = false;
+            console.log("left released");
+        } if (keycode === KEY.DOWN) {
+            downIsDown = false;
+            console.log("down released");
+        } if (keycode === KEY.RIGHT) {
+            rightIsDown = false;
+            console.log("right released");
+        }
     }
 
     function handleCollisions() {
