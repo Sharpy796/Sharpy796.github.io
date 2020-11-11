@@ -13,7 +13,7 @@ function runProgram() {
     var BORDERS = {
         TOP: 0,
         LEFT: 0,
-        BOTTOM: $("#board").height() - 20,
+        BOTTOM: $("#board").height(),
         RIGHT: $("#board").width() - 20,
     }
     var KEY = {
@@ -58,11 +58,11 @@ function runProgram() {
     */
     function newFrame() {
         if (!isPaused) {
+            redrawAllGameItems();
             repositionAllGameItems();
             handleCollisions();
             eatApple();
         }
-        redrawAllGameItems();
         keyWasDown = false;
     }
 
@@ -253,7 +253,7 @@ function runProgram() {
             // loop until it finds a valid position
             while (!validPosition) {
                 for (var i = 0; i < snakeArray.length; i++) {
-                    if (randRow === snakeArray[i].x && randCol === snakeArray[i].y) {
+                    if (randRow === snakeArray[i].row && randCol === snakeArray[i].column) {
                         validPosition = false;
                         randRow = Math.floor(Math.random() * 22);
                         randCol = Math.floor(Math.random() * 22);
