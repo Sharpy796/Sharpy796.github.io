@@ -13,7 +13,7 @@ function runProgram() {
     var BORDERS = {
         TOP: 0,
         LEFT: 0,
-        BOTTOM: $("#board").height(),
+        BOTTOM: $("#board").height() - 20,
         RIGHT: $("#board").width() - 20,
     }
     var KEY = {
@@ -131,10 +131,10 @@ function runProgram() {
         } if (head.y < BORDERS.TOP) {
             collide();
             console.log("top passed");
-        } if (head.x >= BORDERS.RIGHT) {
+        } if (head.x > BORDERS.RIGHT) {
             collide();
             console.log("right passed");
-        } if (head.y >= BORDERS.BOTTOM) {
+        } if (head.y > BORDERS.BOTTOM) {
             collide();
             console.log("bottom passed");
         }
