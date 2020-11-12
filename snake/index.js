@@ -58,10 +58,12 @@ function runProgram() {
     */
     function newFrame() {
         if (!isPaused) {
-            redrawAllGameItems();
             repositionAllGameItems();
             handleCollisions();
-            eatApple();
+            if (inCollision(apple, head)) {
+                eatApple();
+            }
+            redrawAllGameItems();
         }
         keyWasDown = false;
     }
@@ -197,7 +199,12 @@ function runProgram() {
         // ask for the desired difficulty
         while (!correctDifficulty) {
             answer = prompt("What difficulty?\nType either:\nEasy\nMedium\nHard\n\nClicking Cancel sets the difficulty to Medium.");
-            if (answer === "Slow" || answer === "Easy" || answer === "Medium" || answer === "Hard" || answer === null || answer === "") {
+            if (answer === "Slow" ||
+                answer === "Easy" ||
+                answer === "Medium" ||
+                answer === "Hard" ||
+                answer === null ||
+                answer === "") {
                 if (answer === null || answer === "") {
                     answer = "Medium";
                 }
@@ -238,40 +245,49 @@ function runProgram() {
 
     function createNewBody() {
         var bodyId = 'midBody' + (snakeArray.length - 1);
-        var $newBody = $("<div>").appendTo('#board').addClass('gameItem').addClass('tails').attr("id", bodyId);
-        $newBody = createGameObject(snakeArray[0].column, snakeArray[0].row, null, null, null, '#' + bodyId);
+        var $newBody = $("<div>")
+            .appendTo('#board')
+            .addClass('gameItem')
+            .addClass('tails')
+            .attr("id", bodyId)
+            .css("left", snakeArray[0].x)
+            .css("top", snakeArray[0].y)
+            .css("background-color", "orange");
+        $newBody = createGameObject(
+            snakeArray[0].column,
+            snakeArray[0].row,
+            null, null, null,
+            '#' + bodyId);
         snakeArray.push($newBody);
     }
 
     function eatApple() {
-        // if the snake head is in the same spot as the apple
-        if (inCollision(apple, head)) {
-            // find a new valid random spot for the apple
-            var randRow = Math.floor(Math.random() * 22);
-            var randCol = Math.floor(Math.random() * 22);
-            var validPosition = false;
-            // loop until it finds a valid position
-            while (!validPosition) {
-                for (var i = 0; i < snakeArray.length; i++) {
-                    if (randRow === snakeArray[i].row && randCol === snakeArray[i].column) {
-                        validPosition = false;
-                        randRow = Math.floor(Math.random() * 22);
-                        randCol = Math.floor(Math.random() * 22);
-                        alert("invalid position");
-                    } else {
-                        validPosition = true;
-                    }
-                }
+        // find a new valid random spot for the apple
+        var randCol = Math.floor(Math.random() * 22);   // x
+        var randRow = Math.floor(Math.random() * 22);   // y
+        var validPosition = true;
+        // check to see if the new spot is on the snake
+        for (var i = 0; i < snakeArray.length; i++) {
+            if (randCol === snakeArray[i].column && randRow === snakeArray[i].row) {
+                validPosition = false;
+                alert("invalid apple position\nappleX: " + randCol + "\nappleY: " + randRow + "\nx: " + snakeArray[i].column + "\ny: " + snakeArray[i].row);
             }
+        }
+        // if it is on the snake, find a new position
+        if (!validPosition) {
+            eatApple();
+        } else {
             //reposition the apple
-            apple.row = randRow;
-            apple.column = randCol;
+            apple.column = randCol; // x
+            apple.row = randRow;    // y
             // create a new body box
             createNewBody();
             // increase the score
             head.score += 1;
             console.log("apple eaten");
             console.log("score: " + head.score);
+            // set validPosition to true
+            validPosition = true;
         }
     }
 
@@ -289,6 +305,8 @@ function runProgram() {
         for (var i = snakeArray.length - 1; i > 0; i--) {
             snakeArray[i].x = snakeArray[i - 1].x;
             snakeArray[i].y = snakeArray[i - 1].y;
+            snakeArray[i].column = snakeArray[i].x / 20;
+            snakeArray[i].row = snakeArray[i].y / 20;
         }
     }
 
