@@ -219,6 +219,7 @@ function runProgram() {
     ///////////////////|\\\\\\\\\\\\\\\\\\\
 
     function handleCollisions() {
+        // if the head is outside the borders, end the game
         if (head.x < BORDERS.LEFT) {
             collide();
             console.log("left passed");
@@ -232,12 +233,14 @@ function runProgram() {
             collide();
             console.log("bottom passed");
         }
+        // if the head is inside the borders, revert to the normal colors
         if (head.x >= BORDERS.LEFT &&
             head.y >= BORDERS.TOP &&
             head.x < BORDERS.RIGHT &&
             head.y < BORDERS.BOTTOM) {
             stopCollide();
         }
+        // if the head hits the tail, end the game
         for (var i = 1; i < snakeArray.length; i++) {
             if (inCollision(head, snakeArray[i])) {
                 collide();
@@ -246,8 +249,11 @@ function runProgram() {
     }
 
     function collide() {
+        // change the snake's color
         $(head.id).css("background-color", "red");
         $(".tails").css("background-color", "lightsalmon");
+
+        // change the message according to the amount of points
         var points = head.score;
         var congrats;
         if (points >= 100) {
@@ -261,6 +267,8 @@ function runProgram() {
         } else {
             congrats = "Better luck next time."
         }
+
+        // send the message
         alert("You lost!\nPoints earned: " + points + "\n" + congrats);
         alert("Refresh the page to play again.");
         endGame();
@@ -272,6 +280,7 @@ function runProgram() {
     }
 
     function inCollision(obj1, obj2) {
+        // if obj1 is in the same spot as obj2, return true
         if (obj1.x === obj2.x && obj1.y === obj2.y) {
             return true;
         } else {
@@ -293,7 +302,7 @@ function runProgram() {
         for (var i = 0; i < snakeArray.length; i++) {
             if (randCol === snakeArray[i].column && randRow === snakeArray[i].row) {
                 validPosition = false;
-                alert("invalid apple position\nappleX: " + randCol + "\nappleY: " + randRow + "\nx: " + snakeArray[i].column + "\ny: " + snakeArray[i].row);
+                // alert("invalid apple position\nappleX: " + randCol + "\nappleY: " + randRow + "\nx: " + snakeArray[i].column + "\ny: " + snakeArray[i].row);
             }
         }
         // if it is on the snake, find a new position
@@ -315,7 +324,9 @@ function runProgram() {
     }
 
     function createNewBody() {
+        // create a new id for the body
         var bodyId = 'midBody' + (snakeArray.length - 1);
+        // create a new div for the body
         var $newBody = $("<div>")
             .appendTo('#board')
             .addClass('gameItem')
@@ -324,11 +335,13 @@ function runProgram() {
             .css("left", snakeArray[0].x)
             .css("top", snakeArray[0].y)
             .css("background-color", "orange");
+        // store the new div in a variable
         $newBody = createGameObject(
             snakeArray[0].column,
             snakeArray[0].row,
             null, null, null,
             '#' + bodyId);
+        // push the new body into snakeArray
         snakeArray.push($newBody);
     }
 
@@ -337,11 +350,6 @@ function runProgram() {
     ////////////// Redrawing \\\\\\\\\\\\\\
     ///////////////////|\\\\\\\\\\\\\\\\\\\
 
-    function redrawGameItem(gameItem) {
-        $(gameItem.id).css("left", gameItem.x);
-        $(gameItem.id).css("top", gameItem.y);
-    }
-
     function redrawAllGameItems() {
         for (var i = 0; i < snakeArray.length; i++) {
             redrawGameItem(snakeArray[i]);
@@ -349,25 +357,38 @@ function runProgram() {
         redrawGameItem(apple);
     }
 
-    var num = 1;
+    function redrawGameItem(gameItem) {
+        $(gameItem.id).css("left", gameItem.x);
+        $(gameItem.id).css("top", gameItem.y);
+    }
+
+    /*
+    When space is pressed, it toggles between
+    paused and unpaused only once
+    */
+    var num = 0;
     function pauseGame() {
+        // while space is pressed
         if (spaceIsDown) {
-            if (num < 2) {
+            // only toggle between pause and unpause once
+            if (!num) {
+                // if the game is paused, unpause it
                 if (isPaused) {
                     isPaused = false;
                     $(".tails").css("background-color", "palegoldenrod");
                     $(head.id).css("background-color", "orange");
                     console.log("unpause");
                 } else {
+                    // if the game is unpaused, pause it
                     isPaused = true;
                     $(".tails").css("background-color", "lightpink");
                     $(head.id).css("background-color", "fuchsia");
                     console.log("pause");
                 }
             }
-            num += 1;
-        } else {
             num = 1;
+        } else {
+            num = 0;
         }
     }
 
@@ -378,6 +399,7 @@ function runProgram() {
         // turn off event handlers
         $(document).off();
 
+        // set gameEnd to true
         gameEnd = true;
     }
 
