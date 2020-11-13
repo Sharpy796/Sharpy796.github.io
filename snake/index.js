@@ -28,11 +28,8 @@ function runProgram() {
     }
 
     // Game Item Objects
-
     var head = createGameObject(1, 1, 0, 0, 0, '#head');
-
     var apple = createGameObject(5, 5, null, null, null, '#apple');
-
     var snakeArray = [];
     snakeArray.push(head);
 
@@ -47,6 +44,7 @@ function runProgram() {
     var spaceIsDown = false;
     var keyWasDown = false;
     var direction = null;
+    var gameEnd = false;
 
     ////////////////////////////////////////////////////////////////////////////////
     ///////////////////////// CORE LOGIC ///////////////////////////////////////////
@@ -63,7 +61,9 @@ function runProgram() {
             if (inCollision(apple, head)) {
                 eatApple();
             }
-            redrawAllGameItems();
+            if (!gameEnd) {
+                redrawAllGameItems();
+            }
         }
         keyWasDown = false;
     }
@@ -126,71 +126,10 @@ function runProgram() {
         pauseGame();
     }
 
-    function handleCollisions() {
-        if (head.x < BORDERS.LEFT) {
-            collide();
-            console.log("left passed");
-        } if (head.y < BORDERS.TOP) {
-            collide();
-            console.log("top passed");
-        } if (head.x > BORDERS.RIGHT) {
-            collide();
-            console.log("right passed");
-        } if (head.y > BORDERS.BOTTOM) {
-            collide();
-            console.log("bottom passed");
-        }
-        if (head.x >= BORDERS.LEFT &&
-            head.y >= BORDERS.TOP &&
-            head.x < BORDERS.RIGHT &&
-            head.y < BORDERS.BOTTOM) {
-            stopCollide();
-        }
-        for (var i = 1; i < snakeArray.length; i++) {
-            if (inCollision(head, snakeArray[i])) {
-                collide();
-            }
-        }
-
-    }
 
     ////////////////////////////////////////////////////////////////////////////////
     ////////////////////////// HELPER FUNCTIONS ////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
-
-    function collide() {
-        $(head.id).css("background-color", "red");
-        $(".tails").css("background-color", "lightsalmon");
-        var points = head.score;
-        var congrats;
-        if (points >= 100) {
-            congrats = "Incredible!!";
-        } else if (points >= 50) {
-            congrats = "Amazing!";
-        } else if (points >= 25) {
-            congrats = "Good Job!";
-        } else if (points >= 10) {
-            congrats = "Nice!";
-        } else {
-            congrats = "Better luck next time."
-        }
-        alert("You lost!\nPoints earned: " + points + "\n" + congrats);
-        alert("Refresh the page to play again.");
-        endGame();
-    }
-
-    function stopCollide() {
-        $(head.id).css("background-color", "orange");
-        $(".tails").css("background-color", "palegoldenrod");
-    }
-
-    function inCollision(obj1, obj2) {
-        if (obj1.x === obj2.x && obj1.y === obj2.y) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     function setDifficulty() {
         var correctDifficulty;
@@ -243,23 +182,107 @@ function runProgram() {
         return gameObject;
     }
 
-    function createNewBody() {
-        var bodyId = 'midBody' + (snakeArray.length - 1);
-        var $newBody = $("<div>")
-            .appendTo('#board')
-            .addClass('gameItem')
-            .addClass('tails')
-            .attr("id", bodyId)
-            .css("left", snakeArray[0].x)
-            .css("top", snakeArray[0].y)
-            .css("background-color", "orange");
-        $newBody = createGameObject(
-            snakeArray[0].column,
-            snakeArray[0].row,
-            null, null, null,
-            '#' + bodyId);
-        snakeArray.push($newBody);
+
+    ///////////////////|\\\\\\\\\\\\\\\\\\\
+    //////////// Repositioning \\\\\\\\\\\\
+    ///////////////////|\\\\\\\\\\\\\\\\\\\
+
+    function repositionAllGameItems() {
+        moveGameItem(head);
+        repositionTails();
+        repositionGameItem(apple);
+        repositionGameItem(head);
     }
+
+    function moveGameItem(gameItem) {
+        gameItem.column += gameItem.speedX;
+        gameItem.row += gameItem.speedY;
+    }
+
+    function repositionTails() {
+        for (var i = snakeArray.length - 1; i > 0; i--) {
+            snakeArray[i].x = snakeArray[i - 1].x;
+            snakeArray[i].y = snakeArray[i - 1].y;
+            snakeArray[i].column = snakeArray[i].x / 20;
+            snakeArray[i].row = snakeArray[i].y / 20;
+        }
+    }
+
+    function repositionGameItem(gameItem) {
+        gameItem.x = gameItem.column * 20;
+        gameItem.y = gameItem.row * 20;
+    }
+
+
+    ///////////////////|\\\\\\\\\\\\\\\\\\\
+    ///////////// Collissions \\\\\\\\\\\\\
+    ///////////////////|\\\\\\\\\\\\\\\\\\\
+
+    function handleCollisions() {
+        if (head.x < BORDERS.LEFT) {
+            collide();
+            console.log("left passed");
+        } if (head.y < BORDERS.TOP) {
+            collide();
+            console.log("top passed");
+        } if (head.x > BORDERS.RIGHT) {
+            collide();
+            console.log("right passed");
+        } if (head.y > BORDERS.BOTTOM) {
+            collide();
+            console.log("bottom passed");
+        }
+        if (head.x >= BORDERS.LEFT &&
+            head.y >= BORDERS.TOP &&
+            head.x < BORDERS.RIGHT &&
+            head.y < BORDERS.BOTTOM) {
+            stopCollide();
+        }
+        for (var i = 1; i < snakeArray.length; i++) {
+            if (inCollision(head, snakeArray[i])) {
+                collide();
+            }
+        }
+    }
+
+    function collide() {
+        $(head.id).css("background-color", "red");
+        $(".tails").css("background-color", "lightsalmon");
+        var points = head.score;
+        var congrats;
+        if (points >= 100) {
+            congrats = "Incredible!!";
+        } else if (points >= 50) {
+            congrats = "Amazing!";
+        } else if (points >= 25) {
+            congrats = "Good Job!";
+        } else if (points >= 10) {
+            congrats = "Nice!";
+        } else {
+            congrats = "Better luck next time."
+        }
+        alert("You lost!\nPoints earned: " + points + "\n" + congrats);
+        alert("Refresh the page to play again.");
+        endGame();
+    }
+
+    function stopCollide() {
+        $(head.id).css("background-color", "orange");
+        $(".tails").css("background-color", "palegoldenrod");
+    }
+
+    function inCollision(obj1, obj2) {
+        if (obj1.x === obj2.x && obj1.y === obj2.y) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    ///////////////////|\\\\\\\\\\\\\\\\\\\
+    /////////// Apples & Bodies \\\\\\\\\\\
+    ///////////////////|\\\\\\\\\\\\\\\\\\\
 
     function eatApple() {
         // find a new valid random spot for the apple
@@ -291,31 +314,28 @@ function runProgram() {
         }
     }
 
-    function moveGameItem(gameItem) {
-        gameItem.column += gameItem.speedX;
-        gameItem.row += gameItem.speedY;
+    function createNewBody() {
+        var bodyId = 'midBody' + (snakeArray.length - 1);
+        var $newBody = $("<div>")
+            .appendTo('#board')
+            .addClass('gameItem')
+            .addClass('tails')
+            .attr("id", bodyId)
+            .css("left", snakeArray[0].x)
+            .css("top", snakeArray[0].y)
+            .css("background-color", "orange");
+        $newBody = createGameObject(
+            snakeArray[0].column,
+            snakeArray[0].row,
+            null, null, null,
+            '#' + bodyId);
+        snakeArray.push($newBody);
     }
 
-    function repositionGameItem(gameItem) {
-        gameItem.x = gameItem.column * 20;
-        gameItem.y = gameItem.row * 20;
-    }
 
-    function repositionTails() {
-        for (var i = snakeArray.length - 1; i > 0; i--) {
-            snakeArray[i].x = snakeArray[i - 1].x;
-            snakeArray[i].y = snakeArray[i - 1].y;
-            snakeArray[i].column = snakeArray[i].x / 20;
-            snakeArray[i].row = snakeArray[i].y / 20;
-        }
-    }
-
-    function repositionAllGameItems() {
-        moveGameItem(head);
-        repositionTails();
-        repositionGameItem(apple);
-        repositionGameItem(head);
-    }
+    ///////////////////|\\\\\\\\\\\\\\\\\\\
+    ////////////// Redrawing \\\\\\\\\\\\\\
+    ///////////////////|\\\\\\\\\\\\\\\\\\\
 
     function redrawGameItem(gameItem) {
         $(gameItem.id).css("left", gameItem.x);
@@ -357,6 +377,8 @@ function runProgram() {
 
         // turn off event handlers
         $(document).off();
+
+        gameEnd = true;
     }
 
 }
