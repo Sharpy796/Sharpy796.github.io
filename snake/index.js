@@ -147,7 +147,7 @@ function runProgram() {
                 if (answer === null || answer === "") {
                     answer = "Medium";
                 }
-                alert("You chose the " + answer + " difficulty.\nUse the arrow keys for movement\nPress space to pause\nGood luck, and have fun!");
+                alert("You chose the " + answer + " difficulty.\n\nCONTROLS\nUse the arrow keys for movement\nPress space to pause\n\nGood luck, and have fun!");
                 correctDifficulty = true;
             } else {
                 alert("That's not a difficulty!\n(Hint: Try making sure you use proper capitlization.)");
