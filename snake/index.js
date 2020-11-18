@@ -8,6 +8,7 @@ function runProgram() {
     ////////////////////////////////////////////////////////////////////////////////
 
     // Constant Variables
+    var noCollision = false;
     setDifficulty();
     var FRAMES_PER_SECOND_INTERVAL = 1000 / frameRate;
     var BORDERS = {
@@ -44,6 +45,7 @@ function runProgram() {
     var spaceIsDown = false;
     var keyWasDown = false;
     var direction = null;
+    var falsePositionCount = 0;
     var gameEnd = false;
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -143,8 +145,12 @@ function runProgram() {
                 answer === "Medium" ||
                 answer === "Hard" ||
                 answer === null ||
-                answer === "") {
-                if (answer === null || answer === "") {
+                answer === "" ||
+                answer === "noCollision") {
+                if (answer === null || answer === "" || answer === "noCollision") {
+                    if (answer === "noCollision") {
+                        noCollision = true;
+                    }
                     answer = "Medium";
                 }
                 alert("You chose the " + answer + " difficulty.\n\nCONTROLS\nUse the arrow keys for movement\nPress space to pause\n\nGood luck, and have fun!");
@@ -214,9 +220,9 @@ function runProgram() {
     }
 
 
-    ///////////////////|\\\\\\\\\\\\\\\\\\\
-    ///////////// Collissions \\\\\\\\\\\\\
-    ///////////////////|\\\\\\\\\\\\\\\\\\\
+    ///////////////////\\\\\\\\\\\\\\\\\\\
+    ///////////// Collisions \\\\\\\\\\\\\
+    ///////////////////\\\\\\\\\\\\\\\\\\\
 
     function handleCollisions() {
         // if the head is outside the borders, end the game
@@ -253,25 +259,27 @@ function runProgram() {
         $(head.id).css("background-color", "red");
         $(".tails").css("background-color", "lightsalmon");
 
-        // change the message according to the amount of points
-        var points = head.score;
-        var congrats;
-        if (points >= 100) {
-            congrats = "Incredible!!";
-        } else if (points >= 50) {
-            congrats = "Amazing!";
-        } else if (points >= 25) {
-            congrats = "Good Job!";
-        } else if (points >= 10) {
-            congrats = "Nice!";
-        } else {
-            congrats = "Better luck next time."
-        }
+        if (!noCollision) {
+            // change the message according to the amount of points
+            var points = head.score;
+            var congrats;
+            if (points >= 100) {
+                congrats = "Incredible!!";
+            } else if (points >= 50) {
+                congrats = "Amazing!";
+            } else if (points >= 25) {
+                congrats = "Good Job!";
+            } else if (points >= 10) {
+                congrats = "Nice!";
+            } else {
+                congrats = "Better luck next time."
+            }
 
-        // send the message
-        alert("You lost!\nPoints earned: " + points + "\n" + congrats);
-        alert("Refresh the page to play again.");
-        endGame();
+            // send the message
+            alert("You lost!\nPoints earned: " + points + "\n" + congrats);
+            alert("Refresh the page to play again.");
+            endGame();
+        }
     }
 
     function stopCollide() {
@@ -303,12 +311,21 @@ function runProgram() {
             if (randCol === snakeArray[i].column && randRow === snakeArray[i].row) {
                 validPosition = false;
                 // alert("invalid apple position\nappleX: " + randCol + "\nappleY: " + randRow + "\nx: " + snakeArray[i].column + "\ny: " + snakeArray[i].row);
+                falsePositionCount++;
+                // if it has tried to find a new valid position 25 times, stop the game
+                if (falsePositionCount >= 100) {
+                    alert("Error: Couldn't find a valid apple position\nReload the page to play again");
+                    validPosition = true;
+                    collide();
+                    endGame();
+                }
             }
         }
         // if it is on the snake, find a new position
         if (!validPosition) {
             eatApple();
         } else {
+            falsePositionCount = 0;
             //reposition the apple
             apple.column = randCol; // x
             apple.row = randRow;    // y

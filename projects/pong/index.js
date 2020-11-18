@@ -235,62 +235,6 @@ function runProgram() {
         }
     }
 
-    function handleSpeed() {
-        // p1 speed
-        paddleLeft.speedX = paddleLeft.speed.right - paddleLeft.speed.left;
-        paddleLeft.speedY = paddleLeft.speed.down - paddleLeft.speed.up;
-
-        // p2 speed
-        paddleRight.speedX = paddleRight.speed.right - paddleRight.speed.left;
-        paddleRight.speedY = paddleRight.speed.down - paddleRight.speed.up;
-
-        // ball speed
-        ball.speedX = ball.speed.right - ball.speed.left;
-        ball.speedY = ball.speed.down - ball.speed.up;
-    }
-
-    function handleCollisions() {
-        // update object borders
-        updateObjectBorders(paddleLeft);
-        updateObjectBorders(paddleRight);
-        updateObjectBorders(ball);
-
-        // keep the objects in the borders
-        enforceNoNoZone(paddleLeft);
-        enforceNoNoZone(paddleRight);
-        if (cheatModeActivated) {
-            enforceNoNoZone(ball);
-        } else {
-            bounceBall(ball);
-        }
-
-        // check if the ball is touching the paddles
-        handlePaddleCollisions(paddleLeft);     // left paddle
-        handlePaddleCollisions(paddleRight);    // right paddle
-    }
-
-    function handlePaddleCollisions(paddle) {
-        if (whichBorder(ball, paddle) === "left") {
-            ball.speed.left = 5;
-            ball.speed.right = 0;
-            console.log("ball bounced left paddle border");
-        }
-        if (whichBorder(ball, paddle) === "right") {
-            ;
-            ball.speed.left = 0;
-            ball.speed.right = 5;
-            console.log("ball bounced right paddle border");
-        }
-        if (paddle === paddleLeft) {
-            console.log("ball bounced p1");
-        } else if (paddle === paddleRight) {
-            console.log("ball bounced p2");
-        } else {
-            console.log("ball bounced ??");
-        }
-        score.bounced++;
-    }
-
     ////////////////////////////////////////////////////////////////////////////////
     ////////////////////////// HELPER FUNCTIONS ////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
@@ -328,6 +272,11 @@ function runProgram() {
         return gameObject;
     }
 
+
+    ///////////////////|\\\\\\\\\\\\\\\\\\\
+    //////////// Repositioning \\\\\\\\\\\\
+    ///////////////////|\\\\\\\\\\\\\\\\\\\
+
     function updateTemporarySpeed() {
         if (!isPaused && !cheatModeActivated) {
             ball.temporarySpeed.up = ball.speed.up;
@@ -335,6 +284,53 @@ function runProgram() {
             ball.temporarySpeed.down = ball.speed.down;
             ball.temporarySpeed.right = ball.speed.right;
         }
+    }
+
+    var num = 1;
+    function pauseGame() {
+        if (pIsDown) {
+            if (num < 2) {
+                if (isPaused) {
+                    isPaused = false;
+                    $("#ball").css("background-color", "fuchsia");
+                    $("#cheatIcon").hide();
+                    console.log("unpause");
+                } else {
+                    isPaused = true;
+                    $("#ball").css("background-color", "lime");
+                    $("#cheatIcon").show();
+                    console.log("pause");
+                }
+            }
+            num += 1;
+        } else {
+            num = 1;
+        }
+    }
+
+
+    ///////////////////|\\\\\\\\\\\\\\\\\\\
+    ///////////// Collissions \\\\\\\\\\\\\
+    ///////////////////|\\\\\\\\\\\\\\\\\\\
+
+    function handleCollisions() {
+        // update object borders
+        updateObjectBorders(paddleLeft);
+        updateObjectBorders(paddleRight);
+        updateObjectBorders(ball);
+
+        // keep the objects in the borders
+        enforceNoNoZone(paddleLeft);
+        enforceNoNoZone(paddleRight);
+        if (cheatModeActivated) {
+            enforceNoNoZone(ball);
+        } else {
+            bounceBall(ball);
+        }
+
+        // check if the ball is touching the paddles
+        handlePaddleCollisions(paddleLeft);     // left paddle
+        handlePaddleCollisions(paddleRight);    // right paddle
     }
 
     function updateObjectBorders(obj) {
@@ -402,6 +398,60 @@ function runProgram() {
         ball.y = 210;
     }
 
+    function handlePaddleCollisions(paddle) {
+        if (whichBorder(ball, paddle) === "left") {
+            ball.speed.left = 5;
+            ball.speed.right = 0;
+            console.log("ball bounced left paddle border");
+        }
+        if (whichBorder(ball, paddle) === "right") {
+            ;
+            ball.speed.left = 0;
+            ball.speed.right = 5;
+            console.log("ball bounced right paddle border");
+        }
+        if (paddle === paddleLeft) {
+            console.log("ball bounced p1");
+        } else if (paddle === paddleRight) {
+            console.log("ball bounced p2");
+        } else {
+            console.log("ball bounced ??");
+        }
+        score.bounced++;
+    }
+
+    function activateCheatMode() {
+        var answer = prompt("Password:");
+        if (answer === "^^vv<><>ba") {
+            if (cheatModeActivated) {
+                alert("Cheat Mode is already activated.\nType anything but the password to deactivate it.");
+            } else {
+                alert("Cheat Mode Activated!\nUse these controls to move the ball:\nU: Up\nH: Left\nJ: Down\nK: Right\nType anything but the password to deactivate Cheat Mode.");
+            }
+            cheatModeActivated = true;
+        } else if (cheatModeActivated) {
+            alert("Cheat Mode Deactivated");
+            cheatModeActivated = false;
+        } else {
+            alert("Wrong Password.");
+            cheatModeActivated = false;
+        }
+    }
+
+    function handleSpeed() {
+        // p1 speed
+        paddleLeft.speedX = paddleLeft.speed.right - paddleLeft.speed.left;
+        paddleLeft.speedY = paddleLeft.speed.down - paddleLeft.speed.up;
+
+        // p2 speed
+        paddleRight.speedX = paddleRight.speed.right - paddleRight.speed.left;
+        paddleRight.speedY = paddleRight.speed.down - paddleRight.speed.up;
+
+        // ball speed
+        ball.speedX = ball.speed.right - ball.speed.left;
+        ball.speedY = ball.speed.down - ball.speed.up;
+    }
+
     function winGame(player) {
         if (player.score >= 10) {
             alert(text.player);     // TODO: Fix this
@@ -452,46 +502,6 @@ function runProgram() {
         redrawGameItem(paddleLeft);
         redrawGameItem(paddleRight);
         redrawGameItem(ball);
-    }
-
-    var num = 1;
-    function pauseGame() {
-        if (pIsDown) {
-            if (num < 2) {
-                if (isPaused) {
-                    isPaused = false;
-                    $("#ball").css("background-color", "fuchsia");
-                    $("#cheatIcon").hide();
-                    console.log("unpause");
-                } else {
-                    isPaused = true;
-                    $("#ball").css("background-color", "lime");
-                    $("#cheatIcon").show();
-                    console.log("pause");
-                }
-            }
-            num += 1;
-        } else {
-            num = 1;
-        }
-    }
-
-    function activateCheatMode() {
-        var answer = prompt("Password:");
-        if (answer === "^^vv<><>ba") {
-            if (cheatModeActivated) {
-                alert("Cheat Mode is already activated.\nType anything but the password to deactivate it.");
-            } else {
-                alert("Cheat Mode Activated!\nUse these controls to move the ball:\nU: Up\nH: Left\nJ: Down\nK: Right\nType anything but the password to deactivate Cheat Mode.");
-            }
-            cheatModeActivated = true;
-        } else if (cheatModeActivated) {
-            alert("Cheat Mode Deactivated");
-            cheatModeActivated = false;
-        } else {
-            alert("Wrong Password.");
-            cheatModeActivated = false;
-        }
     }
 
     function resetGame() {
