@@ -274,7 +274,7 @@ function runProgram() {
 
 
     ///////////////////|\\\\\\\\\\\\\\\\\\\
-    //////////// Repositioning \\\\\\\\\\\\
+    //////////////// Speed \\\\\\\\\\\\\\\\
     ///////////////////|\\\\\\\\\\\\\\\\\\\
 
     function updateTemporarySpeed() {
@@ -385,10 +385,10 @@ function runProgram() {
     }
 
     function playerLose(player) {
-        if (player === p1.id) {         // player 1's side
+        if (player === p1.id) {             // player 1's side
             p2.score++;
             $("#ball").css("background-color", "orange");
-        } else if (player === p2.id) { // player 2's side
+        } else if (player === p2.id) {      // player 2's side
             p1.score++;
             $("#ball").css("background-color", "lime");
         } else {
