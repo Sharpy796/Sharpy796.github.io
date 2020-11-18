@@ -46,6 +46,7 @@ function runProgram() {
     var keyWasDown = false;
     var direction = null;
     var falsePositionCount = 0;
+    var borderSide = "none";
     var gameEnd = false;
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -231,19 +232,25 @@ function runProgram() {
     ///////////////////\\\\\\\\\\\\\\\\\\\
 
     function handleCollisions() {
+        var threshhold;
+        if (noCollision) {
+            threshhold = 20;
+        } else {
+            threshhold = 0;
+        }
         // if the head is outside the borders, end the game
-        if (head.x < BORDERS.LEFT) {
-            collide();
-            console.log("left passed");
-        } if (head.y < BORDERS.TOP) {
-            collide();
-            console.log("top passed");
-        } if (head.x > BORDERS.RIGHT) {
-            collide();
-            console.log("right passed");
-        } if (head.y > BORDERS.BOTTOM) {
-            collide();
-            console.log("bottom passed");
+        if (head.x <= BORDERS.LEFT) {
+            borderSide = "left";
+            collide(borderSide);
+        } else if (head.y <= BORDERS.TOP) {
+            borderSide = "top";
+            collide(borderSide);
+        } else if (head.x >= BORDERS.RIGHT + threshhold) {
+            borderSide = "right";
+            collide(borderSide);
+        } else if (head.y >= BORDERS.BOTTOM + threshhold) {
+            borderSide = "bottom";
+            collide(borderSide);
         }
         // if the head is inside the borders, revert to the normal colors
         if (head.x >= BORDERS.LEFT &&
@@ -251,21 +258,35 @@ function runProgram() {
             head.x < BORDERS.RIGHT &&
             head.y < BORDERS.BOTTOM) {
             stopCollide();
+            borderSide = "none";
         }
         // if the head hits the tail, end the game
         for (var i = 1; i < snakeArray.length; i++) {
             if (inCollision(head, snakeArray[i])) {
-                collide();
+                collide(null);
             }
         }
     }
 
-    function collide() {
+    function collide(side) {
+        // say that we passed a border
+        console.log(side + " passed");
+
         // change the snake's color
         $(head.id).css("background-color", "red");
         $(".tails").css("background-color", "lightsalmon");
 
-        if (!noCollision) {
+        if (noCollision) {
+            if (side === "left") {
+                head.column = 21;
+            } else if (side === "top") {
+                head.row = 21;
+            } else if (side === "right") {
+                head.column = 0;
+            } else if (side === "bottom") {
+                head.row = 0;
+            }
+        } else {
             // change the message according to the amount of points
             var points = head.score;
             var congrats;
