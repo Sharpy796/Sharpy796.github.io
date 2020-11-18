@@ -136,6 +136,7 @@ function runProgram() {
     function setDifficulty() {
         var correctDifficulty;
         var answer;
+        var alreadyCollide;
 
         // ask for the desired difficulty
         while (!correctDifficulty) {
@@ -145,16 +146,21 @@ function runProgram() {
                 answer === "Medium" ||
                 answer === "Hard" ||
                 answer === null ||
-                answer === "" ||
-                answer === "noCollision") {
-                if (answer === null || answer === "" || answer === "noCollision") {
-                    if (answer === "noCollision") {
-                        noCollision = true;
-                    }
+                answer === "") {
+                if (answer === null || answer === "") {
                     answer = "Medium";
                 }
                 alert("You chose the " + answer + " difficulty.\n\nCONTROLS\nUse the arrow keys for movement\nPress space to pause\n\nGood luck, and have fun!");
                 correctDifficulty = true;
+            } else if (answer === "noCollision") {
+                if (answer === "noCollision" && alreadyCollide) {
+                    alert("You already chose that option!");
+                } else {
+                    alert("noCollision mode activated");
+                    noCollision = true;
+                    alreadyCollide = true;
+                }
+                correctDifficulty = false;
             } else {
                 alert("That's not a difficulty!\n(Hint: Try making sure you use proper capitlization.)");
                 correctDifficulty = false;
