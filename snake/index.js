@@ -248,8 +248,8 @@ function runProgram() {
         // if the head is inside the borders, revert to the normal colors
         if (head.x >= BORDERS.LEFT &&
             head.y >= BORDERS.TOP &&
-            head.x < BORDERS.RIGHT &&
-            head.y < BORDERS.BOTTOM) {
+            head.x <= BORDERS.RIGHT &&
+            head.y <= BORDERS.BOTTOM) {
             stopCollide();
         }
         // if the head hits the tail, end the game
