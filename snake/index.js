@@ -8,6 +8,7 @@ function runProgram() {
     ////////////////////////////////////////////////////////////////////////////////
 
     // Constant Variables
+    var passWall = false;
     var noCollision = false;
     setDifficulty();
     var FRAMES_PER_SECOND_INTERVAL = 1000 / frameRate;
@@ -66,15 +67,6 @@ function runProgram() {
             }
             if (!gameEnd) {
                 redrawAllGameItems();
-            }
-            if (head.x < BORDERS.LEFT) {
-                head.column = 22;
-            } else if (head.y < BORDERS.TOP) {
-                head.row = 22;
-            } else if (head.x > BORDERS.RIGHT) {
-                head.column = 0;
-            } else if (head.y > BORDERS.BOTTOM) {
-                head.row = 0;
             }
         }
         keyWasDown = false;
@@ -146,32 +138,60 @@ function runProgram() {
     function setDifficulty() {
         var correctDifficulty;
         var answer;
-        var alreadyCollide;
+        var alreadyCollision;
+        var alreadyPass;
 
         // ask for the desired difficulty
         while (!correctDifficulty) {
+            // ask for the difficulty: Easy, Medium, Hard, or nothing
             answer = prompt("What difficulty?\nType either:\nEasy\nMedium\nHard\n\nClicking Cancel sets the difficulty to Medium.");
+            // if the difficulty is Slow, Easy, Medium, Hard, or nothing
             if (answer === "Slow" ||
                 answer === "Easy" ||
                 answer === "Medium" ||
                 answer === "Hard" ||
                 answer === null ||
                 answer === "") {
+                // if the answer if nothing, set the difficulty to Medium
                 if (answer === null || answer === "") {
                     answer = "Medium";
                 }
+                // tell the user what difficulty they chose, along with the controls
                 alert("You chose the " + answer + " difficulty.\n\nCONTROLS\nUse the arrow keys for movement\nPress space to pause\n\nGood luck, and have fun!");
                 correctDifficulty = true;
-            } else if (answer === "noCollision") {
-                if (answer === "noCollision" && alreadyCollide) {
+            }
+            // if the answer is noCollision
+            else if (answer === "noCollision") {
+                // if you had already chose noCollision
+                if (answer === "noCollision" && alreadyCollision) {
                     alert("You already chose that option!");
                 } else {
+                    // tell the user they activated noCollision
                     alert("noCollision mode activated");
                     noCollision = true;
-                    alreadyCollide = true;
+                    alreadyCollision = true;
+                    passWall = false;
+                    alreadyPass = false;
                 }
                 correctDifficulty = false;
-            } else {
+            }
+            // if the answer is passWall
+            else if (answer === "passWall") {
+                // if they already chose that option
+                if (answer === "passWall" && alreadyPass) {
+                    alert("You already chose that option!");
+                } else {
+                    // tell the user they activated passWall
+                    alert("passWall mode activated");
+                    passWall = true;
+                    alreadyPass = true;
+                    noCollision = false;
+                    alreadyCollision = false;
+                }
+                correctDifficulty = false;
+            }
+            // if the difficulty is not a valid one
+            else {
                 alert("That's not a difficulty!\n(Hint: Try making sure you use proper capitlization.)");
                 correctDifficulty = false;
             }
@@ -211,6 +231,7 @@ function runProgram() {
 
     function repositionAllGameItems() {
         moveGameItem(head);
+        teleportHead();
         repositionTails();
         repositionGameItem(apple);
         repositionGameItem(head);
@@ -219,6 +240,20 @@ function runProgram() {
     function moveGameItem(gameItem) {
         gameItem.column += gameItem.speedX;
         gameItem.row += gameItem.speedY;
+    }
+
+    function teleportHead() {
+        if (passWall || noCollision) {
+            if (head.column < BORDERS.LEFT / 20) {
+                head.column = 21;
+            } else if (head.row < BORDERS.TOP / 20) {
+                head.row = 21;
+            } else if (head.column > BORDERS.RIGHT / 20) {
+                head.column = 0;
+            } else if (head.row > BORDERS.BOTTOM / 20) {
+                head.row = 0;
+            }
+        }
     }
 
     function repositionTails() {
@@ -241,12 +276,6 @@ function runProgram() {
     ///////////////////\\\\\\\\\\\\\\\\\\\
 
     function handleCollisions() {
-        var threshhold;
-        if (noCollision) {
-            threshhold = 20;
-        } else {
-            threshhold = 0;
-        }
         // if the head is outside the borders, end the game
         if (head.x < BORDERS.LEFT) {
             borderSide = "left";
@@ -272,7 +301,7 @@ function runProgram() {
         // if the head hits the tail, end the game
         for (var i = 1; i < snakeArray.length; i++) {
             if (inCollision(head, snakeArray[i])) {
-                collide(null);
+                collide("tail");
             }
         }
     }
@@ -286,15 +315,9 @@ function runProgram() {
         $(".tails").css("background-color", "lightsalmon");
 
         if (noCollision) {
-            // if (side === "left") {
-            //     head.column = 22;
-            // } else if (side === "top") {
-            //     head.row = 22;
-            // } else if (side === "right") {
-            //     head.column = 0;
-            // } else if (side === "bottom") {
-            //     head.row = 0;
-            // }
+            // pass through everything
+        } else if (passWall && side !== "tail") {
+            // pass through walls only
         } else {
             // change the message according to the amount of points
             var points = head.score;
