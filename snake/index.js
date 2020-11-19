@@ -9,7 +9,7 @@ function runProgram() {
 
     // Constant Variables
     var passWall = false;
-    var noCollision = false;
+    var noCollide = false;
     setDifficulty();
     var FRAMES_PER_SECOND_INTERVAL = 1000 / frameRate;
     var BORDERS = {
@@ -138,7 +138,7 @@ function runProgram() {
     function setDifficulty() {
         var correctDifficulty;
         var answer;
-        var alreadyCollision;
+        var alreadyCollide;
         var alreadyPass;
 
         // ask for the desired difficulty
@@ -167,16 +167,16 @@ function runProgram() {
                     "Good luck, and have fun!");
                 correctDifficulty = true;
             }
-            // if the answer is noCollision
-            else if (answer === "noCollision") {
-                // if you had already chose noCollision
-                if (answer === "noCollision" && alreadyCollision) {
+            // if the answer is noCollide
+            else if (answer === "noCollide") {
+                // if you had already chose noCollide
+                if (answer === "noCollide" && alreadyCollide) {
                     alert("You already chose that option!");
                 } else {
-                    // tell the user they activated noCollision
-                    alert("noCollision mode activated");
-                    noCollision = true;
-                    alreadyCollision = true;
+                    // tell the user they activated noCollide
+                    alert("noCollide mode activated");
+                    noCollide = true;
+                    alreadyCollide = true;
                     passWall = false;
                     alreadyPass = false;
                 }
@@ -192,8 +192,8 @@ function runProgram() {
                     alert("passWall mode activated");
                     passWall = true;
                     alreadyPass = true;
-                    noCollision = false;
-                    alreadyCollision = false;
+                    noCollide = false;
+                    alreadyCollide = false;
                 }
                 correctDifficulty = false;
             }
@@ -250,7 +250,7 @@ function runProgram() {
     }
 
     function teleportHead() {
-        if (passWall || noCollision) {
+        if (passWall || noCollide) {
             if (head.column < BORDERS.LEFT / 20) {
                 head.column = 21;
             } else if (head.row < BORDERS.TOP / 20) {
@@ -321,7 +321,7 @@ function runProgram() {
         $(head.id).css("background-color", "red");
         $(".tails").css("background-color", "lightsalmon");
 
-        if (noCollision) {
+        if (noCollide) {
             // pass through everything
         } else if (passWall && side !== "tail") {
             // pass through walls only
