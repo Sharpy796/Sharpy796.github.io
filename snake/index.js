@@ -67,6 +67,15 @@ function runProgram() {
             if (!gameEnd) {
                 redrawAllGameItems();
             }
+            if (head.x < BORDERS.LEFT) {
+                head.column = 22;
+            } else if (head.y < BORDERS.TOP) {
+                head.row = 22;
+            } else if (head.x > BORDERS.RIGHT) {
+                head.column = 0;
+            } else if (head.y > BORDERS.BOTTOM) {
+                head.row = 0;
+            }
         }
         keyWasDown = false;
     }
@@ -239,24 +248,24 @@ function runProgram() {
             threshhold = 0;
         }
         // if the head is outside the borders, end the game
-        if (head.x <= BORDERS.LEFT) {
+        if (head.x < BORDERS.LEFT) {
             borderSide = "left";
             collide(borderSide);
-        } else if (head.y <= BORDERS.TOP) {
+        } else if (head.y < BORDERS.TOP) {
             borderSide = "top";
             collide(borderSide);
-        } else if (head.x >= BORDERS.RIGHT + threshhold) {
+        } else if (head.x > BORDERS.RIGHT) {
             borderSide = "right";
             collide(borderSide);
-        } else if (head.y >= BORDERS.BOTTOM + threshhold) {
+        } else if (head.y > BORDERS.BOTTOM) {
             borderSide = "bottom";
             collide(borderSide);
         }
         // if the head is inside the borders, revert to the normal colors
         if (head.x >= BORDERS.LEFT &&
             head.y >= BORDERS.TOP &&
-            head.x < BORDERS.RIGHT &&
-            head.y < BORDERS.BOTTOM) {
+            head.x <= BORDERS.RIGHT &&
+            head.y <= BORDERS.BOTTOM) {
             stopCollide();
             borderSide = "none";
         }
@@ -277,15 +286,15 @@ function runProgram() {
         $(".tails").css("background-color", "lightsalmon");
 
         if (noCollision) {
-            if (side === "left") {
-                head.column = 21;
-            } else if (side === "top") {
-                head.row = 21;
-            } else if (side === "right") {
-                head.column = 0;
-            } else if (side === "bottom") {
-                head.row = 0;
-            }
+            // if (side === "left") {
+            //     head.column = 22;
+            // } else if (side === "top") {
+            //     head.row = 22;
+            // } else if (side === "right") {
+            //     head.column = 0;
+            // } else if (side === "bottom") {
+            //     head.row = 0;
+            // }
         } else {
             // change the message according to the amount of points
             var points = head.score;
