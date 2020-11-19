@@ -144,7 +144,11 @@ function runProgram() {
         // ask for the desired difficulty
         while (!correctDifficulty) {
             // ask for the difficulty: Easy, Medium, Hard, or nothing
-            answer = prompt("What difficulty?\nType either:\nEasy\nMedium\nHard\n\nClicking Cancel sets the difficulty to Medium.");
+            answer = prompt("What difficulty?\n" +
+                "Type either:\n" +
+                "Easy\nMedium\nHard\n\n" +
+                "Typing passWall lets you move through walls.\n\n" +
+                "Clicking Cancel sets the difficulty to Medium.");
             // if the difficulty is Slow, Easy, Medium, Hard, or nothing
             if (answer === "Slow" ||
                 answer === "Easy" ||
@@ -157,7 +161,10 @@ function runProgram() {
                     answer = "Medium";
                 }
                 // tell the user what difficulty they chose, along with the controls
-                alert("You chose the " + answer + " difficulty.\n\nCONTROLS\nUse the arrow keys for movement\nPress space to pause\n\nGood luck, and have fun!");
+                alert("You chose the " + answer + " difficulty.\n\n" +
+                    "CONTROLS\nUse the arrow keys for movement\n" +
+                    "Press space to pause\n\n" +
+                    "Good luck, and have fun!");
                 correctDifficulty = true;
             }
             // if the answer is noCollision
