@@ -42,24 +42,26 @@ function runProgram() {
 
     // Game Item Objects
 
-    var paddleLeft = createGameObject(50, 180, 0, 0, 0, "#paddleLeft");     // player 1
+    var paddleLeft = createGameObject(50, 180, 0, 0, "#paddleLeft");     // player 1
     var p1 = paddleLeft;
 
-    var paddleRight = createGameObject(630, 180, 0, 0, 0, "#paddleRight");  // player 2
+    var paddleRight = createGameObject(630, 180, 0, 0, "#paddleRight");  // player 2
     var p2 = paddleRight;
 
-    var ball = createGameObject(340, 210, -5, -2.5, 0, "#ball");            // ball
+    var ball = createGameObject(340, 210, -5, -2.5, "#ball");            // ball
 
-    var pause = createGameObject(10, 10, 0, 0, null, "#cheatIcon");         // cheat icon
+    var pause = createGameObject(10, 10, 0, 0, "#cheatIcon");         // cheat icon
 
     var score = {
         bounced: 0,
+        p1: 0,
+        p2: 0,
     }
 
     var text = {
         p1: "P1 WINS!",
         p2: "P2 WINS!",
-        restart: "Press R to Restart",
+        restart: "Reload the page to play again",
         pause: "PAUSED",
         error: "ERROR",
     }
@@ -75,6 +77,7 @@ function runProgram() {
     var pIsDown = false;
     var cheatModeActivated = false;
     var firstTime = true;
+    var gameWon = false;
 
     alert("Welcome to Pong!\nP1 Controls: W A S D\nP2 Controls: Up Down Left Right\nPause: P");
 
@@ -90,13 +93,13 @@ function runProgram() {
         updateTemporarySpeed();
         pauseGame();
         handleCollisions();
-        redrawAllGameItems();
-        if (!isPaused) {
-            handleSpeed();
-            repositionAllGameItems();
+        if (!gameWon) {
+            redrawAllGameItems();
+            if (!isPaused) {
+                handleSpeed();
+                repositionAllGameItems();
+            }
         }
-        winGame("p1");
-        winGame("p2");
     }
 
     /* 
@@ -239,7 +242,7 @@ function runProgram() {
     ////////////////////////// HELPER FUNCTIONS ////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
 
-    function createGameObject(x, y, speedX, speedY, score, id) {
+    function createGameObject(x, y, speedX, speedY, id) {
         var gameObject = {};
         gameObject.x = x;
         gameObject.y = y;
@@ -261,7 +264,6 @@ function runProgram() {
         gameObject.speedX = gameObject.speed.left + gameObject.speed.right;
         gameObject.speedY = gameObject.speed.up + gameObject.speed.down;
         gameObject.temporarySpeed = {}
-        gameObject.score = score;
         gameObject.id = id;
         if (gameObject.id === "#ball") {
             gameObject.temporarySpeed.up = gameObject.speed.up;
@@ -386,16 +388,27 @@ function runProgram() {
 
     function playerLose(player) {
         if (player === p1.id) {             // player 1's side
-            p2.score++;
-            $("#ball").css("background-color", "orange");
+            score.p1++;
         } else if (player === p2.id) {      // player 2's side
-            p1.score++;
-            $("#ball").css("background-color", "lime");
+            score.p2++;
         } else {
             console.log("Error: ");
         }
+        whoWon();
+        if (!gameWon) {
+            $("#ball").css("background-color", "red");
+            clearInterval(interval);
+            setTimeout(restartGame, 500);
+        }
+    }
+
+    function restartGame() {
+        interval = setInterval(newFrame, FRAMES_PER_SECOND_INTERVAL)
+        $("#ball").css("background-color", "fuchsia");
         ball.x = 340;
         ball.y = 210;
+        paddleLeft.y = 180;
+        paddleRight.y = 180;
     }
 
     function handlePaddleCollisions(paddle) {
@@ -452,9 +465,14 @@ function runProgram() {
         ball.speedY = ball.speed.down - ball.speed.up;
     }
 
-    function winGame(player) {
-        if (player.score >= 10) {
-            alert(text.player);     // TODO: Fix this
+    function whoWon() {
+        if (score.p1 >= 2) {
+            alert(text.p1 + "\n" + text.restart);
+            gameWon = true;
+            endGame();
+        } if (score.p2 >= 2) {
+            alert(text.p2 + "\n" + text.restart);
+            gameWon = true;
             endGame();
         }
     }
