@@ -95,8 +95,8 @@ function runProgram() {
             handleSpeed();
             repositionAllGameItems();
         }
-        winGame("p1");
-        winGame("p2");
+        // winGame("p1");
+        // winGame("p2");
     }
 
     /* 
@@ -363,7 +363,7 @@ function runProgram() {
         if (ball.leftX < BORDERS.LEFT) {
             ball.speed.right = ball.speed.left;
             ball.speed.left = 0;
-            playerLose(p1.id);
+            // playerLose(p1.id);
             console.log("ball bounced left border")
         }
         if (ball.topY < BORDERS.TOP) {
@@ -374,7 +374,7 @@ function runProgram() {
         if (ball.rightX > BORDERS.RIGHT) {
             ball.speed.left = ball.speed.right;
             ball.speed.right = 0;
-            playerLose(p2.id);
+            // playerLose(p2.id);
             console.log("ball bounced right border")
         }
         if (ball.bottomY > BORDERS.BOTTOM) {
