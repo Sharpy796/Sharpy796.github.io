@@ -388,9 +388,11 @@ function runProgram() {
 
     function playerLose(player) {
         if (player === p1.id) {             // player 1's side
-            score.p1++;
-        } else if (player === p2.id) {      // player 2's side
             score.p2++;
+            $("#p2").text(score.p2);
+        } else if (player === p2.id) {      // player 2's side
+            score.p1++;
+            $("#p1").text(score.p1);
         } else {
             console.log(text.error);
         }
@@ -418,7 +420,6 @@ function runProgram() {
             console.log("ball bounced left paddle border");
         }
         if (whichBorder(ball, paddle) === "right") {
-            ;
             ball.speed.left = 0;
             ball.speed.right = 5;
             console.log("ball bounced right paddle border");
@@ -466,11 +467,13 @@ function runProgram() {
     }
 
     function whoWon() {
-        if (score.p1 >= 2) {
+        if (score.p1 >= 1) {
+            $("#paddleRight").css("background-color", "lime");
             alert(text.p1 + "\n" + text.restart);
             gameWon = true;
             endGame();
-        } if (score.p2 >= 2) {
+        } if (score.p2 >= 1) {
+            $("#paddleRight").css("background-color", "lime");
             alert(text.p2 + "\n" + text.restart);
             gameWon = true;
             endGame();
