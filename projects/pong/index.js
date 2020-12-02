@@ -392,7 +392,7 @@ function runProgram() {
         } else if (player === p2.id) {      // player 2's side
             score.p2++;
         } else {
-            console.log("Error: ");
+            console.log(text.error);
         }
         whoWon();
         if (!gameWon) {
