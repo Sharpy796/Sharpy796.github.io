@@ -50,7 +50,7 @@ function runProgram() {
 
     var ball = createGameObject(340, 210, -5, -2.5, "#ball");           // ball
 
-    // var pause = createGameObject(10, 10, 0, 0, "#cheatIcon");           // cheat icon
+    var pause = createGameObject(10, 10, 0, 0, "#cheatIcon");           // cheat icon
 
     var score = {
         bounced: 0,
@@ -112,7 +112,7 @@ function runProgram() {
         /* general controls */
         if (keycode === KEY.ENTER) {        // ???
             console.log("enter pressed");
-        } if (keycode === KEY.SPACE) {          // pause
+        } if (keycode === KEY.SPACE) {      // pause
             spaceIsDown = true;
             console.log("space pressed");
         } if (keycode === KEY.R) {          // restart
@@ -288,6 +288,25 @@ function runProgram() {
         }
     }
 
+    function handleSpeed() {
+        // p1 speed
+        paddleLeft.speedX = paddleLeft.speed.right - paddleLeft.speed.left;
+        paddleLeft.speedY = paddleLeft.speed.down - paddleLeft.speed.up;
+
+        // p2 speed
+        paddleRight.speedX = paddleRight.speed.right - paddleRight.speed.left;
+        paddleRight.speedY = paddleRight.speed.down - paddleRight.speed.up;
+
+        // ball speed
+        ball.speedX = ball.speed.right - ball.speed.left;
+        ball.speedY = ball.speed.down - ball.speed.up;
+    }
+
+
+    ///////////////////\\\\\\\\\\\\\\\\\\\
+    ////////// Pause and Cheats \\\\\\\\\\
+    ///////////////////\\\\\\\\\\\\\\\\\\\
+    
     var num = 1;
     function pauseGame() {
         if (spaceIsDown) {
@@ -307,6 +326,24 @@ function runProgram() {
             num += 1;
         } else {
             num = 1;
+        }
+    }
+
+    function activateCheatMode() {
+        var answer = prompt("Password:");
+        if (answer === "^^vv<><>ba") {
+            if (cheatModeActivated) {
+                alert("Cheat Mode is already activated.\nType anything but the password to deactivate it.");
+            } else {
+                alert("Cheat Mode Activated!\nUse these controls to move the ball:\nU: Up\nH: Left\nJ: Down\nK: Right\nType anything but the password to deactivate Cheat Mode.");
+            }
+            cheatModeActivated = true;
+        } else if (cheatModeActivated) {
+            alert("Cheat Mode Deactivated");
+            cheatModeActivated = false;
+        } else {
+            alert("Wrong Password.");
+            cheatModeActivated = false;
         }
     }
 
@@ -386,33 +423,6 @@ function runProgram() {
         }
     }
 
-    function playerLose(player) {
-        if (player === p1.id) {             // player 1's side
-            score.p2++;
-            $("#p2").text(score.p2);
-        } else if (player === p2.id) {      // player 2's side
-            score.p1++;
-            $("#p1").text(score.p1);
-        } else {
-            console.log(text.error);
-        }
-        whoWon();
-        if (!gameWon) {
-            $("#ball").css("background-color", "red");
-            clearInterval(interval);
-            setTimeout(restartGame, 500);
-        }
-    }
-
-    function restartGame() {
-        interval = setInterval(newFrame, FRAMES_PER_SECOND_INTERVAL)
-        $("#ball").css("background-color", "fuchsia");
-        ball.x = 340;
-        ball.y = 210;
-        paddleLeft.y = 180;
-        paddleRight.y = 180;
-    }
-
     function handlePaddleCollisions(paddle) {
         if (whichBorder(ball, paddle) === "left") {
             ball.speed.left = 5;
@@ -434,52 +444,17 @@ function runProgram() {
         score.bounced++;
     }
 
-    function activateCheatMode() {
-        var answer = prompt("Password:");
-        if (answer === "^^vv<><>ba") {
-            if (cheatModeActivated) {
-                alert("Cheat Mode is already activated.\nType anything but the password to deactivate it.");
-            } else {
-                alert("Cheat Mode Activated!\nUse these controls to move the ball:\nU: Up\nH: Left\nJ: Down\nK: Right\nType anything but the password to deactivate Cheat Mode.");
-            }
-            cheatModeActivated = true;
-        } else if (cheatModeActivated) {
-            alert("Cheat Mode Deactivated");
-            cheatModeActivated = false;
-        } else {
-            alert("Wrong Password.");
-            cheatModeActivated = false;
+    function whichBorder(obj1, obj2) {
+        if ((obj1.leftX < obj2.rightX && obj1.rightX > (obj2.leftX + $(obj2.id).width() / 2)) &&    // left border is in the right border and the right border in halfway in the left border
+            (obj1.topY < obj2.bottomY && obj1.bottomY > obj2.topY)) {                               // and the top and bottom borders are between the other's top and bottom borders
+            return "right";
+        }
+        if ((obj1.rightX > obj2.leftX && obj1.leftX < (obj2.rightX - $(obj2.id).width() / 2)) &&    // right border is in the left border
+            (obj1.topY < obj2.bottomY && obj1.bottomY > obj2.topY)) {                               // and the top and bottom borders are between the other's top and bottom borders
+            return "left";
         }
     }
-
-    function handleSpeed() {
-        // p1 speed
-        paddleLeft.speedX = paddleLeft.speed.right - paddleLeft.speed.left;
-        paddleLeft.speedY = paddleLeft.speed.down - paddleLeft.speed.up;
-
-        // p2 speed
-        paddleRight.speedX = paddleRight.speed.right - paddleRight.speed.left;
-        paddleRight.speedY = paddleRight.speed.down - paddleRight.speed.up;
-
-        // ball speed
-        ball.speedX = ball.speed.right - ball.speed.left;
-        ball.speedY = ball.speed.down - ball.speed.up;
-    }
-
-    function whoWon() {
-        if (score.p1 >= 1) {
-            $("#paddleLeft").css("background-color", "lime");
-            alert(text.p1 + "\n" + text.restart);
-            gameWon = true;
-            endGame();
-        } if (score.p2 >= 1) {
-            $("#paddleRight").css("background-color", "lime");
-            alert(text.p2 + "\n" + text.restart);
-            gameWon = true;
-            endGame();
-        }
-    }
-
+    
     function doCollide(obj1, obj2) {
         // return true if colliding, else, return false
         if ((obj1.leftX < obj2.rightX &&
@@ -492,25 +467,60 @@ function runProgram() {
         }
     }
 
-    function whichBorder(obj1, obj2) {
-        if ((obj1.leftX < obj2.rightX && obj1.rightX > (obj2.leftX + $(obj2.id).width() / 2)) &&    // left border is in the right border and the right border in halfway in the left border
-            (obj1.topY < obj2.bottomY && obj1.bottomY > obj2.topY)) {                               // and the top and bottom borders are between the other's top and bottom borders
-            return "right";
+
+    ///////////////////\\\\\\\\\\\\\\\\\\\
+    /////////////// Points \\\\\\\\\\\\\\\
+    ///////////////////\\\\\\\\\\\\\\\\\\\
+
+    function playerLose(player) {
+        if (player === p1.id) {             // player 1's side
+            score.p2++;
+            $("#p2").text(score.p2);
+        } else if (player === p2.id) {      // player 2's side
+            score.p1++;
+            $("#p1").text(score.p1);
+        } else {
+            console.log(text.error);
         }
-        if ((obj1.rightX > obj2.leftX && obj1.leftX < (obj2.rightX - $(obj2.id).width() / 2)) &&    // right border is in the left border
-            (obj1.topY < obj2.bottomY && obj1.bottomY > obj2.topY)) {                               // and the top and bottom borders are between the other's top and bottom borders
-            return "left";
+        whoWon();
+        if (!gameWon) {
+            $("#ball").css("background-color", "red");
+            clearInterval(interval);
+            setTimeout(restartGame, 500);
         }
     }
+
+    function whoWon() {
+        if (score.p1 >= 2) {
+            $("#paddleLeft").css("background-color", "lime");
+            alert(text.p1 + "\n" + text.restart);
+            gameWon = true;
+            endGame();
+        } if (score.p2 >= 2) {
+            $("#paddleRight").css("background-color", "lime");
+            alert(text.p2 + "\n" + text.restart);
+            gameWon = true;
+            endGame();
+        }
+    }
+
+    function restartGame() {
+        interval = setInterval(newFrame, FRAMES_PER_SECOND_INTERVAL)
+        $("#ball").css("background-color", "fuchsia");
+        ball.x = 340;
+        ball.y = 210;
+        paddleLeft.y = 180;
+        paddleRight.y = 180;
+    }
+
+
+    ///////////////////|\\\\\\\\\\\\\\\\\\\
+    //////////// Repositioning \\\\\\\\\\\\
+    ///////////////////|\\\\\\\\\\\\\\\\\\\
 
     function repositionGameItem(gameItem) {
         gameItem.x += gameItem.speedX;
         gameItem.y += gameItem.speedY;
-    }
-
-    function redrawGameItem(gameItem) {
-        $(gameItem.id).css("left", gameItem.x);
-        $(gameItem.id).css("top", gameItem.y);
     }
 
     function repositionAllGameItems() {
@@ -519,11 +529,22 @@ function runProgram() {
         repositionGameItem(ball);
     }
 
+
+    ///////////////////|\\\\\\\\\\\\\\\\\\\
+    ////////////// Redrawing \\\\\\\\\\\\\\
+    ///////////////////|\\\\\\\\\\\\\\\\\\\
+
+    function redrawGameItem(gameItem) {
+        $(gameItem.id).css("left", gameItem.x);
+        $(gameItem.id).css("top", gameItem.y);
+    }
+
     function redrawAllGameItems() {
         redrawGameItem(paddleLeft);
         redrawGameItem(paddleRight);
         redrawGameItem(ball);
     }
+
 
     function resetGame() {
         // paddleLeft.x = x;
