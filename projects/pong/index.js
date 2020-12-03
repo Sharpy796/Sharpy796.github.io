@@ -18,7 +18,7 @@ function runProgram() {
     var KEY = {
         /* general controls */
         ENTER: 16,  // ???
-        P: 80,      // pause
+        SPACE: 32,  // pause
         R: 82,      // restart
 
         /* P1 controls */
@@ -42,15 +42,15 @@ function runProgram() {
 
     // Game Item Objects
 
-    var paddleLeft = createGameObject(50, 180, 0, 0, "#paddleLeft");     // player 1
+    var paddleLeft = createGameObject(50, 180, 0, 0, "#paddleLeft");    // player 1
     var p1 = paddleLeft;
 
-    var paddleRight = createGameObject(630, 180, 0, 0, "#paddleRight");  // player 2
+    var paddleRight = createGameObject(630, 180, 0, 0, "#paddleRight"); // player 2
     var p2 = paddleRight;
 
-    var ball = createGameObject(340, 210, -5, -2.5, "#ball");            // ball
+    var ball = createGameObject(340, 210, -5, -2.5, "#ball");           // ball
 
-    var pause = createGameObject(10, 10, 0, 0, "#cheatIcon");         // cheat icon
+    // var pause = createGameObject(10, 10, 0, 0, "#cheatIcon");           // cheat icon
 
     var score = {
         bounced: 0,
@@ -74,12 +74,12 @@ function runProgram() {
     $("#cheatIcon").hide();
 
     var isPaused = false;
-    var pIsDown = false;
+    var spaceIsDown = false;
     var cheatModeActivated = false;
     var firstTime = true;
     var gameWon = false;
 
-    alert("Welcome to Pong!\nP1 Controls: W A S D\nP2 Controls: Up Down Left Right\nPause: P");
+    alert("Welcome to Pong!\nP1 Controls: W A S D\nP2 Controls: Up Down Left Right\nPause: Space");
 
     ////////////////////////////////////////////////////////////////////////////////
     ///////////////////////// CORE LOGIC ///////////////////////////////////////////
@@ -112,9 +112,9 @@ function runProgram() {
         /* general controls */
         if (keycode === KEY.ENTER) {        // ???
             console.log("enter pressed");
-        } if (keycode === KEY.P) {          // pause
-            pIsDown = true;
-            console.log("p pressed");
+        } if (keycode === KEY.SPACE) {          // pause
+            spaceIsDown = true;
+            console.log("space pressed");
         } if (keycode === KEY.R) {          // restart
             console.log("r pressed");
         }
@@ -183,9 +183,9 @@ function runProgram() {
         /* general controls */
         if (keycode === KEY.ENTER) {
             console.log("enter released");
-        } if (keycode === KEY.P) {
-            pIsDown = false;
-            console.log("p released");
+        } if (keycode === KEY.SPACE) {
+            spaceIsDown = false;
+            console.log("space released");
         } if (keycode === KEY.R) {
             console.log("r released");
         }
@@ -290,7 +290,7 @@ function runProgram() {
 
     var num = 1;
     function pauseGame() {
-        if (pIsDown) {
+        if (spaceIsDown) {
             if (num < 2) {
                 if (isPaused) {
                     isPaused = false;
@@ -468,7 +468,7 @@ function runProgram() {
 
     function whoWon() {
         if (score.p1 >= 1) {
-            $("#paddleRight").css("background-color", "lime");
+            $("#paddleLeft").css("background-color", "lime");
             alert(text.p1 + "\n" + text.restart);
             gameWon = true;
             endGame();
