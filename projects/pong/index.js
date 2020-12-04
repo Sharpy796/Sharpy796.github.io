@@ -527,6 +527,7 @@ function runProgram() {
         }
         paddleLeft.y = 180;
         paddleRight.y = 180;
+        score.bounced = 0;
     }
 
 
