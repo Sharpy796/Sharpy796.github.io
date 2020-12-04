@@ -77,6 +77,7 @@ function runProgram() {
     var spaceIsDown = false;
     var cheatModeActivated = false;
     var firstTime = true;
+    var freeplay = false;
     var gameWon = false;
 
     alert("Welcome to Pong!\nP1 Controls: W A S D\nP2 Controls: Up Down Left Right\nPause: Space");
@@ -306,7 +307,7 @@ function runProgram() {
     ///////////////////\\\\\\\\\\\\\\\\\\\
     ////////// Pause and Cheats \\\\\\\\\\
     ///////////////////\\\\\\\\\\\\\\\\\\\
-    
+
     var num = 1;
     function pauseGame() {
         if (spaceIsDown) {
@@ -400,26 +401,30 @@ function runProgram() {
 
     function bounceBall() {
         if (ball.leftX < BORDERS.LEFT) {
-            ball.speed.right = ball.speed.left;
-            ball.speed.left = 0;
+            if (freeplay) {
+                ball.speed.right = ball.speed.left;
+                ball.speed.left = 0;
+            }
             playerLose(p1.id);
-            console.log("ball bounced left border")
+            console.log("ball bounced left border");
         }
         if (ball.topY < BORDERS.TOP) {
             ball.speed.down = ball.speed.up;
             ball.speed.up = 0;
-            console.log("ball bounced top border")
+            console.log("ball bounced top border");
         }
         if (ball.rightX > BORDERS.RIGHT) {
-            ball.speed.left = ball.speed.right;
-            ball.speed.right = 0;
+            if (freeplay) {
+                ball.speed.left = ball.speed.right;
+                ball.speed.right = 0;
+            }
             playerLose(p2.id);
-            console.log("ball bounced right border")
+            console.log("ball bounced right border");
         }
         if (ball.bottomY > BORDERS.BOTTOM) {
             ball.speed.up = ball.speed.down;
             ball.speed.down = 0;
-            console.log("ball bounced bottom border")
+            console.log("ball bounced bottom border");
         }
     }
 
@@ -441,7 +446,7 @@ function runProgram() {
         } else {
             console.log("ball bounced ??");
         }
-        score.bounced++;
+        score.bounced++; 
     }
 
     function whichBorder(obj1, obj2) {
@@ -454,7 +459,7 @@ function runProgram() {
             return "left";
         }
     }
-    
+
     function doCollide(obj1, obj2) {
         // return true if colliding, else, return false
         if ((obj1.leftX < obj2.rightX &&
@@ -482,21 +487,23 @@ function runProgram() {
         } else {
             console.log(text.error);
         }
-        whoWon();
-        if (!gameWon) {
-            $("#ball").css("background-color", "red");
-            clearInterval(interval);
-            setTimeout(restartGame, 500);
+        if (!freeplay) {
+            whoWon();
+            if (!gameWon) {
+                $("#ball").css("background-color", "red");
+                clearInterval(interval);
+                setTimeout(restartGame.bind(null, player), 500);
+            }
         }
     }
 
     function whoWon() {
-        if (score.p1 >= 2) {
+        if (score.p1 >= 10) {
             $("#paddleLeft").css("background-color", "lime");
             alert(text.p1 + "\n" + text.restart);
             gameWon = true;
             endGame();
-        } if (score.p2 >= 2) {
+        } if (score.p2 >= 10) {
             $("#paddleRight").css("background-color", "lime");
             alert(text.p2 + "\n" + text.restart);
             gameWon = true;
@@ -504,11 +511,20 @@ function runProgram() {
         }
     }
 
-    function restartGame() {
+    function restartGame(player) {
         interval = setInterval(newFrame, FRAMES_PER_SECOND_INTERVAL)
         $("#ball").css("background-color", "fuchsia");
         ball.x = 340;
         ball.y = 210;
+        if (player === p1.id) {
+            ball.speed.left = 0;
+            ball.speed.right = 5;
+        } else if (player === p2.id) {
+            ball.speed.left = 5;
+            ball.speed.right = 0;
+        } else {
+            alert(text.error + " in restartGame " + player);
+        }
         paddleLeft.y = 180;
         paddleRight.y = 180;
     }
