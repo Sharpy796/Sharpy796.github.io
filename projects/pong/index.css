@@ -22,7 +22,6 @@ body {
 }
 
 .text {
-  margin-top: 25px;
   font-family: "Comic Sans MS";
   -webkit-user-select: none; /* Safari */
   -moz-user-select: none; /* Firefox */
@@ -30,6 +29,18 @@ body {
   user-select: none; /* Standard */
   text-align: center;
   display: block;
+}
+
+#p1 {
+  margin-top: 9px;
+}
+
+#p2 {
+  margin-top: 0px;
+}
+
+#bounced {
+  margin-top: 0px;
 }
 
 #paddleLeft {

@@ -440,13 +440,15 @@ function runProgram() {
             console.log("ball bounced right paddle border");
         }
         if (paddle === paddleLeft) {
+            score.bounced++;
             console.log("ball bounced p1");
         } else if (paddle === paddleRight) {
+            score.bounced++;
             console.log("ball bounced p2");
         } else {
             console.log("ball bounced ??");
         }
-        score.bounced++;
+        $("#bounced").text(score.bounced);
     }
 
     function whichBorder(obj1, obj2) {
