@@ -264,9 +264,9 @@ function runProgram() {
         }
         gameObject.speedX = gameObject.speed.left + gameObject.speed.right;
         gameObject.speedY = gameObject.speed.up + gameObject.speed.down;
-        gameObject.temporarySpeed = {}
         gameObject.id = id;
         if (gameObject.id === "#ball") {
+            gameObject.temporarySpeed = {}
             gameObject.temporarySpeed.up = gameObject.speed.up;
             gameObject.temporarySpeed.left = gameObject.speed.left;
             gameObject.temporarySpeed.down = gameObject.speed.down;
@@ -446,7 +446,7 @@ function runProgram() {
         } else {
             console.log("ball bounced ??");
         }
-        score.bounced++; 
+        score.bounced++;
     }
 
     function whichBorder(obj1, obj2) {
