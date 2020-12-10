@@ -428,27 +428,23 @@ function runProgram() {
         }
     }
 
+    var newSomething = 0;
     function handlePaddleCollisions(paddle) {
         if (whichBorder(ball, paddle) === "left") {
             ball.speed.left = 5;
             ball.speed.right = 0;
-            console.log("ball bounced left paddle border");
+            score.bounced++;
+            console.log("ball bounced " + tellPaddle(paddle) + " paddle's left border");
         }
         if (whichBorder(ball, paddle) === "right") {
             ball.speed.left = 0;
             ball.speed.right = 5;
-            console.log("ball bounced right paddle border");
-        }
-        if (paddle === paddleLeft) {
             score.bounced++;
-            console.log("ball bounced p1");
-        } else if (paddle === paddleRight) {
-            score.bounced++;
-            console.log("ball bounced p2");
-        } else {
-            console.log("ball bounced ??");
+            console.log("ball bounced " + tellPaddle(paddle) + " paddle's right border");
         }
-        $("#bounced").text(score.bounced);
+
+        $("#bouncedLeft").text(score.bounced);
+        $("#bouncedRight").text(score.bounced);
     }
 
     function whichBorder(obj1, obj2) {
@@ -459,6 +455,15 @@ function runProgram() {
         if ((obj1.rightX > obj2.leftX && obj1.leftX < (obj2.rightX - $(obj2.id).width() / 2)) &&    // right border is in the left border
             (obj1.topY < obj2.bottomY && obj1.bottomY > obj2.topY)) {                               // and the top and bottom borders are between the other's top and bottom borders
             return "left";
+        }
+    }
+
+    function tellPaddle(paddle) {
+        if (paddle === paddleLeft) {
+            return "left";
+        }
+        if (paddle === paddleRight) {
+            return "right";
         }
     }
 
