@@ -429,18 +429,21 @@ function runProgram() {
         }
     }
 
+    var num2 = 0;
     function handlePaddleCollisions(paddle) {
         // if the ball collides with the paddles
         if (doCollide(ball, paddle)) {
             // and it is the first time bouncing on one
-            if (firstTimeBounced) {
+            if (num2 === 0) {
                 // if it bounced off the paddle's left border
                 if (whichBorder(ball, paddle) === "left") {
                     // bounce the ball left
                     ball.speed.left = 5;
                     ball.speed.right = 0;
                     // increase the score
-                    score.bounced++;
+                    if (num2 <= 0) {
+                        score.bounced++;
+                    }
                     // $("#ball").css("background-color", "yellow");
                     console.log("ball bounced " + tellPaddle(paddle) + " paddle's left border");
                 }
@@ -450,16 +453,20 @@ function runProgram() {
                     ball.speed.left = 0;
                     ball.speed.right = 5;
                     // increase the score
-                    score.bounced++;
+                    if (num2 <= 0) {
+                        score.bounced++;
+                    }
                     // $("#ball").css("background-color", "blue");
                     console.log("ball bounced " + tellPaddle(paddle) + " paddle's right border");
                 }
-                // tell us it isn't the first time bouncing anymore
-                firstTimeBounced = false;
             }
+            // tell us it isn't the first time bouncing anymore
+            firstTimeBounced = false;
+            num2++;
         } else {
             // tell us we still have yet to bounce
             firstTimeBounced = true;
+            num2 = 0;
         }
 
         $("#bouncedLeft").text(score.bounced);
@@ -497,7 +504,7 @@ function runProgram() {
             (obj1.rightX > obj2.leftX &&
                 obj1.bottomY > obj2.topY)) {
             // $("#ball").css("background-color", "orange");
-                    console.log('boing')
+            console.log('boing')
 
             return true;
         } else {
