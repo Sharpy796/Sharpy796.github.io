@@ -370,8 +370,8 @@ function runProgram() {
         }
 
         // check if the ball is touching the paddles
-        handlePaddleCollisions(paddleLeft);     // left paddle
         handlePaddleCollisions(paddleRight);    // right paddle
+        handlePaddleCollisions(paddleLeft);     // left paddle
     }
 
     function updateObjectBorders(obj) {
@@ -431,7 +431,7 @@ function runProgram() {
 
     function handlePaddleCollisions(paddle) {
         // if the ball collides with the paddles
-        if (doCollide(ball, paddleLeft) || doCollide(ball, paddleRight)) {
+        if (doCollide(ball, paddle)) {
             // and it is the first time bouncing on one
             if (firstTimeBounced) {
                 // if it bounced off the paddle's left border
@@ -454,12 +454,12 @@ function runProgram() {
                     // $("#ball").css("background-color", "blue");
                     console.log("ball bounced " + tellPaddle(paddle) + " paddle's right border");
                 }
-                // tell us it isn't the first time bouncing
+                // tell us it isn't the first time bouncing anymore
                 firstTimeBounced = false;
             }
         } else {
-            firstTimeBounced = true;
             // tell us we still have yet to bounce
+            firstTimeBounced = true;
         }
 
         $("#bouncedLeft").text(score.bounced);
@@ -497,6 +497,8 @@ function runProgram() {
             (obj1.rightX > obj2.leftX &&
                 obj1.bottomY > obj2.topY)) {
             // $("#ball").css("background-color", "orange");
+                    console.log('boing')
+
             return true;
         } else {
             // $("#ball").css("background-color", "fuchsia");
