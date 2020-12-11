@@ -76,8 +76,9 @@ function runProgram() {
     var isPaused = false;
     var spaceIsDown = false;
     var cheatModeActivated = false;
-    var firstTime = true;
-    var freeplay = false;
+    var firstTimeCheat = true;
+    var firstTimeBounced = true;
+    var freeplay = true;
     var gameWon = false;
 
     alert("Welcome to Pong!\nP1 Controls: W A S D\nP2 Controls: Up Down Left Right\nPause: Space");
@@ -148,13 +149,13 @@ function runProgram() {
 
         /* ball controls */
         if (cheatModeActivated) {
-            if (firstTime) {
+            if (firstTimeCheat) {
                 ball.speed.up = 0;
                 ball.speed.left = 0;
                 ball.speed.down = 0;
                 ball.speed.right = 0;
             }
-            firstTime = false;
+            firstTimeCheat = false;
             if (keycode === KEY.U) {        // up
                 ball.speed.up = 5;
                 console.log("u pressed");
@@ -173,7 +174,7 @@ function runProgram() {
             ball.speed.left = ball.temporarySpeed.left;
             ball.speed.down = ball.temporarySpeed.down;
             ball.speed.right = ball.temporarySpeed.right;
-            firstTime = true;
+            firstTimeCheat = true;
         }
     }
 
@@ -428,19 +429,37 @@ function runProgram() {
         }
     }
 
-    var newSomething = 0;
     function handlePaddleCollisions(paddle) {
-        if (whichBorder(ball, paddle) === "left") {
-            ball.speed.left = 5;
-            ball.speed.right = 0;
-            score.bounced++;
-            console.log("ball bounced " + tellPaddle(paddle) + " paddle's left border");
-        }
-        if (whichBorder(ball, paddle) === "right") {
-            ball.speed.left = 0;
-            ball.speed.right = 5;
-            score.bounced++;
-            console.log("ball bounced " + tellPaddle(paddle) + " paddle's right border");
+        // if the ball collides with the paddles
+        if (doCollide(ball, paddleLeft) || doCollide(ball, paddleRight)) {
+            // and it is the first time bouncing on one
+            if (firstTimeBounced) {
+                // if it bounced off the paddle's left border
+                if (whichBorder(ball, paddle) === "left") {
+                    // bounce the ball left
+                    ball.speed.left = 5;
+                    ball.speed.right = 0;
+                    // increase the score
+                    score.bounced++;
+                    // $("#ball").css("background-color", "yellow");
+                    console.log("ball bounced " + tellPaddle(paddle) + " paddle's left border");
+                }
+                // if it bounced off the paddle's right border
+                else if (whichBorder(ball, paddle) === "right") {
+                    // bounce the ball right
+                    ball.speed.left = 0;
+                    ball.speed.right = 5;
+                    // increase the score
+                    score.bounced++;
+                    // $("#ball").css("background-color", "blue");
+                    console.log("ball bounced " + tellPaddle(paddle) + " paddle's right border");
+                }
+                // tell us it isn't the first time bouncing
+                firstTimeBounced = false;
+            }
+        } else {
+            firstTimeBounced = true;
+            // tell us we still have yet to bounce
         }
 
         $("#bouncedLeft").text(score.bounced);
@@ -448,21 +467,25 @@ function runProgram() {
     }
 
     function whichBorder(obj1, obj2) {
-        if ((obj1.leftX < obj2.rightX && obj1.rightX > (obj2.leftX + $(obj2.id).width() / 2)) &&    // left border is in the right border and the right border in halfway in the left border
-            (obj1.topY < obj2.bottomY && obj1.bottomY > obj2.topY)) {                               // and the top and bottom borders are between the other's top and bottom borders
-            return "right";
-        }
         if ((obj1.rightX > obj2.leftX && obj1.leftX < (obj2.rightX - $(obj2.id).width() / 2)) &&    // right border is in the left border
             (obj1.topY < obj2.bottomY && obj1.bottomY > obj2.topY)) {                               // and the top and bottom borders are between the other's top and bottom borders
+            // $("#ball").css("background-color", "orange");
             return "left";
+        }
+        if ((obj1.leftX < obj2.rightX && obj1.rightX > (obj2.leftX + $(obj2.id).width() / 2)) &&    // left border is in the right border and the right border in halfway in the left border
+            (obj1.topY < obj2.bottomY && obj1.bottomY > obj2.topY)) {                               // and the top and bottom borders are between the other's top and bottom borders
+            // $("#ball").css("background-color", "purple");
+            return "right";
         }
     }
 
     function tellPaddle(paddle) {
         if (paddle === paddleLeft) {
+            // $("#ball").css("background-color", "yellow");
             return "left";
         }
         if (paddle === paddleRight) {
+            // $("#ball").css("background-color", "blue");
             return "right";
         }
     }
@@ -473,8 +496,10 @@ function runProgram() {
             obj1.topY < obj2.bottomY) &&
             (obj1.rightX > obj2.leftX &&
                 obj1.bottomY > obj2.topY)) {
+            // $("#ball").css("background-color", "orange");
             return true;
         } else {
+            // $("#ball").css("background-color", "fuchsia");
             return false;
         }
     }
