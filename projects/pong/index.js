@@ -445,7 +445,9 @@ function runProgram() {
                 ball.speed.left = 5;
                 ball.speed.right = 0;
                 // increase the score
+                if (paddle === paddleRight) {
                     score.bounced++;
+                }
                 console.log("ball bounced " + tellPaddle(paddle) + " paddle's left border");
             }
             // if it bounced off the paddle's right border
@@ -454,13 +456,14 @@ function runProgram() {
                 ball.speed.left = 0;
                 ball.speed.right = 5;
                 // increase the score
+                if (paddle === paddleLeft) {
                     score.bounced++;
+                }
                 console.log("ball bounced " + tellPaddle(paddle) + " paddle's right border");
             }
         }
         // tell us it isn't the first time bouncing anymore
         firstTimeBounced = false;
-        num2++;
 
         $("#bouncedLeft").text(score.bounced);
         $("#bouncedRight").text(score.bounced);
