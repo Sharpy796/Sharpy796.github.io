@@ -370,8 +370,15 @@ function runProgram() {
         }
 
         // check if the ball is touching the paddles
-        handlePaddleCollisions(paddleRight);    // right paddle
-        handlePaddleCollisions(paddleLeft);     // left paddle
+        if (doCollide(ball, paddleLeft)) {
+            handlePaddleCollisions(paddleLeft);     // left paddle
+        } else if (doCollide(ball, paddleRight)) {
+            handlePaddleCollisions(paddleRight);    // right paddle
+        } else {
+            // tell us we still have yet to bounce
+            firstTimeBounced = true;
+            num2 = 0;
+        }
     }
 
     function updateObjectBorders(obj) {
@@ -429,45 +436,31 @@ function runProgram() {
         }
     }
 
-    var num2 = 0;
     function handlePaddleCollisions(paddle) {
-        // if the ball collides with the paddles
-        if (doCollide(ball, paddle)) {
-            // and it is the first time bouncing on one
-            if (num2 === 0) {
-                // if it bounced off the paddle's left border
-                if (whichBorder(ball, paddle) === "left") {
-                    // bounce the ball left
-                    ball.speed.left = 5;
-                    ball.speed.right = 0;
-                    // increase the score
-                    if (num2 <= 0) {
-                        score.bounced++;
-                    }
-                    // $("#ball").css("background-color", "yellow");
-                    console.log("ball bounced " + tellPaddle(paddle) + " paddle's left border");
-                }
-                // if it bounced off the paddle's right border
-                else if (whichBorder(ball, paddle) === "right") {
-                    // bounce the ball right
-                    ball.speed.left = 0;
-                    ball.speed.right = 5;
-                    // increase the score
-                    if (num2 <= 0) {
-                        score.bounced++;
-                    }
-                    // $("#ball").css("background-color", "blue");
-                    console.log("ball bounced " + tellPaddle(paddle) + " paddle's right border");
-                }
+        // if it is the first time bouncing on one
+        if (firstTimeBounced) {
+            // if it bounced off the paddle's left border
+            if (whichBorder(ball, paddle) === "left") {
+                // bounce the ball left
+                ball.speed.left = 5;
+                ball.speed.right = 0;
+                // increase the score
+                    score.bounced++;
+                console.log("ball bounced " + tellPaddle(paddle) + " paddle's left border");
             }
-            // tell us it isn't the first time bouncing anymore
-            firstTimeBounced = false;
-            num2++;
-        } else {
-            // tell us we still have yet to bounce
-            firstTimeBounced = true;
-            num2 = 0;
+            // if it bounced off the paddle's right border
+            else if (whichBorder(ball, paddle) === "right") {
+                // bounce the ball right
+                ball.speed.left = 0;
+                ball.speed.right = 5;
+                // increase the score
+                    score.bounced++;
+                console.log("ball bounced " + tellPaddle(paddle) + " paddle's right border");
+            }
         }
+        // tell us it isn't the first time bouncing anymore
+        firstTimeBounced = false;
+        num2++;
 
         $("#bouncedLeft").text(score.bounced);
         $("#bouncedRight").text(score.bounced);
