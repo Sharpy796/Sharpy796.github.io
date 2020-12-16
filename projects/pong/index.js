@@ -80,6 +80,7 @@ function runProgram() {
     var firstTimeBounced = true;
     var freeplay = false;
     var gameWon = false;
+    var speedVarY = 5;
 
     alert("Welcome to Pong!\nP1 Controls: W A S D\nP2 Controls: Up Down Left Right\nPause: Space");
 
@@ -276,6 +277,21 @@ function runProgram() {
         return gameObject;
     }
 
+    function changeSign(value, sign) {
+        if (sign === "positive") {
+            while (value < 0) {
+                value *= -1;
+            }
+        } else if (sign === "negative") {
+            while (value > 0) {
+                value *= -1;
+            }
+        } else {
+            alert("You cannot change the sign of 0");
+        }
+        return value;
+    }
+
 
     ///////////////////|\\\\\\\\\\\\\\\\\\\
     //////////////// Speed \\\\\\\\\\\\\\\\
@@ -302,6 +318,22 @@ function runProgram() {
         // ball speed
         ball.speedX = ball.speed.right - ball.speed.left;
         ball.speedY = ball.speed.down - ball.speed.up;
+    }
+
+    function randBallSpeedY() {
+        var randNum = 0;
+        while (randNum >= 5 || randNum <= 1) {
+            randNum = Math.floor(Math.random() * 10);
+        }
+        speedVarY = randNum;
+        if (ball.speedY > 0) {
+            ball.speed.up = speedVarY;
+            ball.speed.down = 0;
+        } else if (ball.speedY < 0) {
+            ball.speed.up = 0;
+            ball.speed.down = speedVarY;
+        }
+        console.log("changed ball speedY to " + speedVarY);
     }
 
 
@@ -394,7 +426,11 @@ function runProgram() {
             console.log(obj.id + " passed left border")
         }
         if (obj.topY < BORDERS.TOP) {
-            obj.y -= -5;
+            if (obj === ball) {
+                obj.y -= -speedVarY;
+            } else {
+                obj.y -= -5;
+            }
             console.log(obj.id + " passed top border")
         }
         if (obj.rightX > BORDERS.RIGHT) {
@@ -402,7 +438,11 @@ function runProgram() {
             console.log(obj.id + " passed right border")
         }
         if (obj.bottomY > BORDERS.BOTTOM) {
-            obj.y -= 5;
+            if (obj === ball) {
+                obj.y -= speedVarY;
+            } else {
+                obj.y -= 5;
+            }
             console.log(obj.id + " passed bottom border")
         }
     }
@@ -531,7 +571,8 @@ function runProgram() {
             alert(text.p1 + "\n" + text.restart);
             gameWon = true;
             endGame();
-        } if (score.p2 >= 10) {
+        }
+        if (score.p2 >= 10) {
             $("#paddleRight").css("background-color", "lime");
             alert(text.p2 + "\n" + text.restart);
             gameWon = true;
@@ -553,6 +594,7 @@ function runProgram() {
         } else {
             alert(text.error + " in restartGame " + player);
         }
+        randBallSpeedY();
         paddleLeft.y = 180;
         paddleRight.y = 180;
         score.bounced = 0;
