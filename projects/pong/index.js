@@ -472,23 +472,19 @@ function runProgram() {
     function whichBorder(obj1, obj2) {
         if ((obj1.rightX > obj2.leftX && obj1.leftX < (obj2.rightX - $(obj2.id).width() / 2)) &&    // right border is in the left border
             (obj1.topY < obj2.bottomY && obj1.bottomY > obj2.topY)) {                               // and the top and bottom borders are between the other's top and bottom borders
-            // $("#ball").css("background-color", "orange");
             return "left";
         }
         if ((obj1.leftX < obj2.rightX && obj1.rightX > (obj2.leftX + $(obj2.id).width() / 2)) &&    // left border is in the right border and the right border in halfway in the left border
             (obj1.topY < obj2.bottomY && obj1.bottomY > obj2.topY)) {                               // and the top and bottom borders are between the other's top and bottom borders
-            // $("#ball").css("background-color", "purple");
             return "right";
         }
     }
 
     function tellPaddle(paddle) {
         if (paddle === paddleLeft) {
-            // $("#ball").css("background-color", "yellow");
             return "left";
         }
         if (paddle === paddleRight) {
-            // $("#ball").css("background-color", "blue");
             return "right";
         }
     }
@@ -499,12 +495,10 @@ function runProgram() {
             obj1.topY < obj2.bottomY) &&
             (obj1.rightX > obj2.leftX &&
                 obj1.bottomY > obj2.topY)) {
-            // $("#ball").css("background-color", "orange");
             console.log('boing')
 
             return true;
         } else {
-            // $("#ball").css("background-color", "fuchsia");
             return false;
         }
     }
