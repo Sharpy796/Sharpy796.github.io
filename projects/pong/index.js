@@ -78,7 +78,7 @@ function runProgram() {
     var cheatModeActivated = false;
     var firstTimeCheat = true;
     var firstTimeBounced = true;
-    var freeplay = true;
+    var freeplay = false;
     var gameWon = false;
 
     alert("Welcome to Pong!\nP1 Controls: W A S D\nP2 Controls: Up Down Left Right\nPause: Space");
@@ -464,9 +464,6 @@ function runProgram() {
         }
         // tell us it isn't the first time bouncing anymore
         firstTimeBounced = false;
-
-        $("#bouncedLeft").text(score.bounced);
-        $("#bouncedRight").text(score.bounced);
     }
 
     function whichBorder(obj1, obj2) {
@@ -543,7 +540,7 @@ function runProgram() {
     }
 
     function restartGame(player) {
-        interval = setInterval(newFrame, FRAMES_PER_SECOND_INTERVAL)
+        interval = setInterval(newFrame, FRAMES_PER_SECOND_INTERVAL);
         $("#ball").css("background-color", "fuchsia");
         ball.x = 340;
         ball.y = 210;
@@ -587,10 +584,16 @@ function runProgram() {
         $(gameItem.id).css("top", gameItem.y);
     }
 
+    function redrawScores() {
+        $("#bouncedLeft").text(score.bounced);
+        $("#bouncedRight").text(score.bounced);
+    }
+
     function redrawAllGameItems() {
         redrawGameItem(paddleLeft);
         redrawGameItem(paddleRight);
         redrawGameItem(ball);
+        redrawScores();
     }
 
 
