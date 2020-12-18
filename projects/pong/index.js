@@ -51,8 +51,6 @@ function runProgram() {
 
     var ball = createGameObject(340, 210, -5, -2.5, "#ball");           // ball
 
-    var pause = createGameObject(10, 10, 0, 0, "#cheatIcon");           // cheat icon
-
     var score = {
         bounced: 0,
         p1: 0,
@@ -75,15 +73,13 @@ function runProgram() {
     $("#cheatIcon").hide();
 
     var pause = false;
-    var spaceIsDown = false;
-    var cheatMode = false;
-    var freePlay = false;
-    var autoPlay = false;
+    var spaceIsDown = false
     var firstTimeCheat = true;
     var firstTimeBounced = true;
-    var firstTimePaused = true;
+    var firstTimePaused = true;;
+    var cheatMode = false;
     var freePlay = false;
-    var autoPlay = false;
+    var autoPlay = true;
     var gameWon = false;
     var varSpeedX = 5;
     var varSpeedY = 5;
@@ -110,11 +106,6 @@ function runProgram() {
                 repositionAllGameItems();
             }
         }
-<<<<<<< HEAD
-        // winGame("p1");
-        // winGame("p2");
-=======
->>>>>>> pong
     }
 
     /* 
@@ -292,21 +283,6 @@ function runProgram() {
             gameObject.temporarySpeed.right = gameObject.speed.right;
         }
         return gameObject;
-    }
-
-    function changeSign(value, sign) {
-        if (sign === "positive") {
-            while (value < 0) {
-                value *= -1;
-            }
-        } else if (sign === "negative") {
-            while (value > 0) {
-                value *= -1;
-            }
-        } else {
-            alert("You cannot change the sign of 0");
-        }
-        return value;
     }
 
     function restartTimer() {
@@ -619,6 +595,7 @@ function runProgram() {
                 // bounce the ball left
                 ball.speed.left = varSpeedX;
                 ball.speed.right = 0;
+                ball.x -= 1;
                 // increase the score
                 if (paddle === paddleRight) {
                     score.bounced++;
@@ -633,6 +610,7 @@ function runProgram() {
                 // bounce the ball right
                 ball.speed.left = 0;
                 ball.speed.right = varSpeedX;
+                ball.x += 1;
                 // increase the score
                 if (paddle === paddleLeft) {
                     score.bounced++;
