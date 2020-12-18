@@ -1,21 +1,29 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Pong</title>
-    <!-- Load CSS files -->
-    <link rel="stylesheet" type="text/css" href="index.css">
 
-    <!-- Load JavaScript files -->
-    <script src="jquery.min.js"></script>
-    <script src="index.js"></script>
-  </head>
-  
-  <body>
-    <div id='board'>
-      <div class='gameItem' id='paddleLeft'></div>
-      <div class='gameItem' id='paddleRight'></div>
-      <div class='gameItem' id='ball'></div>
-      <div class='gameItem' id='cheatIcon'></div>
-    </div>
-  </body>
+<head>
+	<title>Pong</title>
+	<!-- Load CSS files -->
+	<link rel="stylesheet" type="text/css" href="index.css">
+
+	<!-- Load JavaScript files -->
+	<script src="jquery.min.js"></script>
+	<script src="index.js"></script>
+</head>
+
+<body>
+	<div id='board'>
+		<div class='gameItem' id='paddleLeft'>
+			<p class='text' id='p1'>0</p>
+            <p class='text' id='bouncedLeft'>0</p>
+		</div>
+		<div class='gameItem' id='paddleRight'>
+			<p class='text' id='p2'>0</p>
+            <p class='text' id='bouncedRight'>0</p>
+		</div>
+		<div class='gameItem' id='ball'></div>
+		<div class='gameItem' id='cheatIcon'></div>
+	</div>
+</body>
+
 </html>

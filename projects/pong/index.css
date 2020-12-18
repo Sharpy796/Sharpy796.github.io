@@ -21,6 +21,24 @@ body {
   position: absolute;
 }
 
+.text {
+  font-family: "Comic Sans MS";
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
+  text-align: center;
+  display: block;
+}
+
+#p1 {
+  margin-top: 9px;
+}
+
+#p2 {
+  margin-top: 9px;
+}
+
 #paddleLeft {
   /* appearance */
   background-color: teal;
@@ -45,7 +63,7 @@ body {
   height: 20px;
   border-radius: 10px;
   background-color: fuchsia;
-
+  
   /* positioning */
   left: 340px;
   top: 210px;
