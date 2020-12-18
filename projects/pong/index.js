@@ -74,7 +74,7 @@ function runProgram() {
     $("#cheatIcon").on("click", activateCheatMode); // listen for click events
     $("#cheatIcon").hide();
 
-    var isPaused = false;
+    var pause = false;
     var spaceIsDown = false;
     var cheatMode = false;
     var freePlay = false;
@@ -101,10 +101,11 @@ function runProgram() {
     function newFrame() {
         updateTemporarySpeed();
         pauseGame();
+        changeColors()
         handleCollisions();
         if (!gameWon) {
             redrawAllGameItems();
-            if (!isPaused) {
+            if (!pause) {
                 handleSpeed();
                 repositionAllGameItems();
             }
@@ -303,13 +304,18 @@ function runProgram() {
         return value;
     }
 
+    function restartTimer() {
+        framesPerSecondInterval = 1000 / (FRAMES + score.bounced * 2);
+        interval = setInterval(newFrame, framesPerSecondInterval);
+    }
+
 
     ///////////////////|\\\\\\\\\\\\\\\\\\\
     //////////////// Speed \\\\\\\\\\\\\\\\
     ///////////////////|\\\\\\\\\\\\\\\\\\\
 
     function updateTemporarySpeed() {
-        if (!isPaused && !cheatMode) {
+        if (!pause && !cheatMode) {
             ball.temporarySpeed.up = ball.speed.up;
             ball.temporarySpeed.left = ball.speed.left;
             ball.temporarySpeed.down = ball.speed.down;
@@ -336,11 +342,6 @@ function runProgram() {
         setTimeout(restartTimer, 0);
     }
 
-    function restartTimer() {
-        framesPerSecondInterval = 1000 / (FRAMES + score.bounced * 2);
-        interval = setInterval(newFrame, framesPerSecondInterval);
-    }
-
     function randBallSpeedY() {
         var randNum = 0;
         while (randNum >= 5 || randNum <= 1) {
@@ -365,14 +366,12 @@ function runProgram() {
     function pauseGame() {
         if (spaceIsDown) {
             if (firstTimePaused) {
-                if (isPaused) {
-                    isPaused = false;
-                    $("#ball").css("background-color", "fuchsia");
+                if (pause) {
+                    pause = false;
                     $("#cheatIcon").hide();
                     console.log("unpause");
                 } else {
-                    isPaused = true;
-                    $("#ball").css("background-color", "lime");
+                    pause = true;
                     $("#cheatIcon").show();
                     console.log("pause");
                 }
@@ -388,12 +387,16 @@ function runProgram() {
 
         // Cheat Mode Activation
         if (answer === "^^vv<><>ba") {
-            if (cheatMode) {
+            if (autoPlay) {
+                alert("Cannot activate Cheat Mode because AutoPlay is activated.\nType 'noAuto' to deactivate it.");
+                cheatMode = false;
+            } else if (cheatMode) {
                 alert("Cheat Mode is already activated.\nType 'noCheat' to deactivate it.");
+                cheatMode = true;
             } else {
                 alert("Cheat Mode Activated!\nUse these controls to move the ball:\nU: Up\nH: Left\nJ: Down\nK: Right\nType 'noCheat' to deactivate Cheat Mode.");
+                cheatMode = true;
             }
-            cheatMode = true;
         }
 
         // FreePlay Activation
@@ -408,12 +411,16 @@ function runProgram() {
 
         // AutoPlay Activation
         else if (answer === "autoPlay") {
-            if (autoPlay) {
+            if (cheatMode) {
+                alert("Cannot activate AutoPlay because Cheat Mode is activated.\nType 'noCheat' to deactivate it.");
+                autoPlay = false;
+            } else if (autoPlay) {
                 alert("AutoPlay is already activated.\nType 'noAuto' to deactivate it.");
+                autoPlay = true;
             } else {
                 alert("AutoPlay Activated!\nType 'noAuto' to deactivate AutoPlay.");
+                autoPlay = true;
             }
-            autoPlay = true;
         }
 
         // Cheat Mode Deactivation
@@ -425,7 +432,7 @@ function runProgram() {
             }
             cheatMode = false;
         }
-        
+
         // FreePlay Deactivation
         else if (answer === "noFree") {
             if (freePlay) {
@@ -435,7 +442,7 @@ function runProgram() {
             }
             freePlay = false;
         }
-        
+
         // Autoplay Deactivation
         else if (answer === "noAuto") {
             if (autoPlay) {
@@ -452,6 +459,44 @@ function runProgram() {
             autoPlay = false;
         }
 
+    }
+
+    function changeColors() {
+        if (pause) {
+            $("#ball").css("background-color", "lime");
+        } else {
+            $("#ball").css("background-color", "fuchsia");
+        }
+
+        if (cheatMode) {
+            if (pause) {
+                $("#ball").css("background-color", "palegreen");
+                $("#ball").css("box-shadow", "0px 0px 0px 5px lime inset");
+            } else {
+                $("#ball").css("background-color", "lightpink");
+                $("#ball").css("box-shadow", "0px 0px 0px 5px fuchsia inset");
+            }
+        } else {
+            $("#ball").css("box-shadow", "none");
+        }
+
+        if (freePlay) {
+            $("#board").css("border-color", "orange");
+        } else {
+            $("#board").css("border-color", "white");
+        }
+
+        if (autoPlay) {
+            $("#paddleLeft").css("background-color", "cyan");
+            $("#paddleLeft").css("box-shadow", "0px 0px 0px 3px teal inset");
+            $("#paddleRight").css("background-color", "hotpink");
+            $("#paddleRight").css("box-shadow", "0px 0px 0px 3px maroon inset");
+        } else {
+            $("#paddleLeft").css("background-color", "teal");
+            $("#paddleLeft").css("box-shadow", "none");
+            $("#paddleRight").css("background-color", "maroon");
+            $("#paddleRight").css("box-shadow", "none");
+        }
     }
 
 
