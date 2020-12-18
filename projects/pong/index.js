@@ -79,7 +79,7 @@ function runProgram() {
     var firstTimePaused = true;;
     var cheatMode = false;
     var freePlay = false;
-    var autoPlay = true;
+    var autoPlay = false;
     var gameWon = false;
     var varSpeedX = 5;
     var varSpeedY = 5;
