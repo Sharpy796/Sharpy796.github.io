@@ -437,7 +437,6 @@ function runProgram() {
         // Wrong Password
         else {
             alert("Wrong Password.");
-            autoPlay = false;
         }
 
     }
