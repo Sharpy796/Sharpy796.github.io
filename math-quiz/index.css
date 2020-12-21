@@ -1,0 +1,88 @@
+
+body {
+  background: rgb(0, 35, 102);
+  color: rgb(45, 45, 45);
+  padding: 10px;
+  font-family: "Comic Sans MS";
+}
+
+header {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+#all-contents {
+  max-width: 800px;
+  margin: auto;
+}
+
+/* Navigation Menu */
+nav {
+  background: rgb(34, 139, 34);
+  margin: 0 auto;
+  margin-bottom: 20px;
+  display: flex;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+nav header {
+  display: flex;
+  align-items: center;
+  color: rgb(255, 255, 255);
+  flex: 1;
+}
+
+nav ul {
+  list-style-image: none;
+}
+
+nav li {
+  display: inline-block;
+  padding: 0 10px;
+}
+
+nav a {
+  text-decoration: none;
+  color: #fff;
+}
+
+/* Main Container Area Beneath Menu */
+main {
+  background: rgb(245, 238, 219);
+  display: flex;
+  border-radius: 5px;
+}
+
+.sidebar {
+  margin-right: 25px;
+  padding: 10px;
+}
+
+.sidebar img {
+  width: 200px;
+  margin-top: 10px;
+  margin-left: 10px;
+  border-radius: 5px;
+  border-color: black;
+  border-style: solid;
+  box-shadow: 0px 0px 15px;
+}
+
+.content {
+  flex: 1;
+  padding: 15px;
+}
+
+.interests header {
+  font-size: 1.25em;
+}
+
+#school-link  {
+  color: forestgreen;
+  text-decoration: none
+}
+
+footer {
+  color: white;
+}

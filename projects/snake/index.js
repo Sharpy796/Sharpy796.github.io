@@ -135,7 +135,7 @@ function runProgram() {
     ////////////////////////// HELPER FUNCTIONS ////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
 
-    function setDifficulty() {
+    function    setDifficulty() {
         var correctDifficulty;
         var answer;
         var alreadyCollide;

@@ -84,7 +84,7 @@ function runProgram() {
     var varSpeedX = 5;
     var varSpeedY = 5;
 
-    // alert("Welcome to Pong!\nP1 Controls: W A S D\nP2 Controls: Up Down Left Right\nPause: Space");
+    alert("Welcome to Pong!\nP1 Controls: W S\nP2 Controls: Up Down\nPause: Space");
 
     ////////////////////////////////////////////////////////////////////////////////
     ///////////////////////// CORE LOGIC ///////////////////////////////////////////
