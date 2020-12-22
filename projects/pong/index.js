@@ -80,10 +80,11 @@ function runProgram() {
     var cheatMode = false;
     var freePlay = false;
     var autoPlay = false;
+    var debug = false;
     var gameWon = false;
     var varSpeedY = 5;
 
-    // alert("Welcome to Pong!\nP1 Controls: W S\nP2 Controls: Up Down\nPause: Space");
+    alert("Welcome to Pong!\nP1 Controls: W S\nP2 Controls: Up Down\nPause: Space");
 
     ////////////////////////////////////////////////////////////////////////////////
     ///////////////////////// CORE LOGIC ///////////////////////////////////////////
@@ -97,7 +98,9 @@ function runProgram() {
         updateTemporarySpeed();
         pauseGame();
         changeColors()
-        showSpeeds();
+        if (debug) {
+            showSpeeds();
+        }
         handleCollisions();
         if (!gameWon) {
             redrawAllGameItems();
@@ -152,37 +155,37 @@ function runProgram() {
                 console.log("right pressed");
             }
 
-
-            /* ball controls */
-            if (cheatMode) {
-                if (firstTimeCheat) {
-                    ball.speed.up = 0;
-                    ball.speed.left = 0;
-                    ball.speed.down = 0;
-                    ball.speed.right = 0;
-                }
-                firstTimeCheat = false;
-                if (keycode === KEY.U) {        // up
-                    ball.speed.up = 5;
-                    console.log("u pressed");
-                } if (keycode === KEY.H) {      // left
-                    ball.speed.left = 5;
-                    console.log("h pressed");
-                } if (keycode === KEY.J) {      // down
-                    ball.speed.down = 5;
-                    console.log("j pressed");
-                } if (keycode === KEY.K) {      // right
-                    ball.speed.right = 5;
-                    console.log("k pressed");
-                }
-            } else {
-                ball.speed.up = ball.temporarySpeed.up;
-                ball.speed.left = ball.temporarySpeed.left;
-                ball.speed.down = ball.temporarySpeed.down;
-                ball.speed.right = ball.temporarySpeed.right;
-                firstTimeCheat = true;
-            }
         }
+        /* ball controls */
+        if (cheatMode) {
+            if (firstTimeCheat) {
+                ball.speed.up = 0;
+                ball.speed.left = 0;
+                ball.speed.down = 0;
+                ball.speed.right = 0;
+            }
+            firstTimeCheat = false;
+            if (keycode === KEY.U) {        // up
+                ball.speed.up = 5;
+                console.log("u pressed");
+            } if (keycode === KEY.H) {      // left
+                ball.speed.left = 5;
+                console.log("h pressed");
+            } if (keycode === KEY.J) {      // down
+                ball.speed.down = 5;
+                console.log("j pressed");
+            } if (keycode === KEY.K) {      // right
+                ball.speed.right = 5;
+                console.log("k pressed");
+            }
+        } else {
+            ball.speed.up = ball.temporarySpeed.up;
+            ball.speed.left = ball.temporarySpeed.left;
+            ball.speed.down = ball.temporarySpeed.down;
+            ball.speed.right = ball.temporarySpeed.right;
+            firstTimeCheat = true;
+        }
+
     }
 
     function handleKeyUp(event) {
@@ -296,16 +299,32 @@ function runProgram() {
     ///////////////////|\\\\\\\\\\\\\\\\\\\
 
     function showSpeeds() {
-        $("#speeds").text("Speeds:");
-        $("#up").text("Up:    " + ball.speed.up);
-        $("#left").text("Left:  " + ball.speed.left);
-        $("#right").text("Down:  " + ball.speed.down);
-        $("#down").text("Right: " + ball.speed.right);
-        $("#tempSpeeds").text("Temp Speeds:");
-        $("#tempUp").text("Up:    " + ball.temporarySpeed.up);
-        $("#tempLeft").text("Left:  " + ball.temporarySpeed.left);
-        $("#tempDown").text("Down:  " + ball.temporarySpeed.down);
-        $("#tempRight").text("Right: " + ball.temporarySpeed.right);
+        // Bal Speeds
+        $("#speeds b").text("Speeds:");
+        $("#up span").text("Up: " + ball.speed.up);
+        $("#left span").text("Left: " + ball.speed.left);
+        $("#down span").text("Down: " + ball.speed.down);
+        $("#right span").text("Right: " + ball.speed.right);
+
+        // Ball Temporary Speeds
+        $("#tempSpeeds b").text("Temp Speeds:");
+        $("#tempUp span").text("Up: " + ball.temporarySpeed.up);
+        $("#tempLeft span").text("Left: " + ball.temporarySpeed.left);
+        $("#tempDown span").text("Down: " + ball.temporarySpeed.down);
+        $("#tempRight span").text("Right: " + ball.temporarySpeed.right);
+    }
+
+    function tellSpeeds() {
+        alert("Speeds:" +
+            "\nUp:    " + ball.speed.up +
+            "\nLeft:  " + ball.speed.left +
+            "\nDown:  " + ball.speed.down +
+            "\nRight: " + ball.speed.right +
+            "\nTemp Speeds:" +
+            "\nUp:    " + ball.temporarySpeed.up +
+            "\nLeft:  " + ball.temporarySpeed.left +
+            "\nDown:  " + ball.temporarySpeed.down +
+            "\nRight: " + ball.temporarySpeed.right);
     }
 
     function updateTemporarySpeed() {
@@ -532,11 +551,7 @@ function runProgram() {
 
     function enforceNoNoZone(obj) {
         if (obj.leftX < BORDERS.LEFT) {
-            // if (obj === ball) {
-            //     obj.x -= -5;
-            // } else {
             obj.x -= -5;
-            // }
             console.log(obj.id + " passed left border")
         }
         if (obj.topY < BORDERS.TOP) {
@@ -550,11 +565,7 @@ function runProgram() {
             console.log(obj.id + " passed top border")
         }
         if (obj.rightX > BORDERS.RIGHT) {
-            // if (obj === ball) {
-            // obj.x -= 5;
-            // } else {
             obj.x -= 5;
-            // }
             console.log(obj.id + " passed right border")
         }
         if (obj.bottomY > BORDERS.BOTTOM) {
@@ -691,7 +702,7 @@ function runProgram() {
             if (!gameWon) {
                 $("#ball").css("background-color", "red");
                 clearInterval(interval);
-                setTimeout(restartGame.bind(null, player), 500);
+                setTimeout(restartGame.bind(null, player), 1000);
             }
         }
     }
