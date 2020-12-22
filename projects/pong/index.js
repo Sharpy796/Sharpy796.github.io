@@ -81,10 +81,9 @@ function runProgram() {
     var freePlay = false;
     var autoPlay = false;
     var gameWon = false;
-    var varSpeedX = 5;
     var varSpeedY = 5;
 
-    alert("Welcome to Pong!\nP1 Controls: W S\nP2 Controls: Up Down\nPause: Space");
+    // alert("Welcome to Pong!\nP1 Controls: W S\nP2 Controls: Up Down\nPause: Space");
 
     ////////////////////////////////////////////////////////////////////////////////
     ///////////////////////// CORE LOGIC ///////////////////////////////////////////
@@ -98,6 +97,7 @@ function runProgram() {
         updateTemporarySpeed();
         pauseGame();
         changeColors()
+        showSpeeds();
         handleCollisions();
         if (!gameWon) {
             redrawAllGameItems();
@@ -294,6 +294,19 @@ function runProgram() {
     ///////////////////|\\\\\\\\\\\\\\\\\\\
     //////////////// Speed \\\\\\\\\\\\\\\\
     ///////////////////|\\\\\\\\\\\\\\\\\\\
+
+    function showSpeeds() {
+        $("#speeds").text("Speeds:");
+        $("#up").text("Up:    " + ball.speed.up);
+        $("#left").text("Left:  " + ball.speed.left);
+        $("#right").text("Down:  " + ball.speed.down);
+        $("#down").text("Right: " + ball.speed.right);
+        $("#tempSpeeds").text("Temp Speeds:");
+        $("#tempUp").text("Up:    " + ball.temporarySpeed.up);
+        $("#tempLeft").text("Left:  " + ball.temporarySpeed.left);
+        $("#tempDown").text("Down:  " + ball.temporarySpeed.down);
+        $("#tempRight").text("Right: " + ball.temporarySpeed.right);
+    }
 
     function updateTemporarySpeed() {
         if (!pause && !cheatMode) {
@@ -519,16 +532,16 @@ function runProgram() {
 
     function enforceNoNoZone(obj) {
         if (obj.leftX < BORDERS.LEFT) {
-            if (obj === ball && !cheatMode) {
-                obj.x -= -varSpeedX;
-            } else {
-                obj.x -= -5;
-            }
+            // if (obj === ball) {
+            //     obj.x -= -5;
+            // } else {
+            obj.x -= -5;
+            // }
             console.log(obj.id + " passed left border")
         }
         if (obj.topY < BORDERS.TOP) {
-            if (obj === ball && !cheatMode) {
-                obj.y -= -varSpeedY;
+            if (obj === ball) {
+                obj.y -= -5;
             } else if (autoPlay) {
                 obj.y = BORDERS.TOP;
             } else {
@@ -537,16 +550,16 @@ function runProgram() {
             console.log(obj.id + " passed top border")
         }
         if (obj.rightX > BORDERS.RIGHT) {
-            if (obj === ball && !cheatMode) {
-                obj.x -= varSpeedX;
-            } else {
-                obj.x -= 5;
-            }
+            // if (obj === ball) {
+            // obj.x -= 5;
+            // } else {
+            obj.x -= 5;
+            // }
             console.log(obj.id + " passed right border")
         }
         if (obj.bottomY > BORDERS.BOTTOM) {
-            if (obj === ball && !cheatMode) {
-                obj.y -= varSpeedY;
+            if (obj === ball) {
+                obj.y -= 5;
             } else if (autoPlay) {
                 obj.y = BORDERS.BOTTOM - $(obj.id).height();
             } else {
@@ -592,7 +605,7 @@ function runProgram() {
             // if it bounced off the paddle's left border
             if (whichBorder(ball, paddle) === "left") {
                 // bounce the ball left
-                ball.speed.left = varSpeedX;
+                ball.speed.left = 5;
                 ball.speed.right = 0;
                 ball.x -= 1;
                 // increase the score
@@ -608,7 +621,7 @@ function runProgram() {
             else if (whichBorder(ball, paddle) === "right") {
                 // bounce the ball right
                 ball.speed.left = 0;
-                ball.speed.right = varSpeedX;
+                ball.speed.right = 5;
                 ball.x += 1;
                 // increase the score
                 if (paddle === paddleLeft) {
@@ -704,13 +717,12 @@ function runProgram() {
         $("#ball").css("background-color", "fuchsia");
         ball.x = 340;
         ball.y = 210;
-        varSpeedX = 5;
         randBallSpeedY();
         if (player === p1.id) {
             ball.speed.left = 0;
-            ball.speed.right = varSpeedX;
+            ball.speed.right = 5;
         } else if (player === p2.id) {
-            ball.speed.left = varSpeedX;
+            ball.speed.left = 5;
             ball.speed.right = 0;
         } else {
             alert(text.error + " in restartGame " + player);
