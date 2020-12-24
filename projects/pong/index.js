@@ -622,9 +622,9 @@ function runProgram() {
                 // increase the score
                 if (paddle === paddleRight) {
                     score.bounced++;
-                    if (!cheatMode) {
+                    // if (!cheatMode) {
                         increaseBallSpeedX();
-                    }
+                    // }
                 }
                 console.log("ball bounced " + tellPaddle(paddle) + " paddle's left border");
             }
@@ -637,9 +637,9 @@ function runProgram() {
                 // increase the score
                 if (paddle === paddleLeft) {
                     score.bounced++;
-                    if (!cheatMode) {
+                    // if (!cheatMode) {
                         increaseBallSpeedX();
-                    }
+                    // }
                 }
                 console.log("ball bounced " + tellPaddle(paddle) + " paddle's right border");
             }
