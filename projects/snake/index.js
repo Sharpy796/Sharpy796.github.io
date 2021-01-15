@@ -411,7 +411,7 @@ function runProgram() {
         var bodyId = 'midBody' + (snakeArray.length - 1);
         // create a new div for the body
         var $newBody = $("<div>")
-            .appendTo('#board')
+            .appendTo('#entireTail')
             .addClass('gameItem')
             .addClass('tails')
             .attr("id", bodyId)
