@@ -73,6 +73,7 @@ function runProgram() {
             if (!gameEnd) {
                 if (direction !== null && wallMode) {
                     createNewBody();
+                    head.score++;
                 }
                 redrawAllGameItems();
             }
