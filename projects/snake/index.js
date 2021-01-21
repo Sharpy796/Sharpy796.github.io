@@ -8,9 +8,9 @@ function runProgram() {
     ////////////////////////////////////////////////////////////////////////////////
 
     // Constant Variables
-    var passWall = true;
+    var passWall = false;
     var noCollide = false;
-    var wallMode = true;
+    var wallMode = false;
     setDifficulty();
     var FRAMES_PER_SECOND_INTERVAL = 1000 / frameRate;
     var BORDERS = {
@@ -70,10 +70,10 @@ function runProgram() {
             if (inCollision(apple, head) && !wallMode) {
                 eatApple();
             }
-            if (direction !== null && wallMode) {
-                createNewBody();
-            }
             if (!gameEnd) {
+                if (direction !== null && wallMode) {
+                    createNewBody();
+                }
                 redrawAllGameItems();
             }
         }
@@ -398,54 +398,9 @@ function runProgram() {
     ///////////////////|\\\\\\\\\\\\\\\\\\\
 
     function eatApple() { // TODO: Code a wallMode
-        var randCol;
-        var randRow;
-        if (wallMode) {
-            randCol = snakeArray[0].column;
-            randRow = snakeArray[0].row;
-            if (direction === "up") {
-                if ((randRow - 1) * 20 < BORDERS.TOP) {
-                    // if ((randCol - 1) * 20 < BORDERS.LEFT) {
-                    //     randCol += 1; 
-                    // } else {
-                    //     randCol -= 1;
-                    // }
-                    randCol;
-                    randRow = 21;
-                } else {
-                    randCol;
-                    randRow -= 1;
-                }
-            } if (direction === "left") {
-                if ((randCol - 1) * 20 < BORDERS.LEFT) {
-                    randCol = 21;
-                    randRow;
-                } else {
-                    randCol -= 1;
-                    randRow;
-                }
-            } if (direction === "down") {
-                if ((randRow + 1) * 20 > BORDERS.BOTTOM) {
-                    randCol;
-                    randRow = 0;
-                } else {
-                    randCol;
-                    randRow += 1;
-                }
-            } if (direction === "right") {
-                if ((randCol + 1) * 20 > BORDERS.RIGHT) {
-                    randCol = 0;
-                    randRow;
-                } else {
-                    randCol += 1;
-                    randRow;
-                }
-            }
-        } else {
-            // find a new valid random spot for the apple
-            randCol = Math.floor(Math.random() * 22);   // x
-            randRow = Math.floor(Math.random() * 22);   // y
-        }
+        // find a new valid random spot for the apple
+        var randCol = Math.floor(Math.random() * 22);   // x
+        var randRow = Math.floor(Math.random() * 22);   // y
 
         var validPosition = true;
         // check to see if the new spot is on the snake
