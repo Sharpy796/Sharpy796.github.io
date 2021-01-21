@@ -41,6 +41,9 @@ function runProgram() {
     var interval = setInterval(newFrame, FRAMES_PER_SECOND_INTERVAL);   // execute newFrame every 0.01 seconds (10 Frames per second)
     $(document).on('keydown', handleKeyDown);
     $(document).on('keyup', handleKeyUp);
+    if (wallMode) {
+        $("#apple").hide();
+    }
 
     var frameRate = 10;
     var isPaused = false;
@@ -64,7 +67,7 @@ function runProgram() {
         if (!isPaused) {
             repositionAllGameItems();
             handleCollisions();
-            if (inCollision(apple, head)) {
+            if (inCollision(apple, head) && !wallMode) {
                 eatApple();
             }
             if (direction !== null && wallMode) {
