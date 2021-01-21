@@ -8,9 +8,9 @@ function runProgram() {
     ////////////////////////////////////////////////////////////////////////////////
 
     // Constant Variables
-    var passWall = false;
+    var passWall = true;
     var noCollide = false;
-    var wallMode = false;
+    var wallMode = true;
     setDifficulty();
     var FRAMES_PER_SECOND_INTERVAL = 1000 / frameRate;
     var BORDERS = {
@@ -59,12 +59,16 @@ function runProgram() {
     On each "tick" of the timer, a new frame is dynamically drawn using JavaScript
     by calling this function and executing the code inside.
     */
+
     function newFrame() {
         if (!isPaused) {
             repositionAllGameItems();
             handleCollisions();
             if (inCollision(apple, head)) {
                 eatApple();
+            }
+            if (direction !== null && wallMode) {
+                createNewBody();
             }
             if (!gameEnd) {
                 redrawAllGameItems();
@@ -181,6 +185,8 @@ function runProgram() {
                     alreadyCollide = true;
                     passWall = false;
                     alreadyPass = false;
+                    wallMode = false;
+                    alreadyWall = false;
                 }
                 correctDifficulty = false;
             }
@@ -196,6 +202,8 @@ function runProgram() {
                     alreadyPass = true;
                     noCollide = false;
                     alreadyCollide = false;
+                    wallMode = false;
+                    alreadyWall = false;
                 }
                 correctDifficulty = false;
             }
@@ -207,6 +215,10 @@ function runProgram() {
                 } else {
                     // tell the user they activated noCollide
                     alert("wallMode activated");
+                    passWall = true;
+                    alreadyPass = true;
+                    noCollide = false;
+                    alreadyCollide = false;
                     wallMode = true;
                     alreadyWall = true;
                 }
@@ -431,6 +443,7 @@ function runProgram() {
             randCol = Math.floor(Math.random() * 22);   // x
             randRow = Math.floor(Math.random() * 22);   // y
         }
+
         var validPosition = true;
         // check to see if the new spot is on the snake
         for (var i = 0; i < snakeArray.length; i++) {
