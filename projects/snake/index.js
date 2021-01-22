@@ -11,7 +11,8 @@ function runProgram() {
     var passWall = false;
     var noCollide = false;
     var wallMode = false;
-    setDifficulty(); // TODO: Change game colors according to relevant mode
+    var isCollide = false;
+    setDifficulty();
     var FRAMES_PER_SECOND_INTERVAL = 1000 / frameRate;
     var BORDERS = {
         TOP: 0,
@@ -64,6 +65,7 @@ function runProgram() {
     */
 
     function newFrame() {
+        changeColors();
         if (!isPaused) {
             repositionAllGameItems();
             handleCollisions();
@@ -187,10 +189,10 @@ function runProgram() {
                 } else {
                     // tell the user they activated noCollide
                     alert("noCollide mode activated");
+                    passWall = true;
+                    alreadyPass = false;
                     noCollide = true;
                     alreadyCollide = true;
-                    passWall = false;
-                    alreadyPass = false;
                     wallMode = false;
                     alreadyWall = false;
                 }
@@ -222,7 +224,7 @@ function runProgram() {
                     // tell the user they activated noCollide
                     alert("wallMode activated");
                     passWall = true;
-                    alreadyPass = true;
+                    alreadyPass = false;
                     noCollide = false;
                     alreadyCollide = false;
                     wallMode = true;
@@ -349,10 +351,10 @@ function runProgram() {
     function collide(side) {
         // say that we passed a border
         console.log(side + " passed");
+        isCollide = true;
 
         // change the snake's color
-        $(head.id).css("background-color", "red");
-        $(".tails").css("background-color", "lightsalmon");
+        changeColors();
 
         if (noCollide) {
             // pass through everything
@@ -382,8 +384,7 @@ function runProgram() {
     }
 
     function stopCollide() {
-        $(head.id).css("background-color", "orange");
-        $(".tails").css("background-color", "palegoldenrod");
+        isCollide = false;
     }
 
     function inCollision(obj1, obj2) {
@@ -467,7 +468,58 @@ function runProgram() {
     ////////////// Redrawing \\\\\\\\\\\\\\
     ///////////////////|\\\\\\\\\\\\\\\\\\\
 
+    function changeColors() {
+        if (passWall) {
+            $("#board").css("border-color", "cyan");
+        }
+        if (noCollide) {
+            $("#board").css("border-color", "goldenrod");
+            if (isPaused) {
+                $(head.id).css("background-color", "fuchsia");
+                $(".tails").css("background-color", "fuchsia");
+                $(".tails").css("box-shadow", "0px 0px 0px 5px lightpink inset");
+            } else if (isCollide) {
+                $(head.id).css("background-color", "red");
+                $(".tails").css("background-color", "red");
+                $(".tails").css("box-shadow", "0px 0px 0px 5px lightsalmon inset");
+            } else {
+                $(head.id).css("background-color", "orange");
+                $(".tails").css("background-color", "orange");
+                $(".tails").css("box-shadow", "0px 0px 0px 5px palegoldenrod inset");
+            }
+        }
+        else if (wallMode) {
+            $("#board").css("border-color", "blue");
+            if (isPaused) {
+                $(head.id).css("background-color", "fuchsia");
+                $(".tails").css("background-color", "fuchsia");
+                $(".tails").css("box-shadow", "0px 0px 0px 5px lightpink inset");
+            } else if (isCollide) {
+                $(head.id).css("background-color", "red");
+                $(".tails").css("background-color", "red");
+                $(".tails").css("box-shadow", "0px 0px 0px 5px lightsalmon inset");
+            } else {
+                $(head.id).css("background-color", "blue");
+                $(".tails").css("background-color", "blue");
+                $(".tails").css("box-shadow", "0px 0px 0px 5px lightblue inset");
+            }
+        }
+        else {
+            if (isPaused) {
+                $(".tails").css("background-color", "lightpink");
+                $(head.id).css("background-color", "fuchsia");
+            } else if (isCollide) {
+                $(head.id).css("background-color", "red");
+                $(".tails").css("background-color", "lightsalmon");
+            } else {
+                $(".tails").css("background-color", "palegoldenrod");
+                $(head.id).css("background-color", "orange");
+            }
+        }
+    }
+
     function redrawAllGameItems() {
+        changeColors();
         for (var i = 0; i < snakeArray.length; i++) {
             redrawGameItem(snakeArray[i]);
         }
@@ -492,14 +544,10 @@ function runProgram() {
                 // if the game is paused, unpause it
                 if (isPaused) {
                     isPaused = false;
-                    $(".tails").css("background-color", "palegoldenrod");
-                    $(head.id).css("background-color", "orange");
                     console.log("unpause");
                 } else {
                     // if the game is unpaused, pause it
                     isPaused = true;
-                    $(".tails").css("background-color", "lightpink");
-                    $(head.id).css("background-color", "fuchsia");
                     console.log("pause");
                 }
             }
