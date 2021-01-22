@@ -157,7 +157,9 @@ function runProgram() {
             answer = prompt("What difficulty?\n" +
                 "Type either:\n" +
                 "Easy\nMedium\nHard\n\n" +
-                "Typing passWall lets you move through walls.\n\n" +
+                "Typing passWall lets you move through walls.\n" +
+                "Typing noCollide gets rid of all collisions.\n" +
+                "Typing wallMode gets rid of the apples, and you can't move into spaces that you already moved in.\n\n" +
                 "Clicking Cancel sets the difficulty to Medium.");
             // if the difficulty is Slow, Easy, Medium, Hard, or nothing
             if (answer === "Slow" ||
