@@ -11,7 +11,7 @@ function runProgram() {
     var passWall = false;
     var noCollide = false;
     var wallMode = false;
-    setDifficulty();
+    setDifficulty(); // TODO: Change game colors according to relevant mode
     var FRAMES_PER_SECOND_INTERVAL = 1000 / frameRate;
     var BORDERS = {
         TOP: 0,
