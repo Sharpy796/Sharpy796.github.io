@@ -27,165 +27,183 @@
 
 <!DOCTYPE HTML>
 <html>
-    <head>
-        <title>IceCream</title>
-        <meta name="author" content="Christian Bankovic">
-        <meta name="description" content="Ice cream!">
-        
-        <script>
-            function iceCream() {
-                var flavor;
-                var flavor1;
-                var flavor2;
-                
-                var wantIceCream = confirm("Hello! Welcome to ChrisChip's Ice Cream Parlor!\nIf you want some ice cream, you'll have to say the password.");
-                    if (wantIceCream === true) {
-                    var response = prompt("Password:");
-                    if (response === "GreenPurpleDice15") {
-                        alert("Correct! You get an ice cream cone!");
-                        
-                        flavor = prompt("What flavor?");
-                        if (flavor === "Operation Spark") {
-                            alert("Ding Ding Ding! Here, come in and pick flavors for two cones!");
-                            
-                            flavor1 = prompt("What flavor do you want the first one to be?");
-                            flavor2 = prompt("And the second cone?");
-                            if (flavor1 === "Mint" || flavor1 === "mint" || flavor2 === "Mint" || flavor2 === "mint") {
-                                alert("Yuck! We don't sell mint, go away.")
-                                alert("...mint. Yuck.");
-                                
-                            } else if (flavor1 === "Peanut" || flavor1 === "peanut" || flavor2 === "Peanut" || flavor2 === "peanut") {
-                                alert("I'm sorry, but we don't sell peanut ice cream. I'm allergic to it.")
-                                
-                            } else {
-                                alert("Here is your " + flavor1 + " cone, and your second " + flavor2 + " cone!");
-                            }
-                        } else if (flavor === "Mint" || flavor === "mint") {
-                            alert("Yuck! We don't sell that flavor, go away.")
+
+<head>
+    <title>IceCream</title>
+    <meta name="author" content="Christian Bankovic">
+    <meta name="description" content="Ice cream!">
+
+    <script>
+        function iceCream() {
+            var flavor;
+            var flavor1;
+            var flavor2;
+
+            var wantIceCream = confirm("Hello! Welcome to ChrisChip's Ice Cream Parlor!\nIf you want some ice cream, you'll have to say the password.");
+            if (wantIceCream === true) {
+                var response = prompt("Password:");
+                if (response === "GreenPurpleDice15") {
+                    alert("Correct! You get an ice cream cone!");
+
+                    flavor = prompt("What flavor?");
+                    if (flavor === "Operation Spark") {
+                        alert("Ding Ding Ding! Here, come in and pick flavors for two cones!");
+
+                        flavor1 = prompt("What flavor do you want the first one to be?");
+                        flavor2 = prompt("And the second cone?");
+                        if (flavor1 === "Mint" || flavor1 === "mint" || flavor2 === "Mint" || flavor2 === "mint") {
+                            alert("Yuck! We don't sell mint, go away.")
                             alert("...mint. Yuck.");
-                            
-                        } else if (flavor === "Peanut" || flavor === "peanut") {
+
+                        } else if (flavor1 === "Peanut" || flavor1 === "peanut" || flavor2 === "Peanut" || flavor2 === "peanut") {
                             alert("I'm sorry, but we don't sell peanut ice cream. I'm allergic to it.")
-                            
+
                         } else {
-                            alert("Here is your " + flavor + " ice cream cone!");
+                            alert("Here is your " + flavor1 + " cone, and your second " + flavor2 + " cone!");
                         }
+                    } else if (flavor === "Operation spark" || flavor === "operation Spark" || flavor === "operation spark") {
+                        alert("Use proper capitalization! Scram!")
+                    } else if (flavor === "Mint" || flavor === "mint") {
+                        alert("Yuck! We don't sell that flavor, go away.")
+                        alert("...mint. Yuck.");
+
+                    } else if (flavor === "Peanut" || flavor === "peanut") {
+                        alert("I'm sorry, but we don't sell peanut ice cream. I'm allergic to it.")
+
                     } else {
-                        alert("Go on! Scram!");
+                        alert("Here is your " + flavor + " ice cream cone!");
                     }
                 } else {
-                    alert("Oh, okay. Well, have a nice day!");
+                    alert("Go on! Scram!");
                 }
+            } else {
+                alert("Oh, okay. Well, have a nice day!");
             }
-        </script>
-        
-        <style>
-            body {
-                background: rgb(0, 35, 102);
-                color: rgb(45, 45, 45);
-                padding: 10px;
-                font-family: "Comic Sans MS";
-            }
-            header {
-                font-size: 1.5em;
-                font-weight: bold;
-            }
-            #all-contents {
-                max-width: 800px;
-                margin: auto;
-            }
-            
-            /* Navigation Menu */
-            nav {
-                background: rgb(34, 139, 34);
-                margin: 0 auto;
-                margin-bottom: 20px;
-                display: flex;
-                padding: 10px;
-                border-radius: 10px;
-            }
-            nav header {
-                display: flex;
-                align-items: center;
-                color: rgb(255, 255, 255);
-                flex: 1;
-            }
-            nav ul {
-                list-style-image: none;
-            }
-            nav li {
-                display: inline-block;
-                padding: 0 10px;
-            }
-            
-            /* Main Container Area Beneath Menu */
-            main {
-                background: rgb(245, 238, 219);
-                display: flex;
-                border-radius: 5px;
-            }
-            button {
-                background-color: #14c5ff;
-                padding: 7px;
-                margin-bottom: 15px;
-                margin-top: 0px;
-                border-radius: 5px;
-                border-style: none;
-                box-shadow: 0px 4px #00759c; 
-                font-family: "Comic Sans MS";
-                cursor: pointer;
-                outline: none;
-            }
-            button:hover {
-                background-color: #54d0f7;
-            }
-            button:active {
-                box-shadow: 0px 1px #00759c; 
-                transform: translateY(3px);
-            }
-            .content {
-                flex: 1;
-                padding: 15px;
-            }
-            .secrets header {
-                font-size: 1.25em;
-            }
-            #tinyFont {
-                text-align: right;
-            }
-            footer {
-                color: white;
-            }
-        </style>
-    </head>
-    
-    <body>
-        <div id="all-contents">
-            <nav>
-                <header>ChrisChips's Amazing Website</header>
-                <ul>
-                    <li></li>
-                </ul>
-            </nav>
-            
-            <main>
-                <div class="content">
-                    <header>Ice Cream!</header>
-                    <p>Welcome to ChrisChip's Ice Cream Parlor! You can only get some ice cream if you know the password, though.</a></p>
-                    <button onclick="iceCream()" type="button">Ask For Ice Cream!</button>
-                    
-                    <section class="secrets">
-                        <header>Psst!</header>
-                        <p>The password is Green and Purple, and has 15 Dice.</p>
-                        <p>I'm also affiliated with Operaion Spark! Let me know you are too, and I'll give you a little extra something.</p>
-                        <p id="tinyFont">Also, don't ask for mint.</p>
-                    </section>
-                </div>
-            </main>
-            
-            <footer>
-                <p>&copy Christian Bankovic 2021</p>
-            </footer>
-        </div>
-    </body>
+        }
+    </script>
+
+    <style>
+        body {
+            background: rgb(0, 35, 102);
+            color: rgb(45, 45, 45);
+            padding: 10px;
+            font-family: "Comic Sans MS";
+        }
+
+        header {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        #all-contents {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        /* Navigation Menu */
+        nav {
+            background: rgb(34, 139, 34);
+            margin: 0 auto;
+            margin-bottom: 20px;
+            display: flex;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        nav header {
+            display: flex;
+            align-items: center;
+            color: rgb(255, 255, 255);
+            flex: 1;
+        }
+
+        nav ul {
+            list-style-image: none;
+        }
+
+        nav li {
+            display: inline-block;
+            padding: 0 10px;
+        }
+
+        /* Main Container Area Beneath Menu */
+        main {
+            background: rgb(245, 238, 219);
+            display: flex;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #14c5ff;
+            padding: 7px;
+            margin-bottom: 15px;
+            margin-top: 0px;
+            border-radius: 5px;
+            border-style: none;
+            box-shadow: 0px 4px #00759c;
+            font-family: "Comic Sans MS";
+            cursor: pointer;
+            outline: none;
+        }
+
+        button:hover {
+            background-color: #54d0f7;
+        }
+
+        button:active {
+            box-shadow: 0px 1px #00759c;
+            transform: translateY(3px);
+        }
+
+        .content {
+            flex: 1;
+            padding: 15px;
+        }
+
+        .secrets header {
+            font-size: 1.25em;
+        }
+
+        #tinyFont {
+            text-align: right;
+        }
+
+        footer {
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="all-contents">
+        <nav>
+            <header>ChrisChips's Amazing Website</header>
+            <ul>
+                <li></li>
+            </ul>
+        </nav>
+
+        <main>
+            <div class="content">
+                <header>Ice Cream!</header>
+                <p>Welcome to ChrisChip's Ice Cream Parlor! You can only get some ice cream if you know the password,
+                    though.</a></p>
+                <button onclick="iceCream()" type="button">Ask For Ice Cream!</button>
+
+                <section class="secrets">
+                    <header>Psst!</header>
+                    <p>The password is Green and Purple, and has 15 Dice.</p>
+                    <p>I'm also affiliated with Operaion Spark! Let me know you are too, and I'll give you a little
+                        extra something.</p>
+                    <p id="tinyFont">Also, don't ask for mint.</p>
+                </section>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy Christian Bankovic 2021</p>
+        </footer>
+    </div>
+</body>
+
 </html>
