@@ -476,32 +476,39 @@ function runProgram() {
             $("#board").css("border-color", "goldenrod");
             if (isPaused) {
                 $(head.id).css("background-color", "fuchsia");
-                $(".tails").css("background-color", "fuchsia");
-                $(".tails").css("box-shadow", "0px 0px 0px 5px lightpink inset");
+                $(".tails").css("background-color", "lightpink");
+                // $(".tails").css("background-color", "fuchsia");
+                // $(".tails").css("box-shadow", "0px 0px 0px 5px lightpink inset");
             } else if (isCollide) {
                 $(head.id).css("background-color", "red");
-                $(".tails").css("background-color", "red");
-                $(".tails").css("box-shadow", "0px 0px 0px 5px lightsalmon inset");
+                $(".tails").css("background-color", "lightsalmon");
+                // $(".tails").css("background-color", "red");
+                // $(".tails").css("box-shadow", "0px 0px 0px 5px lightsalmon inset");
             } else {
-                $(head.id).css("background-color", "orange");
-                $(".tails").css("background-color", "orange");
-                $(".tails").css("box-shadow", "0px 0px 0px 5px palegoldenrod inset");
+                $(head.id).css("background-color", "green");
+                $(".tails").css("background-color", "lightgreen");
+                // $(head.id).css("background-color", "orange");
+                // $(".tails").css("background-color", "orange");
+                // $(".tails").css("box-shadow", "0px 0px 0px 5px palegoldenrod inset");
             }
         }
         else if (wallMode) {
-            $("#board").css("border-color", "blue");
+            $("#board").css("border-color", "lightblue");
             if (isPaused) {
                 $(head.id).css("background-color", "fuchsia");
-                $(".tails").css("background-color", "fuchsia");
-                $(".tails").css("box-shadow", "0px 0px 0px 5px lightpink inset");
+                $(".tails").css("background-color", "lightpink");
+                // $(".tails").css("background-color", "fuchsia");
+                // $(".tails").css("box-shadow", "0px 0px 0px 5px lightpink inset");
             } else if (isCollide) {
                 $(head.id).css("background-color", "red");
-                $(".tails").css("background-color", "red");
-                $(".tails").css("box-shadow", "0px 0px 0px 5px lightsalmon inset");
+                $(".tails").css("background-color", "lightsalmon");
+                // $(".tails").css("background-color", "red");
+                // $(".tails").css("box-shadow", "0px 0px 0px 5px lightsalmon inset");
             } else {
                 $(head.id).css("background-color", "blue");
-                $(".tails").css("background-color", "blue");
-                $(".tails").css("box-shadow", "0px 0px 0px 5px lightblue inset");
+                $(".tails").css("background-color", "lightblue");
+                // $(".tails").css("background-color", "blue");
+                // $(".tails").css("box-shadow", "0px 0px 0px 5px lightblue inset");
             }
         }
         else {
