@@ -470,7 +470,7 @@ function runProgram() {
 
     function changeColors() {
         if (passWall) {
-            $("#board").css("border-color", "cyan");
+            $("#board").css("border-color", "purple");
         }
         if (noCollide) {
             $("#board").css("border-color", "goldenrod");
@@ -486,7 +486,7 @@ function runProgram() {
             }
         }
         else if (wallMode) {
-            $("#board").css("border-color", "lightblue");
+            $("#board").css("border-color", "yellow");
             if (isPaused) {
                 $(head.id).css("background-color", "fuchsia");
                 $(".tails").css("background-color", "lightpink");
