@@ -75,7 +75,8 @@ function runProgram() {
     var pause = false;
     var spaceIsDown = false
     var firstTimeCheat = true;
-    var firstTimeBounced = true;
+    var firstTimeBouncedPaddle = true;
+    var firstTimeBouncedWall = true;
     var firstTimePaused = true;;
     var cheatMode = false;
     var freePlay = false;
@@ -538,7 +539,7 @@ function runProgram() {
             handlePaddleCollisions(paddleRight);    // right paddle
         } else {
             // tell us we still have yet to bounce
-            firstTimeBounced = true;
+            firstTimeBouncedPaddle = true;
         }
     }
 
@@ -590,12 +591,12 @@ function runProgram() {
             playerLose(p1.id);
             console.log("ball bounced left border");
         }
-        if (ball.topY < BORDERS.TOP) {
+        else if (ball.topY < BORDERS.TOP) {
             ball.speed.down = ball.speed.up;
             ball.speed.up = 0;
             console.log("ball bounced top border");
         }
-        if (ball.rightX > BORDERS.RIGHT) {
+        else if (ball.rightX > BORDERS.RIGHT) {
             if (freePlay) {
                 ball.speed.left = ball.speed.right;
                 ball.speed.right = 0;
@@ -603,16 +604,20 @@ function runProgram() {
             playerLose(p2.id);
             console.log("ball bounced right border");
         }
-        if (ball.bottomY > BORDERS.BOTTOM) {
+        else if (ball.bottomY > BORDERS.BOTTOM) {
             ball.speed.up = ball.speed.down;
             ball.speed.down = 0;
             console.log("ball bounced bottom border");
+        }
+        else {
+            // tell us we still have yet to bounce
+            firstTimeBouncedWall = true
         }
     }
 
     function handlePaddleCollisions(paddle) {
         // if it is the first time bouncing on one
-        if (firstTimeBounced) {
+        if (firstTimeBouncedPaddle) {
             // if it bounced off the paddle's left border
             if (whichBorder(ball, paddle) === "left") {
                 // bounce the ball left
@@ -623,7 +628,7 @@ function runProgram() {
                 if (paddle === paddleRight) {
                     score.bounced++;
                     // if (!cheatMode) {
-                        increaseBallSpeedX();
+                    increaseBallSpeedX();
                     // }
                 }
                 console.log("ball bounced " + tellPaddle(paddle) + " paddle's left border");
@@ -638,14 +643,14 @@ function runProgram() {
                 if (paddle === paddleLeft) {
                     score.bounced++;
                     // if (!cheatMode) {
-                        increaseBallSpeedX();
+                    increaseBallSpeedX();
                     // }
                 }
                 console.log("ball bounced " + tellPaddle(paddle) + " paddle's right border");
             }
         }
         // tell us it isn't the first time bouncing anymore
-        firstTimeBounced = false;
+        firstTimeBouncedPaddle = false;
     }
 
     function whichBorder(obj1, obj2) {
@@ -688,14 +693,16 @@ function runProgram() {
     ///////////////////\\\\\\\\\\\\\\\\\\\
 
     function playerLose(player) {
-        if (player === p1.id) {             // player 1's side
-            score.p2++;
-            $("#p2").text(score.p2);
-        } else if (player === p2.id) {      // player 2's side
-            score.p1++;
-            $("#p1").text(score.p1);
-        } else {
-            console.log(text.error);
+        if (firstTimeBouncedWall) {
+            if (player === p1.id) {             // player 1's side
+                score.p2++;
+                $("#p2").text(score.p2);
+            } else if (player === p2.id) {      // player 2's side
+                score.p1++;
+                $("#p1").text(score.p1);
+            } else {
+                console.log(text.error);
+            }
         }
         if (!freePlay) {
             whoWon();
@@ -705,6 +712,8 @@ function runProgram() {
                 setTimeout(restartGame.bind(null, player), 1000);
             }
         }
+        // tell us it isn't the first time bouncing anymore
+        firstTimeBouncedWall = false;
     }
 
     function whoWon() {
