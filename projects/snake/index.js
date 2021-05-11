@@ -157,8 +157,8 @@ function runProgram() {
         while (!correctDifficulty) {
             // ask for the difficulty: Easy, Medium, Hard, or nothing
             answer = prompt("What difficulty?\n" +
-                "Type either:\n" +
-                "Easy\nMedium\nHard\n\n" +
+                "Type either " +
+                '"Easy", "Medium", or "Hard"\n\n' +
                 "Typing passWall lets you move through walls.\n" +
                 "Typing noCollide gets rid of all collisions.\n" +
                 "Typing wallMode gets rid of the apples, and you can't move into spaces that you already moved in.\n\n" +
