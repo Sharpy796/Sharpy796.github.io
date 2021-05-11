@@ -85,7 +85,10 @@ function runProgram() {
     var gameWon = false;
     var varSpeedY = 5;
 
-    alert("Welcome to Pong!\nP1 Controls: W S\nP2 Controls: Up Down\nPause: Space");
+    alert(`Welcome to Pong!
+P1 Controls: W S
+P2 Controls: Up Down
+Pause: Space`);
 
     ////////////////////////////////////////////////////////////////////////////////
     ///////////////////////// CORE LOGIC ///////////////////////////////////////////
