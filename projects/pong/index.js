@@ -460,10 +460,10 @@ Pause: Space`);
             freePlay = false;
         }
 
-        // Autoplay Deactivation
+        // AutoPlay Deactivation
         else if (answer === "noAuto") {
             if (autoPlay) {
-                alert("AutoPlay Deactivated.\nType 'autoPlay' to activate Cheat Mode.");
+                alert("AutoPlay Deactivated.\nType 'autoPlay' to activate AutoPlay.");
             } else {
                 alert("AutoPlay is already deactivated.\nType 'autoPlay' to activate it.");
             }
