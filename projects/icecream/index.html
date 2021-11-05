@@ -55,7 +55,7 @@
                             alert("Yuck! We don't sell mint, go away.")
                             alert("...mint. Yuck.");
 
-                        } else if (flavor1 === "Peanut" || flavor1 === "peanut" || flavor2 === "Peanut" || flavor2 === "peanut") {
+                        } else if (flavor1.search(/peanut/i)>=0) {
                             alert("I'm sorry, but we don't sell peanut ice cream. I'm allergic to it.")
 
                         } else {
