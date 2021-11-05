@@ -51,7 +51,7 @@
 
                         flavor1 = prompt("What flavor do you want the first one to be?");
                         flavor2 = prompt("And the second cone?");
-                        if (flavor1 === "Mint" || flavor1 === "mint" || flavor2 === "Mint" || flavor2 === "mint") {
+                        if (flavor1.search(/mint/i)>=0) {
                             alert("Yuck! We don't sell mint, go away.")
                             alert("...mint. Yuck.");
 
