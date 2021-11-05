@@ -51,11 +51,11 @@
 
                         flavor1 = prompt("What flavor do you want the first one to be?");
                         flavor2 = prompt("And the second cone?");
-                        if (flavor1.search(/mint/i)>=0) {
+                        if (flavor1.search(/mint/i)>=0 || flavor2.search(/mint/i)>=0) {
                             alert("Yuck! We don't sell mint, go away.")
                             alert("...mint. Yuck.");
 
-                        } else if (flavor1.search(/peanut/i)>=0) {
+                        } else if (flavor1.search(/peanut/i)>=0 || flavor2.search(/peanut/i)>=0) {
                             alert("I'm sorry, but we don't sell peanut ice cream. I'm allergic to it.")
 
                         } else {
@@ -63,11 +63,11 @@
                         }
                     } else if (flavor === "Operation spark" || flavor === "operation Spark" || flavor === "operation spark") {
                         alert("Use proper capitalization! Scram!")
-                    } else if (flavor === "Mint" || flavor === "mint") {
+                    } else if (flavor.search(/mint/i)>=0) {
                         alert("Yuck! We don't sell that flavor, go away.")
                         alert("...mint. Yuck.");
 
-                    } else if (flavor === "Peanut" || flavor === "peanut") {
+                    } else if (flavor.search(/peanut/i)>=0) {
                         alert("I'm sorry, but we don't sell peanut ice cream. I'm allergic to it.")
 
                     } else {
