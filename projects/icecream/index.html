@@ -61,7 +61,7 @@
                         } else {
                             alert("Here is your " + flavor1 + " cone, and your second " + flavor2 + " cone!");
                         }
-                    } else if (flavor === "Operation spark" || flavor === "operation Spark" || flavor === "operation spark") {
+                    } else if (flavor.search(/operation spark/i)>=0 && flavor != "Operation Spark") {
                         alert("Use proper capitalization! Scram!")
                     } else if (flavor.search(/mint/i)>=0) {
                         alert("Yuck! We don't sell that flavor, go away.")
@@ -126,6 +126,7 @@
             padding: 0 10px;
         }
 
+        
         /* Main Container Area Beneath Menu */
         main {
             background: rgb(245, 238, 219);
@@ -144,6 +145,7 @@
             font-family: "Comic Sans MS";
             cursor: pointer;
             outline: none;
+            text-align: center;
         }
 
         button:hover {
@@ -155,17 +157,30 @@
             transform: translateY(3px);
         }
 
+        .parlor {
+            text-align: center;
+        }
+
         .content {
             flex: 1;
             padding: 15px;
         }
 
-        .secrets header {
+        /* .secrets header {
             font-size: 1.25em;
+        } */
+
+        .secrets {
+            font-size: 80%;
+            text-align: center;
+            padding: 5px;
+            border: 3px solid black;
+            border-radius: 5px;
         }
 
         #tinyFont {
             text-align: right;
+            font-size: 80%;
         }
 
         footer {
@@ -185,18 +200,23 @@
 
         <main>
             <div class="content">
-                <header>Ice Cream!</header>
-                <p>Welcome to ChrisChip's Ice Cream Parlor! You can only get some ice cream if you know the password,
-                    though.</a></p>
-                <button onclick="iceCream()" type="button">Ask For Ice Cream!</button>
+                <div class="parlor">
+                    <header>Ice Cream!</header>
+                    <p>Welcome to ChrisChip's Ice Cream Parlor! You can only get some ice cream if you know the password, though.</p>
+                    <button onclick="iceCream()" type="button">Ask For Ice Cream!</button>
+                </div>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
 
-                <section class="secrets">
-                    <header>Psst!</header>
+                <div class="secrets">
+                    <header>(Psst!)</header> <!-- Make it where if you click the "(Psst!)" button, it will give you a hint about the password. -->
                     <p>The password is Green and Purple, and has 15 Dice.</p>
-                    <p>I'm also affiliated with Operaion Spark! Let me know you are too, and I'll give you a little
-                        extra something.</p>
+                    <p>I'm also affiliated with Operaion Spark! Let me know you are too, and I'll give you a little extra something.</p>
                     <p id="tinyFont">Also, don't ask for mint.</p>
-                </section>
+                </div>
             </div>
         </main>
 
