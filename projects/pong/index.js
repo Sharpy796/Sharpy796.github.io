@@ -85,10 +85,14 @@ function runProgram() {
     var gameWon = false;
     var varSpeedY = 5;
 
-    alert(`Welcome to Pong!
-P1 Controls: W S
-P2 Controls: Up Down
-Pause: Space`);
+    function join(delimiter, arg1, arg2, arg3) {
+        return arg1.concat(delimiter, arg2, delimiter, arg3)
+    }
+
+    alert(  "Welcome to Pong!\n" +
+            "P1 Controls: W S\n" +
+            "P2 Controls: Up Down\n" +
+            "Pause: Space");
 
     ////////////////////////////////////////////////////////////////////////////////
     ///////////////////////// CORE LOGIC ///////////////////////////////////////////
