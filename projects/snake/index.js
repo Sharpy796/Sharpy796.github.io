@@ -163,20 +163,23 @@ function runProgram() {
                 "Typing noCollide gets rid of all collisions.\n" +
                 "Typing wallMode gets rid of the apples, and you can't move into spaces that you already moved in.\n\n" +
                 "Clicking Cancel sets the difficulty to Medium.");
-            answer[0] = answer[0].toLowerCase();
             // if the difficulty is Slow, Easy, Medium, Hard, or nothing
-            if (answer === "slow" ||
-                answer === "easy" ||
-                answer === "medium" ||
-                answer === "hard" ||
+            if (answer === "slow") {answer = "Slow";}
+            else if (answer === "easy") {answer = "Easy";}
+            else if (answer === "medium") {answer = "Medium";}
+            else if (answer === "hard") {answer = "Hard";}
+            if (answer === "Slow" ||
+                answer === "Easy" ||
+                answer === "Medium" ||
+                answer === "Hard" ||
                 answer === null ||
                 answer === "") {
                 // if the answer if nothing, set the difficulty to Medium
                 if (answer === null || answer === "") {
-                    answer = "medium";
+                    answer = "Medium";
                 }
                 // tell the user what difficulty they chose, along with the controls
-                alert("You chose the " + answer[1] + " difficulty.\n\n" +
+                alert("You chose the " + answer + " difficulty.\n\n" +
                     "CONTROLS\nUse the arrow keys for movement\n" +
                     "Press space to pause\n\n" +
                     "Good luck, and have fun!");
@@ -235,7 +238,7 @@ function runProgram() {
             }
             // if the difficulty is not a valid one
             else {
-                alert("That's not a difficulty!\n(Hint: Try making sure you use proper capitlization.)");
+                alert("That's not an option!\n(Hint: Try making sure you use proper capitlization.)");
                 correctDifficulty = false;
             }
         }
