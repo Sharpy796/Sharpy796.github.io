@@ -23,6 +23,10 @@
      *      scaleY: OPTIONAL The scale factor on the y-axis, this value will 
      *              stretch the platform in height.
      */ 
+    function determineDistance(game, level) {
+        return game.world.height - 32 - (107*level);
+    }
+
     function init(game) {
         let createPlatform = platform.create;
 
@@ -34,24 +38,26 @@
          * asset, giving it a scaleX and scaleY of 2 will stretch it across the 
          * bottom of the game.
          */
-        createPlatform(0, game.world.height - 32, 3, 2);    // DO NOT DELETE
+        var platformHeight = 3/8;
 
-        // 1st Level:
-        createPlatform(250, 550, 1, 0.25);
+        createPlatform(0, determineDistance(game, 0), 3, 2);    // DO NOT DELETE
+
+        // 1st Level: y = 550
+        createPlatform(200, determineDistance(game, 1), 1.25, platformHeight);
         
-        // 2nd Level:
-        createPlatform(100, 450, 0.5, 0.25);
-        createPlatform(600, 450, 0.5, 0.25);
+        // 2nd Level: y = 455
+        createPlatform(100, determineDistance(game, 2), 0.65, platformHeight);
+        createPlatform(540, determineDistance(game, 2), 0.65, platformHeight);
         
-        // 3rd Level:
-        createPlatform(250, 350, 1, 0.25);
+        // 3rd Level: y = 350
+        createPlatform(200, determineDistance(game, 3), 1.25, platformHeight);
         
-        // 4th Level:
-        createPlatform(100, 250, 0.5, 0.25);
-        createPlatform(600, 250, 0.5, 0.25);
+        // 4th Level: y = 250
+        createPlatform(100, determineDistance(game, 4), 0.65, platformHeight);
+        createPlatform(540, determineDistance(game, 4), 0.65, platformHeight);
         
-        // 5th Level:
-        createPlatform(250, 150, 0.25);
+        // 5th Level: y = 150
+        createPlatform(200, determineDistance(game, 5), 1.25, platformHeight);
         
         // ALL YOUR CODE GOES ABOVE HERE ///////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
