@@ -30,31 +30,36 @@
      *      gravity: OPTIONAL The gravitational pull on the collectable.
      *      bounce: OPTIONAL A factor effecting how much the collectable will bounce off platforms, etc.
      */ 
+    function determineDistance(game, level) {
+        return game.world.height - 110 - (105*level);
+    }
+
     function init(game) {
         let createCollectable = collectable.create;
 
         ////////////////////////////////////////////////////////////////////////
         // ALL YOUR CODE GOES BELOW HERE ///////////////////////////////////////
         
-        // 0th Level:
-        createCollectable(type.max, 680, 575);
+
+        // 0th Level: x = 680 ; y = 575
+        createCollectable(type.max, 750, determineDistance(game, 0));
         
-        // 1st Level:
-        createCollectable(type.steve, 160, 375);
+        // 1st Level: y = 375
+        createCollectable(type.steve, 250, determineDistance(game, 1));
         // createCollectable(type.db, 425, 475);
         
         // 2nd Level:
-        createCollectable(type.kennedi, 680, 375);
+        createCollectable(type.kennedi, 600, determineDistance(game, 2));
         
         // 3rd Level:
-        createCollectable(type.grace, 415, 275);
+        createCollectable(type.grace, 425, determineDistance(game, 3));
 
         
         // 4th Level:
         
         
         // 5th Level:
-        createCollectable(type.db, 425, 75);
+        createCollectable(type.db, 435, determineDistance(game, 5));
         
         // ALL YOUR CODE GOES ABOVE HERE ///////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////

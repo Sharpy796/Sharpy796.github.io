@@ -67,7 +67,7 @@ $(document).ready(function () {
     function collectDb(player, collectable) {
         game.score.text = 'Score: ' + (parseInt(/\s+(\S*)$/.exec(game.score.text)[1], 10) + collectable.type.points);
         collectable.kill();
-        if(collectable.type.points < 50 ) {
+        if ( parseInt(/\s+(\S*)$/.exec(game.score.text)[1], 10) < 150 ) {
         } else {
             setTimeout(() => game.lives.text = "Refresh Your Browser to");
             if (!youWon) {
