@@ -74,7 +74,7 @@ function runProgram() {
     var P1IsIt = false;
     var i = 1;
 
-    alert("Welcome to Walker!\nP1 Controls: W A S D\nP2 Controls: Up Down Left Right")
+    alert("Welcome to Walker!\nP1 Controls: W A S D\nP2 Controls: Up Down Left Right\nThe person outlined in green is 'it'. Go have fun!")
 
     ////////////////////////////////////////////////////////////////////////////////
     ///////////////////////// CORE LOGIC ///////////////////////////////////////////
