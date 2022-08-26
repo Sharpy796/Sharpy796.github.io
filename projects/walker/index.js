@@ -244,11 +244,11 @@ function runProgram() {
 
     function handleColorChanges() {
         if (!P1IsIt) {
-            $("#playerOne").css("background-color", "lime");
-            $("#playerTwo").css("background-color", "maroon");
+            $("#playerOne").css("outline-style", "solid");
+            $("#playerTwo").css("outline-style", "none");
         } if (P1IsIt) {
-            $("#playerTwo").css("background-color", "lime");
-            $("#playerOne").css("background-color", "teal");
+            $("#playerTwo").css("outline-style", "solid");
+            $("#playerOne").css("outline-style", "none");
         }
 
     }

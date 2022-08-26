@@ -20,12 +20,14 @@ body {
 
 #playerOne {
   background-color: teal;
+  outline-color: lime;
   left: 290px;
   top: 100px;
 }
 
 #playerTwo {
   background-color: maroon;
+  outline-color: lime;
   left: 100px;
   top: 100px;
 }
