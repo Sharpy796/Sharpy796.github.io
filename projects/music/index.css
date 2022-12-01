@@ -1,0 +1,67 @@
+body {
+    background-color: white;
+}
+
+.eighth-note {
+    background-color: black;
+}
+
+.quarter-note {
+    background-color: black;
+}
+
+.half-note {
+    background-color: black;
+}
+
+.whole-note {
+    background-color: black;
+}
+
+#C {
+    color: #ce1451;
+}
+
+#Db {
+    color: #09c19a;
+}
+
+#D {
+    color: #ed8431;
+}
+
+#Eb {
+    color: #466bb0;
+}
+
+#E {
+    color: #f1e820;
+}
+
+#F {
+    color: #a41890;
+}
+
+#Gb {
+    color: #4ccc56;
+}
+
+#G {
+    color: #e34a30;
+}
+
+#Ab {
+    color: #07aada;
+}
+
+#A {
+    color: #f5c126;
+}
+
+#Bb {
+    color: #843b9c;
+}
+
+#B {
+    color: #acdd49;
+}
