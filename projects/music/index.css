@@ -8,10 +8,7 @@ body {
 }
 
 .quarter-note {
-    background: url(assets/QuarterNote.png) 0 0 no-repeat fixed;
-    height: 100%;
-    overflow: hidden;
-    color: black;
+    background-color: black;
 }
 
 .half-note {
@@ -22,15 +19,12 @@ body {
     background-color: black;
 }
 
-/* #C {
+#C {
     color: #ce1451;
-} */
+}
 
 #C {
-    background: rgba(10, 118, 219, 0.86);
-    overflow: hidden;
-    height: 100%;
-    z-index: 2;
+    filter: invert(65%) sepia(100%) saturate(3007%) hue-rotate(330deg) brightness(95%) contrast(100%);
 }
 
 #Db {
