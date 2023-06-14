@@ -307,19 +307,19 @@ function runProgram() {
     ///////////////////|\\\\\\\\\\\\\\\\\\\
 
     function showSpeeds() {
-        // Bal Speeds
+        // Ball Speeds
         $("#speeds b").text("Speeds:");
-        $("#up span").text("Up: " + ball.speed.up);
-        $("#left span").text("Left: " + ball.speed.left);
-        $("#down span").text("Down: " + ball.speed.down);
-        $("#right span").text("Right: " + ball.speed.right);
+        $("#up span").text("Ball X: " + ball.speedX);
+        $("#left span").text("Ball Y: " + ball.speedY);
+        $("#down span").text("Predicted Y (Left): " + predictBallPosition(paddleLeft));
+        $("#right span").text("Predicted Y (Right): " + predictBallPosition(paddleRight));
 
         // Ball Temporary Speeds
-        $("#tempSpeeds b").text("Temp Speeds:");
-        $("#tempUp span").text("Up: " + ball.temporarySpeed.up);
-        $("#tempLeft span").text("Left: " + ball.temporarySpeed.left);
-        $("#tempDown span").text("Down: " + ball.temporarySpeed.down);
-        $("#tempRight span").text("Right: " + ball.temporarySpeed.right);
+        $("#tempSpeeds b").text("Positions:");
+        $("#tempUp span").text("BallX: " + ball.x );
+        $("#tempLeft span").text("BallY: " + ball.y);
+        $("#tempDown span").text("PaddleLeft: " + paddleLeft.y);
+        $("#tempRight span").text("PaddleRight: " + paddleRight.y);
     }
 
     function tellSpeeds() {
@@ -763,6 +763,14 @@ function runProgram() {
     //////////// Repositioning \\\\\\\\\\\\
     ///////////////////|\\\\\\\\\\\\\\\\\\\
 
+    function predictBallPosition(obj) {
+        return (ball.y+((obj.x-ball.x)/(ball.speedX))*(ball.speedY)) - $(obj.id).height() / 2 + $(ball.id).height() / 2;
+    }
+
+    function moveToPredictedBallPosition(gameItem) {
+        gameItem.y += (predictBallPosition(gameItem)-gameItem.y)/((gameItem.x-ball.x)/(ball.speedX));
+    }
+
     function repositionGameItem(gameItem) {
         gameItem.x += gameItem.speedX;
         gameItem.y += gameItem.speedY;
@@ -770,8 +778,8 @@ function runProgram() {
 
     function repositionAllGameItems() {
         if (autoPlay) {
-            paddleLeft.y = ball.y - $(paddleLeft.id).height() / 2 + $(ball.id).height() / 2;
-            paddleRight.y = ball.y - $(paddleRight.id).height() / 2 + $(ball.id).height() / 2;
+            if (ball.speedX < 0) {moveToPredictedBallPosition(paddleLeft);}
+            if (ball.speedX > 0) {moveToPredictedBallPosition(paddleRight);}
         } else {
             repositionGameItem(paddleLeft);
             repositionGameItem(paddleRight);
