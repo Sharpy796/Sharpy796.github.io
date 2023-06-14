@@ -83,7 +83,8 @@ function runProgram() {
     var autoPlay = false;
     var debug = false;
     var gameWon = false;
-    var varSpeedY = 5;
+    var varVelocityY = 5;
+    var varPredictedPositionY = 0;
 
     function join(delimiter, arg1, arg2, arg3) {
         return arg1.concat(delimiter, arg2, delimiter, arg3)
@@ -103,17 +104,17 @@ function runProgram() {
     by calling this function and executing the code inside.
     */
     function newFrame() {
-        updateTemporarySpeed();
+        updateTemporaryVelocity();
         pauseGame();
         changeColors()
         if (debug) {
-            showSpeeds();
+            showVelocities();
         }
         handleCollisions();
         if (!gameWon) {
             redrawAllGameItems();
             if (!pause) {
-                handleSpeed();
+                handleVelocity();
                 repositionAllGameItems();
             }
         }
@@ -187,10 +188,10 @@ function runProgram() {
                 console.log("k pressed");
             }
         } else {
-            ball.speed.up = ball.temporarySpeed.up;
-            ball.speed.left = ball.temporarySpeed.left;
-            ball.speed.down = ball.temporarySpeed.down;
-            ball.speed.right = ball.temporarySpeed.right;
+            ball.speed.up = ball.temporaryVelocity.up;
+            ball.speed.left = ball.temporaryVelocity.left;
+            ball.speed.down = ball.temporaryVelocity.down;
+            ball.speed.right = ball.temporaryVelocity.right;
             firstTimeCheat = true;
         }
 
@@ -264,34 +265,34 @@ function runProgram() {
     ////////////////////////// HELPER FUNCTIONS ////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
 
-    function createGameObject(x, y, speedX, speedY, id) {
+    function createGameObject(x, y, velocityX, velocityY, id) {
         var gameObject = {};
         gameObject.x = x;
         gameObject.y = y;
         gameObject.speed = {}
-        if (speedX < 0) {
-            gameObject.speed.left = -speedX;
+        if (velocityX < 0) {
+            gameObject.speed.left = -velocityX;
             gameObject.speed.right = 0;
         } else {
             gameObject.speed.left = 0;
-            gameObject.speed.right = speedX;
+            gameObject.speed.right = velocityX;
         }
-        if (speedY < 0) {
-            gameObject.speed.up = -speedY;
+        if (velocityY < 0) {
+            gameObject.speed.up = -velocityY;
             gameObject.speed.down = 0;
         } else {
             gameObject.speed.up = 0;
-            gameObject.speed.down = speedY;
+            gameObject.speed.down = velocityY;
         }
-        gameObject.speedX = gameObject.speed.left + gameObject.speed.right;
-        gameObject.speedY = gameObject.speed.up + gameObject.speed.down;
+        gameObject.velocityX = gameObject.speed.left + gameObject.speed.right;
+        gameObject.velocityY = gameObject.speed.up + gameObject.speed.down;
         gameObject.id = id;
         if (gameObject.id === "#ball") {
-            gameObject.temporarySpeed = {}
-            gameObject.temporarySpeed.up = gameObject.speed.up;
-            gameObject.temporarySpeed.left = gameObject.speed.left;
-            gameObject.temporarySpeed.down = gameObject.speed.down;
-            gameObject.temporarySpeed.right = gameObject.speed.right;
+            gameObject.temporaryVelocity = {}
+            gameObject.temporaryVelocity.up = gameObject.speed.up;
+            gameObject.temporaryVelocity.left = gameObject.speed.left;
+            gameObject.temporaryVelocity.down = gameObject.speed.down;
+            gameObject.temporaryVelocity.right = gameObject.speed.right;
         }
         return gameObject;
     }
@@ -303,18 +304,18 @@ function runProgram() {
 
 
     ///////////////////|\\\\\\\\\\\\\\\\\\\
-    //////////////// Speed \\\\\\\\\\\\\\\\
+    /////////////// Velocity \\\\\\\\\\\\\\
     ///////////////////|\\\\\\\\\\\\\\\\\\\
 
-    function showSpeeds() {
-        // Ball Speeds
-        $("#speeds b").text("Speeds:");
-        $("#up span").text("Ball X: " + ball.speedX);
-        $("#left span").text("Ball Y: " + ball.speedY);
+    function showVelocities() {
+        // Ball Velocities
+        $("#speeds b").text("Velocities:");
+        $("#up span").text("Ball X: " + ball.velocityX);
+        $("#left span").text("Ball Y: " + ball.velocityY);
         $("#down span").text("Predicted Y (Left): " + predictBallPosition(paddleLeft));
         $("#right span").text("Predicted Y (Right): " + predictBallPosition(paddleRight));
 
-        // Ball Temporary Speeds
+        // Ball Temporary Velocities
         $("#tempSpeeds b").text("Positions:");
         $("#tempUp span").text("BallX: " + ball.x );
         $("#tempLeft span").text("BallY: " + ball.y);
@@ -322,61 +323,61 @@ function runProgram() {
         $("#tempRight span").text("PaddleRight: " + paddleRight.y);
     }
 
-    function tellSpeeds() {
-        alert("Speeds:" +
+    function tellVelocities() {
+        alert("Velocities:" +
             "\nUp:    " + ball.speed.up +
             "\nLeft:  " + ball.speed.left +
             "\nDown:  " + ball.speed.down +
             "\nRight: " + ball.speed.right +
-            "\nTemp Speeds:" +
-            "\nUp:    " + ball.temporarySpeed.up +
-            "\nLeft:  " + ball.temporarySpeed.left +
-            "\nDown:  " + ball.temporarySpeed.down +
-            "\nRight: " + ball.temporarySpeed.right);
+            "\nTemp Velocities:" +
+            "\nUp:    " + ball.temporaryVelocity.up +
+            "\nLeft:  " + ball.temporaryVelocity.left +
+            "\nDown:  " + ball.temporaryVelocity.down +
+            "\nRight: " + ball.temporaryVelocity.right);
     }
 
-    function updateTemporarySpeed() {
+    function updateTemporaryVelocity() {
         if (!pause && !cheatMode) {
-            ball.temporarySpeed.up = ball.speed.up;
-            ball.temporarySpeed.left = ball.speed.left;
-            ball.temporarySpeed.down = ball.speed.down;
-            ball.temporarySpeed.right = ball.speed.right;
+            ball.temporaryVelocity.up = ball.speed.up;
+            ball.temporaryVelocity.left = ball.speed.left;
+            ball.temporaryVelocity.down = ball.speed.down;
+            ball.temporaryVelocity.right = ball.speed.right;
         }
     }
 
-    function handleSpeed() {
-        // p1 speed
-        paddleLeft.speedX = paddleLeft.speed.right - paddleLeft.speed.left;
-        paddleLeft.speedY = paddleLeft.speed.down - paddleLeft.speed.up;
+    function handleVelocity() {
+        // p1 Velocity
+        paddleLeft.velocityX = paddleLeft.speed.right - paddleLeft.speed.left;
+        paddleLeft.velocityY = paddleLeft.speed.down - paddleLeft.speed.up;
 
-        // p2 speed
-        paddleRight.speedX = paddleRight.speed.right - paddleRight.speed.left;
-        paddleRight.speedY = paddleRight.speed.down - paddleRight.speed.up;
+        // p2 Velocity
+        paddleRight.velocityX = paddleRight.speed.right - paddleRight.speed.left;
+        paddleRight.velocityY = paddleRight.speed.down - paddleRight.speed.up;
 
-        // ball speed
-        ball.speedX = ball.speed.right - ball.speed.left;
-        ball.speedY = ball.speed.down - ball.speed.up;
+        // ball Velocity
+        ball.velocityX = ball.speed.right - ball.speed.left;
+        ball.velocityY = ball.speed.down - ball.speed.up;
     }
 
-    function increaseBallSpeedX() {
+    function increaseBallVelocityX() {
         clearInterval(interval);
         setTimeout(restartTimer, 0);
     }
 
-    function randBallSpeedY() {
+    function randBallVelocityY() {
         var randNum = 0;
         while (randNum >= 5 || randNum <= 1) {
             randNum = Math.floor(Math.random() * 10);
         }
-        varSpeedY = randNum;
-        if (ball.speedY > 0) {
-            ball.speed.up = varSpeedY;
+        varVelocityY = randNum;
+        if (ball.velocityY > 0) {
+            ball.speed.up = varVelocityY;
             ball.speed.down = 0;
-        } else if (ball.speedY < 0) {
+        } else if (ball.velocityY < 0) {
             ball.speed.up = 0;
-            ball.speed.down = varSpeedY;
+            ball.speed.down = varVelocityY;
         }
-        console.log("changed ball speedY to " + varSpeedY);
+        console.log("changed ball velocityY to " + varVelocityY);
     }
 
 
@@ -541,8 +542,10 @@ function runProgram() {
 
         // check if the ball is touching the paddles
         if (doCollide(ball, paddleLeft)) {
+            console.log("ping");
             handlePaddleCollisions(paddleLeft);     // left paddle
         } else if (doCollide(ball, paddleRight)) {
+            console.log("pong");
             handlePaddleCollisions(paddleRight);    // right paddle
         } else {
             // tell us we still have yet to bounce
@@ -625,6 +628,8 @@ function runProgram() {
     function handlePaddleCollisions(paddle) {
         // if it is the first time bouncing on one
         if (firstTimeBouncedPaddle) {
+            // Mix up the ball's predicted position in AutoPlay
+            randPredictedPositionYMod();
             // if it bounced off the paddle's left border
             if (whichBorder(ball, paddle) === "left") {
                 // bounce the ball left
@@ -635,7 +640,7 @@ function runProgram() {
                 if (paddle === paddleRight) {
                     score.bounced++;
                     // if (!cheatMode) {
-                    increaseBallSpeedX();
+                    increaseBallVelocityX();
                     // }
                 }
                 console.log("ball bounced " + tellPaddle(paddle) + " paddle's left border");
@@ -650,7 +655,7 @@ function runProgram() {
                 if (paddle === paddleLeft) {
                     score.bounced++;
                     // if (!cheatMode) {
-                    increaseBallSpeedX();
+                    increaseBallVelocityX();
                     // }
                 }
                 console.log("ball bounced " + tellPaddle(paddle) + " paddle's right border");
@@ -686,7 +691,6 @@ function runProgram() {
             obj1.topY < obj2.bottomY) &&
             (obj1.rightX > obj2.leftX &&
                 obj1.bottomY > obj2.topY)) {
-            console.log('boing')
 
             return true;
         } else {
@@ -703,9 +707,11 @@ function runProgram() {
         if (firstTimeBouncedWall) {
             if (player === p1.id) {             // player 1's side
                 score.p2++;
+                console.log("P2 scored a point! Total: " + score.p2);
                 $("#p2").text(score.p2);
             } else if (player === p2.id) {      // player 2's side
                 score.p1++;
+                console.log("P1 scored a point! Total: " + score.p1);
                 $("#p1").text(score.p1);
             } else {
                 console.log(text.error);
@@ -744,7 +750,7 @@ function runProgram() {
         $("#ball").css("background-color", "fuchsia");
         ball.x = 340;
         ball.y = 210;
-        randBallSpeedY();
+        randBallVelocityY();
         if (player === p1.id) {
             ball.speed.left = 0;
             ball.speed.right = 5;
@@ -763,23 +769,62 @@ function runProgram() {
     //////////// Repositioning \\\\\\\\\\\\
     ///////////////////|\\\\\\\\\\\\\\\\\\\
 
-    function predictBallPosition(obj) {
-        return (ball.y+((obj.x-ball.x)/(ball.speedX))*(ball.speedY)) - $(obj.id).height() / 2 + $(ball.id).height() / 2;
+    function randPredictedPositionYMod() {
+        varPredictedPositionY = Math.floor(Math.random() * 80) - 40;
+        console.log("predicted ball position modified by " + varPredictedPositionY);
     }
 
+    /**
+     * Calculates the amount of frames it will take for one point to reach the second point.
+     * - Distance from point A to point B...
+     * - Divided by distance/frame.
+     * @param {double} pointA - The first point of reference.
+     * @param {double} pointB - The second point of reference.
+     * @param {double} velocity - The pixels/frame velocity of one of the two points.
+     */
+    function calculateTime(pointA, pointB, velocity) { return (pointA-pointB)/velocity; }
+
+    /**
+     * Algorithm to predict the ball's future position upon meeting the X value of an object.
+     * - We start with `ball.y`, the ball's initial height.
+     *   - This will increase as the ball moves upward.
+     * - We then `calculateTime()` the ball takes to get to the object's X value.
+     * - We multiply that time by the `ball.velocityY` (frames * dist/frames) to get how far up the 
+     *   ball would move by the time it reaches the object.
+     *   - This will decrease as the ball moves closer to the object.
+     * - We then add that total Y displacement to the current `ball.y` to get a predicted Y position.
+     * - After that we subtract half the object's height and add half the ball's height to center the
+     *   object on the ball.
+     * @param {object} obj - The object to use as a second point of reference.
+     * @returns {double} The Y position of the ball where it meets the object's X position.
+     */
+    function predictBallPosition(obj) {
+        return ball.y + (calculateTime(obj.x, ball.x, ball.velocityX)*(ball.velocityY)) - $(obj.id).height()/2 + $(ball.id).height()/2 + varPredictedPositionY;
+    }
+
+    /**
+     * Calculates the pixels/frame required for an object to catch the ball in time.
+     * - First, we find the distance between the ball's predicted Y position and the 
+     *   object's current Y position.
+     * - Then, we calculate the amount of frames it will take for the ball's X position
+     *   to reach the object's X position.
+     * - We divide pixels by frames, and we get a velocity.
+     * @param {object} gameItem - The object whose required velocity will be calculated. 
+     * @returns {double} The Y velocity required to reach the ball before it passes the object up.
+     */
     function moveToPredictedBallPosition(gameItem) {
-        gameItem.y += (predictBallPosition(gameItem)-gameItem.y)/((gameItem.x-ball.x)/(ball.speedX));
+        gameItem.y += (predictBallPosition(gameItem)-gameItem.y) / (calculateTime(gameItem.x, ball.x, ball.velocityX));
     }
 
     function repositionGameItem(gameItem) {
-        gameItem.x += gameItem.speedX;
-        gameItem.y += gameItem.speedY;
+        gameItem.x += gameItem.velocityX;
+        gameItem.y += gameItem.velocityY;
     }
 
     function repositionAllGameItems() {
         if (autoPlay) {
-            if (ball.speedX < 0) {moveToPredictedBallPosition(paddleLeft);}
-            if (ball.speedX > 0) {moveToPredictedBallPosition(paddleRight);}
+            if (ball.velocityX < 0) {moveToPredictedBallPosition(paddleLeft);}
+            if (ball.velocityX > 0) {moveToPredictedBallPosition(paddleRight);}
         } else {
             repositionGameItem(paddleLeft);
             repositionGameItem(paddleRight);
