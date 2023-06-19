@@ -12,13 +12,20 @@ body {
 }
 
 .gameItem {
-  /* appearance */
-  width: 20px;
-  height: 80px;
-  border-radius: 5px;
-
   /* positioning */
   position: absolute;
+}
+
+.balls {
+  /* appearance */
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background-color: fuchsia;
+  
+  /* positioning */
+  left: 340px;
+  top: 210px;
 }
 
 .text {
@@ -31,13 +38,29 @@ body {
   display: block;
 }
 
+.ballPit {
+  background-color: red;
+}
+
+/* ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  display: block;
+  margin-bottom: 1em;
+} */
+
 .speeds {
   font-family: "Comic Sans MS";
   -webkit-user-select: none; /* Safari */
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* IE10+/Edge */
   user-select: none; /* Standard */
-  display: inline;
+  list-style-type: none;
+  padding: 0;
+  display: block;
 }
 
 
@@ -51,6 +74,9 @@ body {
 
 #paddleLeft {
   /* appearance */
+  width: 20px;
+  height: 80px;
+  border-radius: 5px;
   background-color: teal;
 
   /* positioning */
@@ -60,6 +86,9 @@ body {
 
 #paddleRight {
   /* appearance */
+  width: 20px;
+  height: 80px;
+  border-radius: 5px;
   background-color: maroon;
 
   /* positioning */
