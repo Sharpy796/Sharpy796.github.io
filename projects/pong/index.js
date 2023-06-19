@@ -10,6 +10,7 @@ function runProgram() {
     // Constant Variables
     var FRAMES = 60;
     var framesPerSecondInterval = 1000 / FRAMES;
+    // var framesPerSecondInterval = 1000 / 10;
     var BORDERS = {
         TOP: 0,
         LEFT: 0,
@@ -49,7 +50,7 @@ function runProgram() {
     var paddleRight = createGameObject(630, 180, 0, 0, "#paddleRight"); // player 2
     var p2 = paddleRight;
 
-    var ball = createGameObject(340, 210, -5, -2.5, "#ball0");           // ball
+    var ball0 = createGameObject(340, 210, -5, -2.5, "#ball0");         // ball
 
     var ballNullLeft = createGameObject(99999, 210, 0, 0, "#ballNull");
     var ballNullRight = createGameObject(-99999, 210, 0, 0, "#ballNull");
@@ -86,9 +87,9 @@ function runProgram() {
     var autoPlay = true;
     var multiBall = true;
     var ballPit = [];
-    ballPit.push(ball);
+    ballPit.push(ball0);
     var ballPitLeft = [];
-    ballPitLeft.push(ball);
+    ballPitLeft.push(ball0);
     var ballPitRight = [];
     var targetedBallLeft = ballNullLeft;
     var targetedBallRight = ballNullRight;
@@ -116,6 +117,7 @@ function runProgram() {
     On each "tick" of the timer, a new frame is dynamically drawn using JavaScript
     by calling this function and executing the code inside.
     */
+    var ballCount = 5;
     var ticks = 0;
     function newFrame() {
         if (!pause) {
@@ -125,12 +127,12 @@ function runProgram() {
             // getBallPitTelemetry();
         }
         if (multiBall) {
-            if (ticks%60 == 0 && ticks <= 60*0) {
+            if (ticks%60 == 0 && ticks <= 60*(ballCount-1)) {
                 createNewBall();
                 // getBallPitTelemetry();
             }
         }
-        updateTemporaryVelocity(ball);
+        updateTemporaryVelocity(ball0);
         pauseGame();
         changeColors()
         if (debug) {
@@ -194,30 +196,30 @@ function runProgram() {
         /* ball controls */
         if (cheatMode) {
             if (firstTimeCheat) {
-                ball.speed.up = 0;
-                ball.speed.left = 0;
-                ball.speed.down = 0;
-                ball.speed.right = 0;
+                ball0.speed.up = 0;
+                ball0.speed.left = 0;
+                ball0.speed.down = 0;
+                ball0.speed.right = 0;
             }
             firstTimeCheat = false;
             if (keycode === KEY.U) {        // up
-                ball.speed.up = 5;
+                ball0.speed.up = 5;
                 console.log("u pressed");
             } if (keycode === KEY.H) {      // left
-                ball.speed.left = 5;
+                ball0.speed.left = 5;
                 console.log("h pressed");
             } if (keycode === KEY.J) {      // down
-                ball.speed.down = 5;
+                ball0.speed.down = 5;
                 console.log("j pressed");
             } if (keycode === KEY.K) {      // right
-                ball.speed.right = 5;
+                ball0.speed.right = 5;
                 console.log("k pressed");
             }
         } else {
-            ball.speed.up = ball.temporaryVelocity.up;
-            ball.speed.left = ball.temporaryVelocity.left;
-            ball.speed.down = ball.temporaryVelocity.down;
-            ball.speed.right = ball.temporaryVelocity.right;
+            ball0.speed.up = ball0.temporaryVelocity.up;
+            ball0.speed.left = ball0.temporaryVelocity.left;
+            ball0.speed.down = ball0.temporaryVelocity.down;
+            ball0.speed.right = ball0.temporaryVelocity.right;
             firstTimeCheat = true;
         }
 
@@ -271,16 +273,16 @@ function runProgram() {
             /* ball controls */
             if (cheatMode) {
                 if (keycode === KEY.U) {
-                    ball.speed.up = 0;
+                    ball0.speed.up = 0;
                     console.log("u released");
                 } if (keycode === KEY.H) {
-                    ball.speed.left = 0;
+                    ball0.speed.left = 0;
                     console.log("h released");
                 } if (keycode === KEY.J) {
-                    ball.speed.down = 0;
+                    ball0.speed.down = 0;
                     console.log("j released");
                 } if (keycode === KEY.K) {
-                    ball.speed.right = 0;
+                    ball0.speed.right = 0;
                     console.log("k released");
                 }
             }
@@ -313,7 +315,7 @@ function runProgram() {
         }
         gameObject.velocityX = gameObject.speed.left + gameObject.speed.right;
         gameObject.velocityY = gameObject.speed.up + gameObject.speed.down;
-        if (gameObject.id.replace(/[0-9]/g, '') === "#ball") {
+        if (gameObject.id.includes("#ball")) {
             gameObject.temporaryVelocity = {}
             gameObject.temporaryVelocity.up = gameObject.speed.up;
             gameObject.temporaryVelocity.left = gameObject.speed.left;
@@ -358,26 +360,27 @@ function runProgram() {
         if (targetedBallLeft.id == "#ballNull") {signLeft=-1;}
         if (targetedBallRight.id == "#ballNull") {signRight=-1;}
 
-        // Ball Velocities
+        // Targeted Left Telemetries
         $("#speeds b").text("Targeted Left: " + targetedBallLeft.id + " (SignLeft " + signLeft + ")");
         $("#up span").text("PaddleLeft X: " + paddleLeft.x);
         $("#left span").text("Targeted X: " + targetedBallLeft.x);
         $("#down span").text("VelocityX: " + targetedBallLeft.velocityX);
         $("#right span").text("Target Calc Time: " + calculateTime(paddleLeft, targetedBallLeft, targetedBallLeft)*signLeft);
 
-        // Ball Temporary Velocities
+        // Targeted Right Telemetries
         $("#tempSpeeds b").text("Targeted Right: " + targetedBallRight.id + " (SignRight " + signRight + ")");
         $("#tempUp span").text("PaddleRight X: " + paddleRight.x );
         $("#tempLeft span").text("Targeted X: " + targetedBallRight.x);
         $("#tempDown span").text("VelocityX: " + targetedBallRight.velocityX);
         $("#tempRight span").text("Target Calc Time: " + calculateTime(paddleRight, targetedBallRight, targetedBallRight)*signRight);
 
-        // Ball Temporary Velocities
-        $("#0Speeds b").text("Ball0: " + ball.id);
-        $("#0Up span").text("Ball0 X: " + ball.x);
-        $("#0Left span").text("VelocityX: " + ball.velocityX);
-        $("#0Down span").text("Left Pred Position: " + predictBallPosition(paddleLeft, ball, ball));
-        $("#0Right span").text("Right Pred Position: " + predictBallPosition(paddleRight, ball, ball));
+        // Ball0 Telemetries
+        $("#0Speeds b").text("Ball0: " + ball0.id);
+        $("#0Up span").text("Ball0 X: " + ball0.x);
+        $("#0Left span").text("VelocityX: " + ball0.velocityX);
+        $("#0Left2 span").text("VelocityY: " + ball0.velocityY);
+        $("#0Down span").text("Left Pred Position: " + predictBallPosition(paddleLeft, ball0, ball0));
+        $("#0Right span").text("Right Pred Position: " + predictBallPosition(paddleRight, ball0, ball0));
     }
 
     function createBallTelemetry() {
@@ -451,9 +454,9 @@ function runProgram() {
         // ball.velocityY = ball.speed.down - ball.speed.up;
 
         // ballPit Velocity
-        for (let each of ballPit) {
-            each.velocityX = each.speed.right - each.speed.left;
-            each.velocityY = each.speed.down - each.speed.up;
+        for (let ball of ballPit) {
+            ball.velocityX = ball.speed.right - ball.speed.left;
+            ball.velocityY = ball.speed.down - ball.speed.up;
         }
     }
 
@@ -475,7 +478,7 @@ function runProgram() {
             ballObj.speed.up = 0;
             ballObj.speed.down = varVelocityY;
         }
-        console.log("changed ball velocityY to " + varVelocityY);
+        console.log("changed " + ballObj.id + " velocityY to " + varVelocityY);
     }
 
 
@@ -546,7 +549,10 @@ function runProgram() {
             }
         }
 
-        // MultiBall Activation
+        // MultiBall Activation 
+        // TODO: Add a prompmpt to input an amount of balls
+        // TODO: Figure out how to restart the game without reloading the page
+        // TODO: Figure out which modes need to accompany MultiBall for it to work properly
         else if (answer === "multiBall") {
             if (cheatMode) {
                 alert("Cannot activate MultiBall because Cheat Mode is activated.\nType 'noCheat' to deactivate it.");
@@ -706,7 +712,7 @@ function runProgram() {
     // }
 
     function targetBall() {
-        for (let each of ballPit) {
+        for (let ball of ballPit) {
 
             // getBallPitTelemetry();
 
@@ -743,20 +749,20 @@ function runProgram() {
             if (targetedBallRight.id == "#ballNull") {signRight=-1;}
 
 
-            if (each.velocityX < 0 && 
-                each.x >= (paddleLeft.x /*+ $("#paddleLeft").width()*/) && 
+            if (ball.velocityX < 0 && 
+                ball.x >= (paddleLeft.x /*+ $("#paddleLeft").width()*/) && 
                 // calculateTime(paddleLeft, each, each) <= calculateTime(paddleLeft, targetedBallLeft, targetedBallLeft)*signLeft
-                each.x <= targetedBallLeft.x
+                ball.x <= targetedBallLeft.x
                 ) {
-                targetedBallLeft = each;
+                targetedBallLeft = ball;
                 console.log(targetedBallLeft.id + " is being targeted by LeftPaddle!");
             }
-            else if (each.velocityX > 0 && 
-                each.x <= paddleRight.x && 
+            else if (ball.velocityX > 0 && 
+                ball.x <= paddleRight.x && 
                 // calculateTime(paddleRight, each, each) <= calculateTime(paddleRight, targetedBallRight, targetedBallRight)*signRight
-                each.x >= targetedBallRight.x
+                ball.x >= targetedBallRight.x
                 ) {
-                targetedBallRight = each;
+                targetedBallRight = ball;
                 console.log(targetedBallRight.id + " is being targeted by RightPaddle!");
             }
             // console.log("Calculated Time Left: " + calculateTime(paddleLeft, each, each));
@@ -790,15 +796,15 @@ function runProgram() {
             // $(".balls").css("background-color", "lime");
         } else {
             
-            for (let each of ballPit) {
-                if (each != targetedBallLeft && each != targetedBallRight) {$(each.id).css("background-color", "fuchsia");}
-                if (each.velocityX < 0) {$(each.id).css("background-color", "blue");}
-                if (each.velocityX > 0) {$(each.id).css("background-color", "maroon");}
-                if (each == targetedBallLeft) {$(each.id).css("background-color", "cyan");}
-                if (each == targetedBallRight) {$(each.id).css("background-color", "red");}
-                // console.log(each.id);
+            for (let ball of ballPit) {
+                if (ball != targetedBallLeft && ball != targetedBallRight) {$(ball.id).css("background-color", "fuchsia");}
+                if (ball.velocityX < 0) {$(ball.id).css("background-color", "blue");}
+                if (ball.velocityX > 0) {$(ball.id).css("background-color", "maroon");}
+                if (ball == targetedBallLeft) {$(ball.id).css("background-color", "cyan");}
+                if (ball == targetedBallRight) {$(ball.id).css("background-color", "red");}
+                // console.log(ball.id);
                 
-                $(each.id).text(each.id.charAt(each.id.length-1)).css("text-align", "center");
+                $(ball.id).text(ball.id.charAt(ball.id.length-1)).css("text-align", "center");
             }
         }
 
@@ -842,32 +848,30 @@ function runProgram() {
         // update object borders
         updateObjectBorders(paddleLeft);
         updateObjectBorders(paddleRight);
-        // updateObjectBorders(ball);
-        for (let each of ballPit) {
-            updateObjectBorders(each);
+        for (let ball of ballPit) {
+            updateObjectBorders(ball);
         }
 
         // keep the objects in the borders
         enforceNoNoZone(paddleLeft);
         enforceNoNoZone(paddleRight);
         if (cheatMode) {
-            // enforceNoNoZone(ball);
-            for (let each of ballPit) {
-                enforceNoNoZone(each);
+            for (let ball of ballPit) {
+                enforceNoNoZone(ball);
             }
         } else {
-            for (let each of ballPit) {
-                bounceBall(each);
-                enforceNoNoZone(each);
+            for (let ball of ballPit) {
+                bounceBall(ball);
+                enforceNoNoZone(ball);
             }
         }
 
         // check if the ball is touching the paddles
-        for (let each of ballPit){
-            if (doCollide(each, paddleLeft)) {
+        for (let ball of ballPit){
+            if (doCollide(ball, paddleLeft)) {
                 console.log("ping");
                 handlePaddleCollisions(paddleLeft);     // left paddle
-            } else if (doCollide(each, paddleRight)) {
+            } else if (doCollide(ball, paddleRight)) {
                 console.log("pong");
                 handlePaddleCollisions(paddleRight);    // right paddle
             } else {
@@ -890,7 +894,7 @@ function runProgram() {
             console.log(obj.id + " passed left border")
         }
         if (obj.topY < BORDERS.TOP) {
-            if (/*obj === ball || */ballPit.includes(obj)) {
+            if (ballPit.includes(obj)) {
                 obj.y -= -5;
             } else if (autoPlay) {
                 obj.y = BORDERS.TOP;
@@ -904,7 +908,7 @@ function runProgram() {
             console.log(obj.id + " passed right border")
         }
         if (obj.bottomY > BORDERS.BOTTOM) {
-            if (/*obj === ball || */ballPit.includes(obj)) {
+            if (ballPit.includes(obj)) {
                 obj.y -= 5;
             } else if (autoPlay) {
                 obj.y = BORDERS.BOTTOM - $(obj.id).height();
@@ -957,39 +961,39 @@ function runProgram() {
             // Mix up the ball's predicted position in AutoPlay
             randPredictedPositionYMod();
             // if it bounced off the paddle's left border
-            for (let each of ballPit) {
-                if (whichBorder(each, paddle) === "left") {
+            for (let ball of ballPit) {
+                if (whichBorder(ball, paddle) === "left") {
                     // bounce the ball left
-                    each.speed.left = 5;
-                    each.speed.right = 0;
-                    each.x -= 1;
+                    ball.speed.left = 5;
+                    ball.speed.right = 0;
+                    ball.x -= 1;
                     // increase the score
                     if (paddle === paddleRight) {
-                        // sortBallPit(each);
+                        // sortBallPit(ball);
                         score.bounced++;
                         if (!multiBall) {
                             increaseGameSpeed();
                         }
                     }
-                    filterBallPit(each);
-                    console.log(each.id+" bounced " + tellPaddle(paddle) + " paddle's left border");
+                    filterBallPit(ball);
+                    console.log(ball.id+" bounced " + tellPaddle(paddle) + " paddle's left border");
                 }
                 // if it bounced off the paddle's right border
-                else if (whichBorder(each, paddle) === "right") {
+                else if (whichBorder(ball, paddle) === "right") {
                     // bounce the ball right
-                    each.speed.left = 0;
-                    each.speed.right = 5;
-                    each.x += 1;
+                    ball.speed.left = 0;
+                    ball.speed.right = 5;
+                    ball.x += 1;
                     // increase the score
                     if (paddle === paddleLeft) {
-                        // sortBallPit(each);
+                        // sortBallPit(ball);
                         score.bounced++;
                         if (!multiBall) {
                             increaseGameSpeed();
                         }
                     }
-                    filterBallPit(each);
-                    console.log(each.id+" bounced " + tellPaddle(paddle) + " paddle's right border");
+                    filterBallPit(ball);
+                    console.log(ball.id+" bounced " + tellPaddle(paddle) + " paddle's right border");
                 }
             }
         }
@@ -1080,16 +1084,16 @@ function runProgram() {
         score.bounced = 0;
         restartTimer();
         $("balls").css("background-color", "fuchsia");
-        for (let each of ballPit) {
-            each.x = 340;
-            each.y = 210;
-            randBallVelocityY(each);
+        for (let ball of ballPit) {
+            ball.x = 340;
+            ball.y = 210;
+            randBallVelocityY(ball);
             if (player === p1.id) {
-                each.speed.left = 0;
-                each.speed.right = 5;
+                ball.speed.left = 0;
+                ball.speed.right = 5;
             } else if (player === p2.id) {
-                each.speed.left = 5;
-                each.speed.right = 0;
+                ball.speed.left = 5;
+                ball.speed.right = 0;
             } else {
                 alert(text.error + " in restartGame " + player);
             }
@@ -1141,7 +1145,7 @@ function runProgram() {
     function predictBallPosition(obj, ballObj) {
         var predictedPosition = ballObj.y + (calculateTime(obj, ballObj, ballObj)*(ballObj.velocityY)) - $(obj.id).height()/2 + $(ballObj.id).height()/2;// + varPredictedPositionY;
         if (predictedPosition < BORDERS.TOP) {predictedPosition = -predictedPosition - ballObj.y;}
-        else if (predictedPosition > BORDERS.BOTTOM) {predictedPosition = BORDERS.BOTTOM - predictedPosition;}
+        else if (predictedPosition > BORDERS.BOTTOM) {predictedPosition = BORDERS.BOTTOM - (predictedPosition - BORDERS.BOTTOM);}
         
         return predictedPosition;
     }
@@ -1177,8 +1181,8 @@ function runProgram() {
             repositionGameItem(paddleRight);
         }
         // Ball Repositioning
-        for (let each of ballPit) {
-            repositionGameItem(each);
+        for (let ball of ballPit) {
+            repositionGameItem(ball);
         }
     }
 
@@ -1200,12 +1204,8 @@ function runProgram() {
     function redrawAllGameItems() {
         redrawGameItem(paddleLeft);
         redrawGameItem(paddleRight);
-        // redrawGameItem(ball);
-        // for (let each of ballPit) {
-        //     redrawGameItem(each);
-        // }
-        for (var i = 0; i < ballPit.length; i++) {
-            redrawGameItem(ballPit[i]);
+        for (let ball of ballPit) {
+            redrawGameItem(ball);
         }
         redrawScores();
     }
