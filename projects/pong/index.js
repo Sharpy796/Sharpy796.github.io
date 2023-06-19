@@ -10,7 +10,7 @@ function runProgram() {
     // Constant Variables
     var FRAMES = 60;
     var framesPerSecondInterval = 1000 / FRAMES;
-    // var framesPerSecondInterval = 1000 / 10;
+    // var framesPerSecondInterval = 1000 / 2;
     var BORDERS = {
         TOP: 0,
         LEFT: 0,
@@ -117,7 +117,8 @@ function runProgram() {
     On each "tick" of the timer, a new frame is dynamically drawn using JavaScript
     by calling this function and executing the code inside.
     */
-    var ballCount = 5;
+    var ballCount = 1;
+    var ticksPerBall = 2;
     var ticks = 0;
     function newFrame() {
         if (!pause) {
@@ -127,7 +128,7 @@ function runProgram() {
             // getBallPitTelemetry();
         }
         if (multiBall) {
-            if (ticks%60 == 0 && ticks <= 60*(ballCount-1)) {
+            if (ticks%ticksPerBall == 0 && ticks <= ticksPerBall*(ballCount-1)) {
                 createNewBall();
                 // getBallPitTelemetry();
             }
@@ -376,7 +377,7 @@ function runProgram() {
 
         // Ball0 Telemetries
         $("#0Speeds b").text("Ball0: " + ball0.id);
-        $("#0Up span").text("Ball0 X: " + ball0.x);
+        $("#0Up span").text("Ball0 X: " + ball0.x + " | Ball0 Y: " + ball0.y);
         $("#0Left span").text("VelocityX: " + ball0.velocityX);
         $("#0Left2 span").text("VelocityY: " + ball0.velocityY);
         $("#0Down span").text("Left Pred Position: " + predictBallPosition(paddleLeft, ball0, ball0));
@@ -466,8 +467,8 @@ function runProgram() {
     }
 
     function randBallVelocityY(ballObj) {
-        var randNum = 0;
-        while (randNum >= 5 || randNum <= 1) {
+        var randNum = -999;
+        while (randNum >= 5 || randNum <= -5) {
             randNum = Math.random() * 10;
         }
         varVelocityY = randNum;
@@ -907,17 +908,16 @@ function runProgram() {
             obj.x -= 5;
             console.log(obj.id + " passed right border")
         }
-        if (obj.bottomY > BORDERS.BOTTOM) {
-            if (ballPit.includes(obj)) {
-                obj.y -= 5;
-            } else if (autoPlay) {
-                obj.y = BORDERS.BOTTOM - $(obj.id).height();
-            } else {
-                obj.y -= 5;
-            }
-            console.log(obj.id + " passed bottom border")
-
-        }
+        // if (obj.bottomY > BORDERS.BOTTOM) {
+        //     if (ballPit.includes(obj)) {
+        //         obj.y -= 5;
+        //     } else if (autoPlay) {
+        //         obj.y = BORDERS.BOTTOM - $(obj.id).height();
+        //     } else {
+        //         obj.y -= 5;
+        //     }
+        //     console.log(obj.id + " passed bottom border")
+        // }
     }
 
     function bounceBall(ballObj) {
@@ -944,11 +944,11 @@ function runProgram() {
             playerLose(p2.id);
             console.log(ballObj.id+" bounced right border");
         }
-        else if (ballObj.bottomY > BORDERS.BOTTOM) {
-            ballObj.speed.up = ballObj.speed.down;
-            ballObj.speed.down = 0;
-            console.log(ballObj.id+" bounced bottom border");
-        }
+        // else if (ballObj.bottomY > BORDERS.BOTTOM) {
+        //     ballObj.speed.up = ballObj.speed.down;
+        //     ballObj.speed.down = 0;
+        //     console.log(ballObj.id+" bounced bottom border");
+        // }
         else {
             // tell us we still have yet to bounce
             firstTimeBouncedWall = true
@@ -966,7 +966,7 @@ function runProgram() {
                     // bounce the ball left
                     ball.speed.left = 5;
                     ball.speed.right = 0;
-                    ball.x -= 1;
+                    ball.x -= 5;
                     // increase the score
                     if (paddle === paddleRight) {
                         // sortBallPit(ball);
@@ -983,7 +983,7 @@ function runProgram() {
                     // bounce the ball right
                     ball.speed.left = 0;
                     ball.speed.right = 5;
-                    ball.x += 1;
+                    ball.x += 5;
                     // increase the score
                     if (paddle === paddleLeft) {
                         // sortBallPit(ball);
@@ -1144,10 +1144,15 @@ function runProgram() {
      */
     function predictBallPosition(obj, ballObj) {
         var predictedPosition = ballObj.y + (calculateTime(obj, ballObj, ballObj)*(ballObj.velocityY)) - $(obj.id).height()/2 + $(ballObj.id).height()/2;// + varPredictedPositionY;
-        if (predictedPosition < BORDERS.TOP) {predictedPosition = -predictedPosition - ballObj.y;}
-        else if (predictedPosition > BORDERS.BOTTOM) {predictedPosition = BORDERS.BOTTOM - (predictedPosition - BORDERS.BOTTOM);}
+        // if (predictedPosition < BORDERS.TOP) {predictedPosition = -predictedPosition - ballObj.y;}
+        // console.log("Predicted Position: " + predictedPosition);
+        // if (predictedPosition < BORDERS.TOP) {predictedPosition = -predictedPosition - ballObj.y + $(ballObj.id).height()/2;}
+        // else if (predictedPosition > BORDERS.BOTTOM) {predictedPosition = (BORDERS.BOTTOM-$(ballObj.id).height()/2) - (predictedPosition - (BORDERS.BOTTOM-$(ballObj.id).height()/2));}
+        if (predictedPosition > BORDERS.BOTTOM) {predictedPosition = BORDERS.BOTTOM - (predictedPosition - (BORDERS.BOTTOM - $(ballObj.id).height()/2));}
+        // console.log("ModPredicted Position: " + predictedPosition);
+        // console.log(BORDERS.BOTTOM);
         
-        return predictedPosition;
+        return predictedPosition; // TODO: Find out why this isn't working right
     }
 
     /**
