@@ -117,16 +117,27 @@ function runProgram() {
     On each "tick" of the timer, a new frame is dynamically drawn using JavaScript
     by calling this function and executing the code inside.
     */
-    var ballCount = 1;
-    var ticksPerBall = 2;
+    var ballCount = 15;
+    var ticksPerBall = 50;
     var ticks = 0;
     function newFrame() {
+        if (ticks == 0) {
+            alert(ballCount + " balls\n interval of 1 ball per " + ticksPerBall + " frames");
+        }
         if (!pause) {
             ticks++;
             targetBall();
-            // console.log(ticks);
-            // getBallPitTelemetry();
+            if (debug) {
+                // console.log(ticks);
+                // getBallPitTelemetry();
+            }
         }
+        // if (ticks > 160) {FRAMES = 1;}
+        // if (ticks > 170) {FRAMES = 60;}
+        // if (ticks > 265) {FRAMES = 1;}
+        // if (ticks > 280) {FRAMES = 60;}
+        // if (ticks > 370) {FRAMES = 1;}
+        // modifyGameSpeed();
         if (multiBall) {
             if (ticks%ticksPerBall == 0 && ticks <= ticksPerBall*(ballCount-1)) {
                 createNewBall();
@@ -137,9 +148,12 @@ function runProgram() {
         pauseGame();
         changeColors()
         if (debug) {
-            showTelemetries();
+            // getCollisionTelemetry(ball0, paddleLeft);
         }
         handleCollisions();
+        if (debug) {
+            showTelemetries();
+        }
         if (!gameWon) {
             redrawAllGameItems();
             if (!pause) {
@@ -226,7 +240,7 @@ function runProgram() {
 
     }
 
-    function handleKeyUp(event) {
+    function handleKeyUp(event) { // TODO: Create a global ppf (pixels per frame) speed
         var keycode = event.which;
         console.log(keycode);
 
@@ -331,6 +345,11 @@ function runProgram() {
         interval = setInterval(newFrame, framesPerSecondInterval);
     }
 
+    function modifyTimer() {
+        framesPerSecondInterval = 1000 / FRAMES;
+        interval = setInterval(newFrame, framesPerSecondInterval);
+    }
+
 
     ///////////////////|\\\\\\\\\\\\\\\\\\\
     /////////////// Velocity \\\\\\\\\\\\\\
@@ -363,14 +382,14 @@ function runProgram() {
 
         // Targeted Left Telemetries
         $("#speeds b").text("Targeted Left: " + targetedBallLeft.id + " (SignLeft " + signLeft + ")");
-        $("#up span").text("PaddleLeft X: " + paddleLeft.x);
+        $("#up span").text("PaddleLeft X: " + paddleLeft.x + " | PaddleLeft Y: " + paddleLeft.y);
         $("#left span").text("Targeted X: " + targetedBallLeft.x);
         $("#down span").text("VelocityX: " + targetedBallLeft.velocityX);
         $("#right span").text("Target Calc Time: " + calculateTime(paddleLeft, targetedBallLeft, targetedBallLeft)*signLeft);
 
         // Targeted Right Telemetries
         $("#tempSpeeds b").text("Targeted Right: " + targetedBallRight.id + " (SignRight " + signRight + ")");
-        $("#tempUp span").text("PaddleRight X: " + paddleRight.x );
+        $("#tempUp span").text("PaddleRight X: " + paddleRight.x + " | PaddleRight Y: " + paddleRight.y);
         $("#tempLeft span").text("Targeted X: " + targetedBallRight.x);
         $("#tempDown span").text("VelocityX: " + targetedBallRight.velocityX);
         $("#tempRight span").text("Target Calc Time: " + calculateTime(paddleRight, targetedBallRight, targetedBallRight)*signRight);
@@ -464,6 +483,11 @@ function runProgram() {
     function increaseGameSpeed() {
         clearInterval(interval);
         setTimeout(restartTimer, 0);
+    }
+
+    function modifyGameSpeed() {
+        clearInterval(interval);
+        setTimeout(modifyTimer, 0);
     }
 
     function randBallVelocityY(ballObj) {
@@ -587,7 +611,7 @@ function runProgram() {
             freePlay = false;
         }
 
-        // AutoPlay Deactivation
+        // AutoPlay Deactivation TODO: have paddles snap to a multiple of fo the current ppf (5)
         else if (answer === "noAuto") {
             if (autoPlay) {
                 alert("AutoPlay Deactivated.\nType 'autoPlay' to activate AutoPlay.");
@@ -734,12 +758,12 @@ function runProgram() {
             // console.log("Target Calc Time: " + calculateTime(paddleRight, targetedBallRight, targetedBallRight));
 
             if (targetedBallLeft.velocityX >= 0 ||
-                targetedBallLeft.x < (paddleLeft.x /*+ $("#paddleLeft").width()*/)
+                targetedBallLeft.x <= (paddleLeft.x /*+ $("#paddleLeft").width()*/)
                 ) {
                     targetedBallLeft = ballNullLeft;
             }
             if (targetedBallRight.velocityX <= 0 ||
-                targetedBallRight.x > (paddleRight.x)
+                targetedBallRight.x >= (paddleRight.x)
                 ) {
                     targetedBallRight = ballNullRight;
             }
@@ -751,25 +775,25 @@ function runProgram() {
 
 
             if (ball.velocityX < 0 && 
-                ball.x >= (paddleLeft.x /*+ $("#paddleLeft").width()*/) && 
+                ball.x > (paddleLeft.x /*+ $("#paddleLeft").width()*/) && 
                 // calculateTime(paddleLeft, each, each) <= calculateTime(paddleLeft, targetedBallLeft, targetedBallLeft)*signLeft
-                ball.x <= targetedBallLeft.x
+                ball.x < targetedBallLeft.x
                 ) {
                 targetedBallLeft = ball;
-                console.log(targetedBallLeft.id + " is being targeted by LeftPaddle!");
+                // console.log(targetedBallLeft.id + " is being targeted by LeftPaddle!");
             }
             else if (ball.velocityX > 0 && 
-                ball.x <= paddleRight.x && 
+                ball.x < paddleRight.x && 
                 // calculateTime(paddleRight, each, each) <= calculateTime(paddleRight, targetedBallRight, targetedBallRight)*signRight
-                ball.x >= targetedBallRight.x
+                ball.x > targetedBallRight.x
                 ) {
                 targetedBallRight = ball;
-                console.log(targetedBallRight.id + " is being targeted by RightPaddle!");
+                // console.log(targetedBallRight.id + " is being targeted by RightPaddle!");
             }
             // console.log("Calculated Time Left: " + calculateTime(paddleLeft, each, each));
             // console.log(calculateTime(paddleLeft, each, each));
         }
-        console.log("Left Target: "+targetedBallLeft.id+"\nRight Target: "+targetedBallRight.id);
+        // console.log("Left Target: "+targetedBallLeft.id+"\nRight Target: "+targetedBallRight.id);
     }
 
     function sortBallPit(ballObj) {
@@ -805,7 +829,8 @@ function runProgram() {
                 if (ball == targetedBallRight) {$(ball.id).css("background-color", "red");}
                 // console.log(ball.id);
                 
-                $(ball.id).text(ball.id.charAt(ball.id.length-1)).css("text-align", "center");
+                $(ball.id).text(ball.id.replace(/\D/g, '')).css("text-align", "center");
+                // $(ball.id).text(ball.id.charAt(ball.id.length-1)).css("text-align", "center");
             }
         }
 
@@ -892,6 +917,7 @@ function runProgram() {
     function enforceNoNoZone(obj) {
         if (obj.leftX < BORDERS.LEFT) {
             obj.x -= -5;
+            // obj.x -= obj.velocityX;
             console.log(obj.id + " passed left border")
         }
         if (obj.topY < BORDERS.TOP) {
@@ -902,10 +928,12 @@ function runProgram() {
             } else {
                 obj.y -= -5;
             }
+            // obj.y -= obj.velocityY;
             console.log(obj.id + " passed top border")
         }
         if (obj.rightX > BORDERS.RIGHT) {
             obj.x -= 5;
+            // obj.x -= obj.velocityX;
             console.log(obj.id + " passed right border")
         }
         if (obj.bottomY > BORDERS.BOTTOM) {
@@ -916,6 +944,7 @@ function runProgram() {
             } else {
                 obj.y -= 5;
             }
+            // obj.y -= obj.velocityY;
             console.log(obj.id + " passed bottom border")
         }
     }
@@ -924,6 +953,7 @@ function runProgram() {
         if (ballObj.leftX < BORDERS.LEFT) {
             if (freePlay) {
                 ballObj.speed.right = ballObj.speed.left;
+                // ballObj.speed.right = 5;
                 ballObj.speed.left = 0;
                 filterBallPit(ballObj);
             }
@@ -932,12 +962,14 @@ function runProgram() {
         }
         else if (ballObj.topY < BORDERS.TOP) {
             ballObj.speed.down = ballObj.speed.up;
+            // ballObj.speed.down = 5;
             ballObj.speed.up = 0;
             console.log(ballObj.id+" bounced top border");
         }
         else if (ballObj.rightX > BORDERS.RIGHT) {
             if (freePlay) {
                 ballObj.speed.left = ballObj.speed.right;
+                // ballObj.speed.left = 5;
                 ballObj.speed.right = 0;
                 filterBallPit(ballObj);
             }
@@ -946,6 +978,7 @@ function runProgram() {
         }
         else if (ballObj.bottomY > BORDERS.BOTTOM) {
             ballObj.speed.up = ballObj.speed.down;
+            // ballObj.speed.up = 5;
             ballObj.speed.down = 0;
             console.log(ballObj.id+" bounced bottom border");
         }
@@ -1038,6 +1071,30 @@ function runProgram() {
         }
     }
 
+    function getCollisionTelemetry(obj1, obj2) {
+        console.log("---------------------------");
+        console.log(">>> COLLISION DETECTION <<<");
+        console.log("Do " + obj1.id + " and " + obj2.id + " collide? " + doCollide(obj1, obj2));
+        console.log("They collide on the paddle's *" + whichBorder(obj1, obj2) + "* border.");
+        console.log("Calculated Time: " + calculateTime(obj2, obj1, obj1));
+        console.log("Predicted Position: " + predictBallPosition(obj2, obj1));
+        console.log("paddleLeft.y = " + obj2.y);
+        console.log("Predicted Movement: " + (predictBallPosition(obj2, obj1)-obj2.y) / (calculateTime(obj2, obj1, obj1)))
+        console.log("---------------------------");
+        console.log("OBJECT 1: " + obj1.id);
+        console.log("xLeft: " + obj1.leftX);
+        console.log("xRight: " + obj1.rightX);
+        console.log("yTop: " + obj1.topY);
+        console.log("yBottom: " + obj1.bottomY);
+        console.log("---------------------------");
+        console.log("OBJECT 2: " + obj2.id);
+        console.log("xLeft: " + obj2.leftX);
+        console.log("xRight: " + obj2.rightX);
+        console.log("yTop: " + obj2.topY);
+        console.log("yBottom: " + obj2.bottomY);
+        console.log("---------------------------")
+    }
+
 
     ///////////////////\\\\\\\\\\\\\\\\\\\
     /////////////// Points \\\\\\\\\\\\\\\
@@ -1127,12 +1184,11 @@ function runProgram() {
     function calculateTime(pointA, pointB, velocity) {
         var predictedPosition;
         if (pointA.id == "#paddleLeft") {
-            console.log("20 PADDLE POSITION");
-            predictedPosition = ((pointA.x+20)-pointB.x)/velocity.velocityX ;
+            predictedPosition = ((pointA.rightX)-pointB.x)/velocity.velocityX;// + 2.5;
         } else if (pointA.id == "#paddleRight") {
-            predictedPosition = (pointA.x-(pointB.x))/velocity.velocityX ;
+            predictedPosition = (pointA.x-(pointB.rightX))/velocity.velocityX;// + 2.5;
         } else {
-            predictedPosition = (pointA.x-pointB.x)/velocity.velocityX; 
+            predictedPosition = (pointA.x-pointB.x)/velocity.velocityX;// + 2.5; 
         }
         return predictedPosition;
     }
@@ -1164,19 +1220,11 @@ function runProgram() {
      * @returns {double} The Y position of the ball where it meets the object's X position.
      */
     function predictBallPosition(obj, ballObj) {
-        var predictedPosition = ballObj.y + (calculateTime(obj, ballObj, ballObj)*(ballObj.velocityY)) - $(obj.id).height()/2 + $(ballObj.id).height()/2;// + varPredictedPositionY;
+        var predictedPosition = ballObj.y + (calculateTime(obj, ballObj, ballObj)*(ballObj.velocityY));
         if (predictedPosition < BORDERS.TOP) {predictedPosition = -predictedPosition;}
-        else if (predictedPosition > BORDERS.BOTTOM) {predictedPosition = BORDERS.BOTTOM-(predictedPosition-BORDERS.BOTTOM-$(ballObj.id).height());}
+        else if (predictedPosition > BORDERS.BOTTOM) {predictedPosition = Math.floor(BORDERS.BOTTOM) + ((Math.floor(BORDERS.BOTTOM) - $(ballObj.id).height()*2) - predictedPosition);}
         
-        // if (predictedPosition < BORDERS.TOP) {predictedPosition = -predictedPosition - ballObj.y;}
-        // console.log("Predicted Position: " + predictedPosition);
-        // if (predictedPosition < BORDERS.TOP) {predictedPosition = -predictedPosition - ballObj.y + $(ballObj.id).height()/2;}
-        // else if (predictedPosition > BORDERS.BOTTOM) {predictedPosition = (BORDERS.BOTTOM-$(ballObj.id).height()/2) - (predictedPosition - (BORDERS.BOTTOM-$(ballObj.id).height()/2));}
-        // if (predictedPosition > BORDERS.BOTTOM) {predictedPosition = BORDERS.BOTTOM - (predictedPosition - (BORDERS.BOTTOM - $(ballObj.id).height()/2));}
-        // console.log("ModPredicted Position: " + predictedPosition);
-        // console.log(BORDERS.BOTTOM);
-        
-        return predictedPosition; // TODO: Find out why this isn't working right
+        return predictedPosition - $(obj.id).height()/2 + $(ballObj.id).height()/2;// + varPredictedPositionY;
     }
 
     /**
@@ -1186,11 +1234,16 @@ function runProgram() {
      * - Then, we calculate the amount of frames it will take for the ball's X position
      *   to reach the object's X position.
      * - We divide pixels by frames, and we get a velocity.
+     * - Sometimes the calculated time is zero. We force the added value to be 0 to prevent a Divide By Zero error.
      * @param {object} gameItem - The object whose required velocity will be calculated. 
      * @returns {double} The Y velocity required to reach the ball before it passes the object up.
      */
     function moveToPredictedBallPosition(gameItem, ballObj) {
-        gameItem.y += (predictBallPosition(gameItem, ballObj)-gameItem.y) / (calculateTime(gameItem, ballObj, ballObj));
+        var predictedMovement = predictBallPosition(gameItem, ballObj) - gameItem.y;
+        var calculatedTime = calculateTime(gameItem, ballObj, ballObj);
+        
+        if (calculatedTime == 0) {gameItem.velocityY = 0;} 
+        else {gameItem.velocityY = predictedMovement / calculatedTime;}
     }
 
     function repositionGameItem(gameItem) {
@@ -1201,14 +1254,11 @@ function runProgram() {
     function repositionAllGameItems() {
         // Paddle Repositioning
         if (autoPlay) {
-            // if (ballPitLeft.length > 0) {moveToPredictedBallPosition(paddleLeft, ballPitLeft[ballPitLeft.length - 1]);}
-            // if (ballPitRight.length > 0) {moveToPredictedBallPosition(paddleRight, ballPitRight[ballPitRight.length - 1]);}
             if (targetedBallLeft.id != "#ballNull") {moveToPredictedBallPosition(paddleLeft, targetedBallLeft);}
             if (targetedBallRight.id != "#ballNull") {moveToPredictedBallPosition(paddleRight, targetedBallRight);}
-        } else {
-            repositionGameItem(paddleLeft);
-            repositionGameItem(paddleRight);
         }
+        repositionGameItem(paddleLeft);
+        repositionGameItem(paddleRight);
         // Ball Repositioning
         for (let ball of ballPit) {
             repositionGameItem(ball);
