@@ -8,7 +8,7 @@ function runProgram() {
     ////////////////////////////////////////////////////////////////////////////////
 
     // Constant Variables
-    var FRAMES = 60;
+    var FRAMES = 60; // default is 60
     var framesPerSecondInterval = 1000 / FRAMES;
     // var framesPerSecondInterval = 1000 / 2;
     var BORDERS = {
@@ -908,16 +908,16 @@ function runProgram() {
             obj.x -= 5;
             console.log(obj.id + " passed right border")
         }
-        // if (obj.bottomY > BORDERS.BOTTOM) {
-        //     if (ballPit.includes(obj)) {
-        //         obj.y -= 5;
-        //     } else if (autoPlay) {
-        //         obj.y = BORDERS.BOTTOM - $(obj.id).height();
-        //     } else {
-        //         obj.y -= 5;
-        //     }
-        //     console.log(obj.id + " passed bottom border")
-        // }
+        if (obj.bottomY > BORDERS.BOTTOM) {
+            if (ballPit.includes(obj)) {
+                obj.y -= 5;
+            } else if (autoPlay) {
+                obj.y = BORDERS.BOTTOM - $(obj.id).height();
+            } else {
+                obj.y -= 5;
+            }
+            console.log(obj.id + " passed bottom border")
+        }
     }
 
     function bounceBall(ballObj) {
@@ -944,18 +944,18 @@ function runProgram() {
             playerLose(p2.id);
             console.log(ballObj.id+" bounced right border");
         }
-        // else if (ballObj.bottomY > BORDERS.BOTTOM) {
-        //     ballObj.speed.up = ballObj.speed.down;
-        //     ballObj.speed.down = 0;
-        //     console.log(ballObj.id+" bounced bottom border");
-        // }
+        else if (ballObj.bottomY > BORDERS.BOTTOM) {
+            ballObj.speed.up = ballObj.speed.down;
+            ballObj.speed.down = 0;
+            console.log(ballObj.id+" bounced bottom border");
+        }
         else {
             // tell us we still have yet to bounce
             firstTimeBouncedWall = true
         }
     }
 
-    function handlePaddleCollisions(paddle) {
+    function handlePaddleCollisions(paddle) { // TODO: Something happens when I absolutely *nail* the calculations. Gotta figure out what's happening.
         // if it is the first time bouncing on one
         if (firstTimeBouncedPaddle) {
             // Mix up the ball's predicted position in AutoPlay
@@ -963,6 +963,9 @@ function runProgram() {
             // if it bounced off the paddle's left border
             for (let ball of ballPit) {
                 if (whichBorder(ball, paddle) === "left") {
+                    // tell where the ball is and should have been
+                    console.log("Predicted Position: TBD");
+                    console.log("Actual Position: " + ball.y);
                     // bounce the ball left
                     ball.speed.left = 5;
                     ball.speed.right = 0;
@@ -975,11 +978,13 @@ function runProgram() {
                             increaseGameSpeed();
                         }
                     }
-                    filterBallPit(ball);
                     console.log(ball.id+" bounced " + tellPaddle(paddle) + " paddle's left border");
                 }
                 // if it bounced off the paddle's right border
                 else if (whichBorder(ball, paddle) === "right") {
+                    // tell where the ball is and should have been
+                    console.log("Predicted Position: TBD");
+                    console.log("Actual Position: " + ball.y);
                     // bounce the ball right
                     ball.speed.left = 0;
                     ball.speed.right = 5;
@@ -992,7 +997,6 @@ function runProgram() {
                             increaseGameSpeed();
                         }
                     }
-                    filterBallPit(ball);
                     console.log(ball.id+" bounced " + tellPaddle(paddle) + " paddle's right border");
                 }
             }
@@ -1121,12 +1125,29 @@ function runProgram() {
      * @param {double} velocity - The pixels/frame velocity of one of the two points.
      */
     function calculateTime(pointA, pointB, velocity) {
-        if (pointB.id == "#paddleLeft") {
-            return (pointA.x-pointB.x + $("#paddleLeft").width())/velocity.velocityX ;
+        var predictedPosition;
+        if (pointA.id == "#paddleLeft") {
+            console.log("20 PADDLE POSITION");
+            predictedPosition = ((pointA.x+20)-pointB.x)/velocity.velocityX ;
+        } else if (pointA.id == "#paddleRight") {
+            predictedPosition = (pointA.x-(pointB.x))/velocity.velocityX ;
         } else {
-            return (pointA.x-pointB.x)/velocity.velocityX; 
+            predictedPosition = (pointA.x-pointB.x)/velocity.velocityX; 
         }
+        return predictedPosition;
     }
+
+    
+    // function calculateTime(pointA, pointB, velocity) {
+    //     if (pointA.id == "#paddleLeft" || pointB.id == "#paddleLeft") {
+    //         return ((pointA.x+$("#paddleLeft").width())-pointB.x)/velocity.velocityX ;
+    //         console.log("LEFT PADDLE POSITION");
+    //     } else if (pointA.id == "#paddleRight" || pointB.id == "#paddleRight") {
+    //         return (pointA.x-(pointB.x+$("#ball0").width()))/velocity.velocityX ;
+    //     } else {
+    //         return (pointA.x-pointB.x)/velocity.velocityX; 
+    //     }
+    // }
 
     /**
      * Algorithm to predict the ball's future position upon meeting the X value of an object.
@@ -1144,11 +1165,14 @@ function runProgram() {
      */
     function predictBallPosition(obj, ballObj) {
         var predictedPosition = ballObj.y + (calculateTime(obj, ballObj, ballObj)*(ballObj.velocityY)) - $(obj.id).height()/2 + $(ballObj.id).height()/2;// + varPredictedPositionY;
+        if (predictedPosition < BORDERS.TOP) {predictedPosition = -predictedPosition;}
+        else if (predictedPosition > BORDERS.BOTTOM) {predictedPosition = BORDERS.BOTTOM-(predictedPosition-BORDERS.BOTTOM-$(ballObj.id).height());}
+        
         // if (predictedPosition < BORDERS.TOP) {predictedPosition = -predictedPosition - ballObj.y;}
         // console.log("Predicted Position: " + predictedPosition);
         // if (predictedPosition < BORDERS.TOP) {predictedPosition = -predictedPosition - ballObj.y + $(ballObj.id).height()/2;}
         // else if (predictedPosition > BORDERS.BOTTOM) {predictedPosition = (BORDERS.BOTTOM-$(ballObj.id).height()/2) - (predictedPosition - (BORDERS.BOTTOM-$(ballObj.id).height()/2));}
-        if (predictedPosition > BORDERS.BOTTOM) {predictedPosition = BORDERS.BOTTOM - (predictedPosition - (BORDERS.BOTTOM - $(ballObj.id).height()/2));}
+        // if (predictedPosition > BORDERS.BOTTOM) {predictedPosition = BORDERS.BOTTOM - (predictedPosition - (BORDERS.BOTTOM - $(ballObj.id).height()/2));}
         // console.log("ModPredicted Position: " + predictedPosition);
         // console.log(BORDERS.BOTTOM);
         
