@@ -10,7 +10,6 @@ function runProgram() {
     // Constant Variables
     var FRAMES = 60; // default is 60
     var framesPerSecondInterval = 1000 / FRAMES;
-    // var framesPerSecondInterval = 1000 / 2;
     var BORDERS = {
         TOP: 0,
         LEFT: 0,
@@ -83,19 +82,18 @@ function runProgram() {
     var firstTimeBouncedWall = true;
     var firstTimePaused = true;;
     var cheatMode = false;
-    var freePlay = true;
+    var freePlay = false;
     var autoPlay = true;
     var multiBall = true;
+    var slowDown = false;
     var ballPit = [];
     ballPit.push(ball0);
-    var ballPitLeft = [];
-    ballPitLeft.push(ball0);
-    var ballPitRight = [];
     var targetedBallLeft = ballNullLeft;
     var targetedBallRight = ballNullRight;
-    var ballPitFilled = false;
-    var debug = true;
+    var debug = false;
     var gameWon = false;
+    var ppfStop = 0; // Pixels Per Frame at rest
+    var ppf = 5;     // Pixels Per Frame
     var xDirection = -1;
     var varVelocityY = 5;
     var varPredictedPositionY = 0;
@@ -129,15 +127,16 @@ function runProgram() {
             targetBall();
             if (debug) {
                 // console.log(ticks);
-                // getBallPitTelemetry();
             }
         }
-        // if (ticks > 160) {FRAMES = 1;}
-        // if (ticks > 170) {FRAMES = 60;}
-        // if (ticks > 265) {FRAMES = 1;}
-        // if (ticks > 280) {FRAMES = 60;}
-        // if (ticks > 370) {FRAMES = 1;}
-        // modifyGameSpeed();
+        if (slowDown) {
+            if (ticks > 160) {FRAMES = 1;}
+            if (ticks > 170) {FRAMES = 60;}
+            if (ticks > 265) {FRAMES = 1;}
+            if (ticks > 280) {FRAMES = 60;}
+            if (ticks > 370) {FRAMES = 1;}
+            modifyGameSpeed();
+        }
         if (multiBall) {
             if (ticks%ticksPerBall == 0 && ticks <= ticksPerBall*(ballCount-1)) {
                 createNewBall();
@@ -148,12 +147,10 @@ function runProgram() {
         pauseGame();
         changeColors()
         if (debug) {
+            showTelemetries();
             // getCollisionTelemetry(ball0, paddleLeft);
         }
         handleCollisions();
-        if (debug) {
-            showTelemetries();
-        }
         if (!gameWon) {
             redrawAllGameItems();
             if (!pause) {
@@ -183,12 +180,12 @@ function runProgram() {
         if (!autoPlay) {
             /* P1 controls */
             if (keycode === KEY.W) {            // up
-                paddleLeft.speed.up = 5;
+                paddleLeft.speed.up = ppf;
                 console.log("w pressed");
             } if (keycode === KEY.A) {          // left
                 console.log("a pressed");
             } if (keycode === KEY.S) {          // down
-                paddleLeft.speed.down = 5;
+                paddleLeft.speed.down = ppf;
                 console.log("s pressed");
             } if (keycode === KEY.D) {          // right
                 console.log("d pressed");
@@ -196,12 +193,12 @@ function runProgram() {
 
             /* P2 controls */
             if (keycode === KEY.UP) {           // up
-                paddleRight.speed.up = 5;
+                paddleRight.speed.up = ppf;
                 console.log("up pressed");
             } if (keycode === KEY.LEFT) {       // left
                 console.log("left pressed");
             } if (keycode === KEY.DOWN) {       // down
-                paddleRight.speed.down = 5;
+                paddleRight.speed.down = ppf;
                 console.log("down pressed");
             } if (keycode === KEY.RIGHT) {      // right
                 console.log("right pressed");
@@ -218,16 +215,16 @@ function runProgram() {
             }
             firstTimeCheat = false;
             if (keycode === KEY.U) {        // up
-                ball0.speed.up = 5;
+                ball0.speed.up = ppf;
                 console.log("u pressed");
             } if (keycode === KEY.H) {      // left
-                ball0.speed.left = 5;
+                ball0.speed.left = ppf;
                 console.log("h pressed");
             } if (keycode === KEY.J) {      // down
-                ball0.speed.down = 5;
+                ball0.speed.down = ppf;
                 console.log("j pressed");
             } if (keycode === KEY.K) {      // right
-                ball0.speed.right = 5;
+                ball0.speed.right = ppf;
                 console.log("k pressed");
             }
         } else {
@@ -257,47 +254,47 @@ function runProgram() {
         if (!autoPlay) {
             /* P1 controls */
             if (event.which === KEY.W) {
-                paddleLeft.speed.up = 0;
+                paddleLeft.speed.up = ppfStop;
                 console.log("w released");
             } if (keycode === KEY.A) {
-                paddleLeft.speed.left = 0;
+                paddleLeft.speed.left = ppfStop;
                 console.log("a released");
             } if (keycode === KEY.S) {
-                paddleLeft.speed.down = 0;
+                paddleLeft.speed.down = ppfStop;
                 console.log("s released");
             } if (keycode === KEY.D) {
-                paddleLeft.speed.right = 0;
+                paddleLeft.speed.right = ppfStop;
                 console.log("d released");
             }
 
             /* P2 controls */
             if (keycode === KEY.UP) {
-                paddleRight.speed.up = 0;
+                paddleRight.speed.up = ppfStop;
                 console.log("up released");
             } if (keycode === KEY.LEFT) {
-                paddleRight.speed.left = 0;
+                paddleRight.speed.left = ppfStop;
                 console.log("left released");
             } if (keycode === KEY.DOWN) {
-                paddleRight.speed.down = 0;
+                paddleRight.speed.down = ppfStop;
                 console.log("down released");
             } if (keycode === KEY.RIGHT) {
-                paddleRight.speed.right = 0;
+                paddleRight.speed.right = ppfStop;
                 console.log("right released");
             }
 
             /* ball controls */
             if (cheatMode) {
                 if (keycode === KEY.U) {
-                    ball0.speed.up = 0;
+                    ball0.speed.up = ppfStop;
                     console.log("u released");
                 } if (keycode === KEY.H) {
-                    ball0.speed.left = 0;
+                    ball0.speed.left = ppfStop;
                     console.log("h released");
                 } if (keycode === KEY.J) {
-                    ball0.speed.down = 0;
+                    ball0.speed.down = ppfStop;
                     console.log("j released");
                 } if (keycode === KEY.K) {
-                    ball0.speed.right = 0;
+                    ball0.speed.right = ppfStop;
                     console.log("k released");
                 }
             }
@@ -356,25 +353,6 @@ function runProgram() {
     ///////////////////|\\\\\\\\\\\\\\\\\\\
 
     function showTelemetries() {
-
-        
-
-            // console.log(">>> " + each.id + " <<<");
-
-            // console.log("TARGET LEFT REQUIREMENTS:");
-            // // console.log(each.velocityX < 0);
-            // // console.log(each.x >= paddleLeft.x);
-            // console.log(calculateTime(paddleLeft, each, each) < calculateTime(paddleLeft, targetedBallLeft, targetedBallLeft));
-            // console.log("Ball Calc Time: " + calculateTime(paddleLeft, each, each));
-            // console.log("Target Calc Time: " + calculateTime(paddleLeft, targetedBallLeft, targetedBallLeft));
-
-            // console.log("TARGET RIGHT REQUIREMENTS:");
-            // // console.log(each.velocityX > 0);
-            // // console.log(each.x <= paddleRight.x);
-            // console.log(calculateTime(paddleRight, each, each) < calculateTime(paddleRight, targetedBallRight, targetedBallRight));
-            // console.log("Ball Calc Time: " + calculateTime(paddleRight, each, each));
-            // console.log("Target Calc Time: " + calculateTime(paddleRight, targetedBallRight, targetedBallRight));
-
         var signLeft = 1;
         var signRight = 1;
         if (targetedBallLeft.id == "#ballNull") {signLeft=-1;}
@@ -401,41 +379,6 @@ function runProgram() {
         $("#0Left2 span").text("VelocityY: " + ball0.velocityY);
         $("#0Down span").text("Left Pred Position: " + predictBallPosition(paddleLeft, ball0, ball0));
         $("#0Right span").text("Right Pred Position: " + predictBallPosition(paddleRight, ball0, ball0));
-    }
-
-    function createBallTelemetry() {
-        // for (let each of ballPit) {
-        //     ballId = each.id;
-
-        //     var $newTelemetry = $("div")
-        //         .appendTo('')
-        // }
-
-
-
-        // // create a new div for the ball
-        // var $newBall = $("<div>")
-        //     .appendTo('#ballPit')
-        //     .addClass('gameItem balls')
-        //     // .addClass('balls')
-        //     .attr("id", ballId)
-        //     .css("left", 340)
-        //     .css("top", 210)
-        //     // .css("width", 20)
-        //     // .css("height", 20)
-        //     .css("background-color", "orange");
-        // // store the new div in a variable
-        // xDirection *= -1;
-        // $newBall = createGameObject(340, 210, 5*xDirection, -2.5, "#"+ballId)
-        // randBallVelocityY($newBall)
-        // // push the new body into the ballPit
-        // ballPit.push($newBall);
-        // if (xDirection < 0) {ballPitLeft.push($newBall);}
-        // else if (xDirection > 0) {ballPitRight.push($newBall)}
-        // else {console.log(text.error)}
-        // // filterBallPit($newBall);
-        // // sortBallPit($newBall);
-        // console.log("#"+ballId+" created!")
     }
 
     function tellVelocities(ballObj) {
@@ -468,10 +411,6 @@ function runProgram() {
         // p2 Velocity
         paddleRight.velocityX = paddleRight.speed.right - paddleRight.speed.left;
         paddleRight.velocityY = paddleRight.speed.down - paddleRight.speed.up;
-
-        // // ball Velocity
-        // ball.velocityX = ball.speed.right - ball.speed.left;
-        // ball.velocityY = ball.speed.down - ball.speed.up;
 
         // ballPit Velocity
         for (let ball of ballPit) {
@@ -575,7 +514,7 @@ function runProgram() {
         }
 
         // MultiBall Activation 
-        // TODO: Add a prompmpt to input an amount of balls
+        // TODO: Add a prompt to input an amount of balls
         // TODO: Figure out how to restart the game without reloading the page
         // TODO: Figure out which modes need to accompany MultiBall for it to work properly
         else if (answer === "multiBall") {
@@ -658,107 +597,14 @@ function runProgram() {
         randBallVelocityY($newBall)
         // push the new body into the ballPit
         ballPit.push($newBall);
-        if (xDirection < 0) {ballPitLeft.push($newBall);}
-        else if (xDirection > 0) {ballPitRight.push($newBall)}
-        else {console.log(text.error)}
-        // filterBallPit($newBall);
-        // sortBallPit($newBall);
         console.log("#"+ballId+" created!")
     }
-
-    // function filterBallpit() {
-    //     for (let each of ballPit) {
-    //         if (each.velocityX == -5) {
-    //             ballPitLeft.shift(each);
-    //             ballPitRight.pop();
-    //         } else if (each.velocityX == 5) {
-    //             ballPitRight.shift(each);
-    //             ballPitLeft.pop();
-    //         }
-    //     }
-    // }
-
-    function filterBallPit(ballObj) {
-        // var index = 0;
-
-
-        // if (ballObj.velocityX > 0) {
-        //     // ballPitLeft.unshift(ballObj);
-        //     // ballPitRight.pop();
-        //     index = ballPitLeft.indexOf(ballObj);
-        //     if (index != -1) {
-        //         ballPitLeft.splice(index, 1);
-        //     }
-        //     if (!ballPitRight.includes(ballObj)) {
-        //         ballPitRight.push(ballObj);
-        //     }
-        // } else if (ballObj.velocityX < 0) {
-        //     // ballPitRight.unshift(ballObj);
-        //     // ballPitLeft.pop();
-        //     index = ballPitRight.indexOf(ballObj);
-        //     if (index != -1) {
-        //         ballPitRight.splice(index, 1);
-        //     }
-        //     if (!ballPitLeft.includes(ballObj)) {
-        //         ballPitLeft.push(ballObj);
-        //     }
-        // }
-        // getBallPitTelemetry();
-    }
-
-    // function filterBallPit(ballObj) {
-    //     var index = 0;
-
-    //     for (let each in )
-
-
-    //     if (ballObj.velocityX > 0) {
-    //         // ballPitLeft.unshift(ballObj);
-    //         // ballPitRight.pop();
-    //         index = ballPitLeft.indexOf(ballObj);
-    //         if (index != -1) {
-    //             ballPitLeft.splice(index, 1);
-    //         }
-    //         if (!ballPitRight.includes(ballObj)) {
-    //             ballPitRight.push(ballObj);
-    //         }
-    //     } else if (ballObj.velocityX < 0) {
-    //         // ballPitRight.unshift(ballObj);
-    //         // ballPitLeft.pop();
-    //         index = ballPitRight.indexOf(ballObj);
-    //         if (index != -1) {
-    //             ballPitRight.splice(index, 1);
-    //         }
-    //         if (!ballPitLeft.includes(ballObj)) {
-    //             ballPitLeft.push(ballObj);
-    //         }
-    //     }
-    //     // getBallPitTelemetry();
-    // }
 
     function targetBall() {
         for (let ball of ballPit) {
 
-            // getBallPitTelemetry();
-
-            // console.log(">>> " + each.id + " <<<");
-
-            // console.log("TARGET LEFT REQUIREMENTS:");
-            // // console.log(each.velocityX < 0);
-            // // console.log(each.x >= paddleLeft.x);
-            // console.log(calculateTime(paddleLeft, each, each) < calculateTime(paddleLeft, targetedBallLeft, targetedBallLeft));
-            // console.log("Ball Calc Time: " + calculateTime(paddleLeft, each, each));
-            // console.log("Target Calc Time: " + calculateTime(paddleLeft, targetedBallLeft, targetedBallLeft));
-
-            // console.log("TARGET RIGHT REQUIREMENTS:");
-            // // console.log(each.velocityX > 0);
-            // // console.log(each.x <= paddleRight.x);
-            // console.log(calculateTime(paddleRight, each, each) < calculateTime(paddleRight, targetedBallRight, targetedBallRight));
-            // console.log("Ball Calc Time: " + calculateTime(paddleRight, each, each));
-            // console.log("Target Calc Time: " + calculateTime(paddleRight, targetedBallRight, targetedBallRight));
-
             if (targetedBallLeft.velocityX >= 0 ||
-                targetedBallLeft.x <= (paddleLeft.x /*+ $("#paddleLeft").width()*/)
+                targetedBallLeft.x <= (paddleLeft.x)
                 ) {
                     targetedBallLeft = ballNullLeft;
             }
@@ -775,16 +621,14 @@ function runProgram() {
 
 
             if (ball.velocityX < 0 && 
-                ball.x > (paddleLeft.x /*+ $("#paddleLeft").width()*/) && 
-                // calculateTime(paddleLeft, each, each) <= calculateTime(paddleLeft, targetedBallLeft, targetedBallLeft)*signLeft
+                ball.x > (paddleLeft.x) && 
                 ball.x < targetedBallLeft.x
                 ) {
                 targetedBallLeft = ball;
-                // console.log(targetedBallLeft.id + " is being targeted by LeftPaddle!");
+                console.log(targetedBallLeft.id + " is being targeted by LeftPaddle!");
             }
             else if (ball.velocityX > 0 && 
                 ball.x < paddleRight.x && 
-                // calculateTime(paddleRight, each, each) <= calculateTime(paddleRight, targetedBallRight, targetedBallRight)*signRight
                 ball.x > targetedBallRight.x
                 ) {
                 targetedBallRight = ball;
@@ -796,26 +640,7 @@ function runProgram() {
         // console.log("Left Target: "+targetedBallLeft.id+"\nRight Target: "+targetedBallRight.id);
     }
 
-    function sortBallPit(ballObj) {
-        // filterBallPit(ballObj);
-
-        // targetBall();
-
-        ballPitLeft.sort((a, b) => {return calculateTime(paddleLeft, b, b) - calculateTime(paddleLeft, a, a)})
-        ballPitRight.sort((a, b) => {return calculateTime(paddleRight, b, b) - calculateTime(paddleRight, a, a)})
-    }
-
-    function getBallPitTelemetry() {
-        console.log("ballPit:");
-        console.log(ballPit);
-        console.log("ballPitLeft:");
-        console.log(ballPitLeft);
-        console.log("ballPitRight:");
-        console.log(ballPitRight);
-    }
-
     function changeColors() {
-        // targetBall();
 
         if (pause) {
             // $(".balls").css("background-color", "lime");
@@ -826,11 +651,9 @@ function runProgram() {
                 if (ball.velocityX < 0) {$(ball.id).css("background-color", "blue");}
                 if (ball.velocityX > 0) {$(ball.id).css("background-color", "maroon");}
                 if (ball == targetedBallLeft) {$(ball.id).css("background-color", "cyan");}
-                if (ball == targetedBallRight) {$(ball.id).css("background-color", "red");}
-                // console.log(ball.id);
+                if (ball == targetedBallRight) {$(ball.id).css("background-color", "hotpink");}
                 
                 $(ball.id).text(ball.id.replace(/\D/g, '')).css("text-align", "center");
-                // $(ball.id).text(ball.id.charAt(ball.id.length-1)).css("text-align", "center");
             }
         }
 
@@ -955,7 +778,6 @@ function runProgram() {
                 ballObj.speed.right = ballObj.speed.left;
                 // ballObj.speed.right = 5;
                 ballObj.speed.left = 0;
-                filterBallPit(ballObj);
             }
             playerLose(p1.id);
             console.log(ballObj.id+" bounced left border");
@@ -971,7 +793,6 @@ function runProgram() {
                 ballObj.speed.left = ballObj.speed.right;
                 // ballObj.speed.left = 5;
                 ballObj.speed.right = 0;
-                filterBallPit(ballObj);
             }
             playerLose(p2.id);
             console.log(ballObj.id+" bounced right border");
@@ -1005,7 +826,6 @@ function runProgram() {
                     ball.x -= 5;
                     // increase the score
                     if (paddle === paddleRight) {
-                        // sortBallPit(ball);
                         score.bounced++;
                         if (!multiBall) {
                             increaseGameSpeed();
@@ -1024,7 +844,6 @@ function runProgram() {
                     ball.x += 5;
                     // increase the score
                     if (paddle === paddleLeft) {
-                        // sortBallPit(ball);
                         score.bounced++;
                         if (!multiBall) {
                             increaseGameSpeed();
@@ -1143,7 +962,15 @@ function runProgram() {
 
     function restartGame(player) {
         score.bounced = 0;
+        ticks = 0;
         restartTimer();
+        for (let ball of ballPit) {
+            if (ball != ball0) {
+                $(ball.id).remove();
+            }
+        }
+        ballPit.splice(1, ballPit.length);
+        console.log(ballPit);
         $("balls").css("background-color", "fuchsia");
         for (let ball of ballPit) {
             ball.x = 340;
@@ -1169,7 +996,7 @@ function runProgram() {
     ///////////////////|\\\\\\\\\\\\\\\\\\\
 
     function randPredictedPositionYMod() {
-        varPredictedPositionY = Math.floor(Math.random() * 80) - 40;
+        varPredictedPositionY = Math.floor(Math.random() * 60) - 30;
         console.log("predicted ball position modified by " + varPredictedPositionY);
     }
 
@@ -1184,26 +1011,14 @@ function runProgram() {
     function calculateTime(pointA, pointB, velocity) {
         var predictedPosition;
         if (pointA.id == "#paddleLeft") {
-            predictedPosition = ((pointA.rightX)-pointB.x)/velocity.velocityX;// + 2.5;
+            predictedPosition = ((pointA.rightX)-pointB.x)/velocity.velocityX;
         } else if (pointA.id == "#paddleRight") {
-            predictedPosition = (pointA.x-(pointB.rightX))/velocity.velocityX;// + 2.5;
+            predictedPosition = (pointA.x-(pointB.rightX))/velocity.velocityX;
         } else {
-            predictedPosition = (pointA.x-pointB.x)/velocity.velocityX;// + 2.5; 
+            predictedPosition = (pointA.x-pointB.x)/velocity.velocityX; 
         }
         return predictedPosition;
     }
-
-    
-    // function calculateTime(pointA, pointB, velocity) {
-    //     if (pointA.id == "#paddleLeft" || pointB.id == "#paddleLeft") {
-    //         return ((pointA.x+$("#paddleLeft").width())-pointB.x)/velocity.velocityX ;
-    //         console.log("LEFT PADDLE POSITION");
-    //     } else if (pointA.id == "#paddleRight" || pointB.id == "#paddleRight") {
-    //         return (pointA.x-(pointB.x+$("#ball0").width()))/velocity.velocityX ;
-    //     } else {
-    //         return (pointA.x-pointB.x)/velocity.velocityX; 
-    //     }
-    // }
 
     /**
      * Algorithm to predict the ball's future position upon meeting the X value of an object.
@@ -1224,7 +1039,7 @@ function runProgram() {
         if (predictedPosition < BORDERS.TOP) {predictedPosition = -predictedPosition;}
         else if (predictedPosition > BORDERS.BOTTOM) {predictedPosition = Math.floor(BORDERS.BOTTOM) + ((Math.floor(BORDERS.BOTTOM) - $(ballObj.id).height()*2) - predictedPosition);}
         
-        return predictedPosition - $(obj.id).height()/2 + $(ballObj.id).height()/2;// + varPredictedPositionY;
+        return predictedPosition - $(obj.id).height()/2 + $(ballObj.id).height()/2 + varPredictedPositionY;
     }
 
     /**
@@ -1275,7 +1090,7 @@ function runProgram() {
         $(gameItem.id).css("top", gameItem.y);
     }
 
-    function redrawScores() {
+    function redrawScores() { // TODO: Put the scores in a better place.
         $("#bouncedLeft").text(score.bounced);
         $("#bouncedRight").text(score.bounced);
     }
