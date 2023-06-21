@@ -34,7 +34,7 @@ body {
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* IE10+/Edge */
   user-select: none; /* Standard */
-  text-align: center;
+  text-align: left;
   display: block;
 }
 
@@ -64,13 +64,13 @@ li {
 }
 
 
-#p1 {
-  margin-top: 9px;
-}
+/* #p1 { */
+  /* margin-top: 9px; */
+/* } */
 
-#p2 {
-  margin-top: 9px;
-}
+/* #p2 { */
+  /* margin-top: 9px; */
+/* } */
 
 #paddleLeft {
   /* appearance */
