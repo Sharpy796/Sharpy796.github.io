@@ -89,12 +89,12 @@ body {
 
 .scoreboard {
   /* appearance */
-  background-color: greenyellow;
+  background-color: black;
   width: 600px;
   height: 40px;
-  display: table;
+  /* display: table; */
   border-radius: 5px;
-  border: 1px solid black;
+  border: 2px solid black;
 
   /* positioning */
   left: 50px;
@@ -103,18 +103,21 @@ body {
 }
 
 .scores {
+  color: white;
   font-family: "Comic Sans MS";
   -webkit-user-select: none; /* Safari */
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* IE10+/Edge */
   user-select: none; /* Standard */
   font-size: 15px;
-  padding: 10px;
-  margin: 0px;
+  padding-left: 10px;
+  padding-right: 10px;
+  /* margin: 0px; */
   position: static;
+  column-span: 7;
   /* display: inline-block; */
   /* display: table-row-group; */
-  list-style-type: none;
+  /* list-style-type: none; */
 }
 
 .scores span {
@@ -124,22 +127,38 @@ body {
 #p1 {
   /* positioning */
   text-align: left;
-  display: table-cell;
+  /* display: table-cell; */
   /* left: 50px; */
 }
 
 #bounces {
   /* positioning */
   text-align: center;
-  display: table-cell;
+  /* display: table-cell; */
   /* left: 300px; */
 }
 
 #p2 {
   /* positioning */
   text-align: right;
-  display: table-cell;
+  /* display: table-cell; */
   /* left: 630px; */
+}
+
+.tallyMark {
+  padding-top: 20px;
+}
+
+.p1TallyMark {
+  background-color: cyan;
+}
+
+.p2TallyMark {
+  background-color: red;
+}
+
+.winTallyMark {
+  background-color: lime;
 }
 
 .speeds {

@@ -22,44 +22,43 @@
         </div>
         <div class="gameItem" id="cheatIcon"></div>
     </div>
-    <div class="scoreboard">
-        <div class="scores" id="p1">
-            <b>P1 Score: <span>0</span></b>
-        </div>
-        <div class="scores" id="bounces">
-            <b>Total Bounces: <span>0</span></b>
-        </div>
-        <div class="scores" id="p2">
-            <b>P2 Score: <span>0</span></b>
-        </div>
+    <table class="scoreboard">
+        <tr>
+            <td colspan="6" class="scores" id="p1"><b>P1 Score: <span>0</span></b></td>
+            <td colspan="7" class="scores" id="bounces"><b>Total Bounces: <span>0</span></b></td>
+            <td colspan="6" class="scores" id="p2"><b>P2 Score: <span>0</span></b></td>
+        </tr>
          <!-- Work on making a progressive score with separate 
             DIV things for each score. Those DIV things will 
             uptick when someone gets a point. Use tables. -->
-        <div>
-            <!-- <div id="p1UpTick1"></div>
-            <div id="p1UpTick2"></div>
-            <div id="p1UpTick3"></div>
-            <div id="p1UpTick4"></div>
-            <div id="p1UpTick5"></div>
-            <div id="p1UpTick6"></div>
-            <div id="p1UpTick7"></div>
-            <div id="p1UpTick8"></div>
-            <div id="p1UpTick9"></div>
-            <div id="p1UpTick10"></div> -->
-        </div>
-        <div>
-            <!-- <div id="p2UpTick1"></div>
-            <div id="p2UpTick2"></div>
-            <div id="p2UpTick3"></div>
-            <div id="p2UpTick4"></div>
-            <div id="p2UpTick5"></div>
-            <div id="p2UpTick6"></div>
-            <div id="p2UpTick7"></div>
-            <div id="p2UpTick8"></div>
-            <div id="p2UpTick9"></div>
-            <div id="p2UpTick10"></div> -->
-        </div>
-    </div>
+        <tr>
+            <div> <!-- P1 Score Row -->
+                <td class="tallyMark p1TallyMark" id="p1Tally1"></td>
+                <td class="tallyMark p1TallyMark" id="p1Tally2"></td>
+                <td class="tallyMark p1TallyMark" id="p1Tally3"></td>
+                <td class="tallyMark p1TallyMark" id="p1Tally4"></td>
+                <td class="tallyMark p1TallyMark" id="p1Tally5"></td>
+                <td class="tallyMark p1TallyMark" id="p1Tally6"></td>
+                <td class="tallyMark p1TallyMark" id="p1Tally7"></td>
+                <td class="tallyMark p1TallyMark" id="p1Tally8"></td>
+                <td class="tallyMark p1TallyMark" id="p1Tally9"></td>
+            </div>
+            <div>
+                <td class="tallyMark winTallyMark"></td> <!-- Win Column -->
+            </div>
+            <div> <!-- P2 Score Row -->
+                <td class="tallyMark p2TallyMark" id="p2Tally9"></td>
+                <td class="tallyMark p2TallyMark" id="p2Tally8"></td>
+                <td class="tallyMark p2TallyMark" id="p2Tally7"></td>
+                <td class="tallyMark p2TallyMark" id="p2Tally6"></td>
+                <td class="tallyMark p2TallyMark" id="p2Tally5"></td>
+                <td class="tallyMark p2TallyMark" id="p2Tally4"></td>
+                <td class="tallyMark p2TallyMark" id="p2Tally3"></td>
+                <td class="tallyMark p2TallyMark" id="p2Tally2"></td>
+                <td class="tallyMark p2TallyMark" id="p2Tally1"></td>
+            </div>
+        </tr>
+    </table>
     <div>
         <div class="speeds" id="speeds"><b></b>
             <ul>

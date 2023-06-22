@@ -922,11 +922,9 @@ function runProgram() {
             if (player === p1.id) {             // player 1's side
                 score.p2++;
                 console.log("P2 scored a point! Total: " + score.p2);
-                // $("#p2").text(score.p2);
             } else if (player === p2.id) {      // player 2's side
                 score.p1++;
                 console.log("P1 scored a point! Total: " + score.p1);
-                // $("#p1").text(score.p1);
             } else {
                 console.log(text.error);
             }
