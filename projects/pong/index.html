@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 
+<!-- python -m http.server 9010 -->
+
 <head>
     <title>Pong</title>
     <!-- Load CSS files -->
@@ -20,14 +22,35 @@
         </div>
         <div class="gameItem" id="cheatIcon"></div>
     </div>
-    <div class="scores">
-        <div class="scores" id="player1">
-            <p class="text" id="p1">0</p>
-            <p class="text" id="bouncedLeft">0</p>
+    <div class="scoreboard"> <!-- Work on making a progressive score with separate DIV things for each score. Those DIV things will uptick when someone gets a point -->
+        <div class="scores" id="p1">
+            <!-- <div id="p1UpTick1"></div>
+            <div id="p1UpTick2"></div>
+            <div id="p1UpTick3"></div>
+            <div id="p1UpTick4"></div>
+            <div id="p1UpTick5"></div>
+            <div id="p1UpTick6"></div>
+            <div id="p1UpTick7"></div>
+            <div id="p1UpTick8"></div>
+            <div id="p1UpTick9"></div>
+            <div id="p1UpTick10"></div> -->
+            <b>P1 Score: <span>0</span></b>
         </div>
-        <div class="scores" id="player2">
-            <p class="text" id="p2">0</p>
-            <p class="text" id="bouncedRight">0</p>
+        <div class="scores" id="bounces">
+            <b>Total Bounces: <span>0</span></b>
+        </div>
+        <div class="scores" id="p2">
+            <!-- <div id="p2UpTick1"></div>
+            <div id="p2UpTick2"></div>
+            <div id="p2UpTick3"></div>
+            <div id="p2UpTick4"></div>
+            <div id="p2UpTick5"></div>
+            <div id="p2UpTick6"></div>
+            <div id="p2UpTick7"></div>
+            <div id="p2UpTick8"></div>
+            <div id="p2UpTick9"></div>
+            <div id="p2UpTick10"></div> -->
+            <b>P2 Score: <span>0</span></b>
         </div>
     </div>
     <div>

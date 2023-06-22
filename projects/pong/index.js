@@ -119,11 +119,15 @@ function runProgram() {
     var ticksPerBall = 50;
     var ticks = 0;
     function newFrame() {
-        if (ticks == 0) {
+        if (ticks == 1) {
             alert(ballCount + " balls\n interval of 1 ball per " + ticksPerBall + " frames");
         }
         if (!pause) {
             ticks++;
+            if (multiBall && ticks%ticksPerBall == 0 && ticks <= ticksPerBall*(ballCount-1)) {
+                createNewBall();
+                // getBallPitTelemetry();
+            }
             targetBall();
             if (debug) {
                 // console.log(ticks);
@@ -137,12 +141,6 @@ function runProgram() {
             if (ticks > 370) {FRAMES = 1;}
             modifyGameSpeed();
         }
-        if (multiBall) {
-            if (ticks%ticksPerBall == 0 && ticks <= ticksPerBall*(ballCount-1)) {
-                createNewBall();
-                // getBallPitTelemetry();
-            }
-        }
         updateTemporaryVelocity(ball0);
         pauseGame();
         changeColors()
@@ -151,8 +149,8 @@ function runProgram() {
             // getCollisionTelemetry(ball0, paddleLeft);
         }
         handleCollisions();
+        redrawAllGameItems();
         if (!gameWon) {
-            redrawAllGameItems();
             if (!pause) {
                 handleVelocity();
                 repositionAllGameItems();
@@ -924,11 +922,11 @@ function runProgram() {
             if (player === p1.id) {             // player 1's side
                 score.p2++;
                 console.log("P2 scored a point! Total: " + score.p2);
-                $("#p2").text(score.p2);
+                // $("#p2").text(score.p2);
             } else if (player === p2.id) {      // player 2's side
                 score.p1++;
                 console.log("P1 scored a point! Total: " + score.p1);
-                $("#p1").text(score.p1);
+                // $("#p1").text(score.p1);
             } else {
                 console.log(text.error);
             }
@@ -946,13 +944,13 @@ function runProgram() {
     }
 
     function whoWon() {
-        if (score.p1 >= 10) {
+        if (score.p1 >= 10 || String(score.p1) == "NaN") {
             $("#paddleLeft").css("background-color", "lime");
             alert(text.p1 + "\n" + text.restart);
             gameWon = true;
             endGame();
         }
-        if (score.p2 >= 10) {
+        if (score.p2 >= 10 || String(score.p2) == "NaN") {
             $("#paddleRight").css("background-color", "lime");
             alert(text.p2 + "\n" + text.restart);
             gameWon = true;
@@ -1004,18 +1002,18 @@ function runProgram() {
      * Calculates the amount of frames it will take for one point to reach the second point.
      * - Distance from point A to point B...
      * - Divided by distance/frame.
-     * @param {double} pointA - The first point of reference.
-     * @param {double} pointB - The second point of reference (which has a velocity).
-     * @param {double} velocity - The pixels/frame velocity of one of the two points.
+     * @param {double} pointPaddle - The first point of reference.
+     * @param {double} pointBall - The second point of reference (which has a velocity).
+     * @param {double} velocityBall - The pixels/frame velocity of one of the two points.
      */
-    function calculateTime(pointA, pointB, velocity) {
+    function calculateTime(pointPaddle, pointBall, velocityBall) {
         var predictedPosition;
-        if (pointA.id == "#paddleLeft") {
-            predictedPosition = ((pointA.rightX)-pointB.x)/velocity.velocityX;
-        } else if (pointA.id == "#paddleRight") {
-            predictedPosition = (pointA.x-(pointB.rightX))/velocity.velocityX;
+        if (pointPaddle.id == "#paddleLeft") {
+            predictedPosition = ((pointPaddle.rightX)-pointBall.x)/velocityBall.velocityX;
+        } else if (pointPaddle.id == "#paddleRight") {
+            predictedPosition = (pointPaddle.x-(pointBall.rightX))/velocityBall.velocityX;
         } else {
-            predictedPosition = (pointA.x-pointB.x)/velocity.velocityX; 
+            predictedPosition = (pointPaddle.x-pointBall.x)/velocityBall.velocityX; 
         }
         return predictedPosition;
     }
@@ -1039,7 +1037,7 @@ function runProgram() {
         if (predictedPosition < BORDERS.TOP) {predictedPosition = -predictedPosition;}
         else if (predictedPosition > BORDERS.BOTTOM) {predictedPosition = Math.floor(BORDERS.BOTTOM) + ((Math.floor(BORDERS.BOTTOM) - $(ballObj.id).height()*2) - predictedPosition);}
         
-        return predictedPosition - $(obj.id).height()/2 + $(ballObj.id).height()/2 + varPredictedPositionY;
+        return predictedPosition - $(obj.id).height()/2 + $(ballObj.id).height()/2;// + varPredictedPositionY;
     }
 
     /**
@@ -1051,6 +1049,7 @@ function runProgram() {
      * - We divide pixels by frames, and we get a velocity.
      * - Sometimes the calculated time is zero. We force the added value to be 0 to prevent a Divide By Zero error.
      * @param {object} gameItem - The object whose required velocity will be calculated. 
+     * @param {object} ballObj - The object whose velocity will be used in the calculations.
      * @returns {double} The Y velocity required to reach the ball before it passes the object up.
      */
     function moveToPredictedBallPosition(gameItem, ballObj) {
@@ -1091,8 +1090,12 @@ function runProgram() {
     }
 
     function redrawScores() { // TODO: Put the scores in a better place.
-        $("#bouncedLeft").text(score.bounced);
-        $("#bouncedRight").text(score.bounced);
+        if (score.p1 > 999) {score.p1 = "?!?";}
+        $("#p1 span").text(String(score.p1).padStart(3, "0"));
+        if (score.bounced > 999) {score.bounced = "?!?";}
+        $("#bounces span").text(String(score.bounced).padStart(3, "0"));
+        if (score.p2 > 999) {score.p2 = "?!?";}
+        $("#p2 span").text(String(score.p2).padStart(3, "0"));
     }
 
     function redrawAllGameItems() {

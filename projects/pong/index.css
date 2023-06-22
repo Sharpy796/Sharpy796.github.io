@@ -1,3 +1,7 @@
+@font-face{
+  font-family:'digital-clock-font';
+  src: url('/projects/pong/assets/digital-7/digital-7-(mono).ttf');
+}
 
 body {
   background-color: darkgreen;
@@ -15,62 +19,6 @@ body {
   /* positioning */
   position: absolute;
 }
-
-.balls {
-  /* appearance */
-  width: 20px;
-  height: 20px;
-  border-radius: 10px;
-  background-color: fuchsia;
-  
-  /* positioning */
-  left: 340px;
-  top: 210px;
-}
-
-.text {
-  font-family: "Comic Sans MS";
-  -webkit-user-select: none; /* Safari */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* IE10+/Edge */
-  user-select: none; /* Standard */
-  text-align: left;
-  display: block;
-}
-
-.ballPit {
-  background-color: red;
-}
-
-/* ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: block;
-  margin-bottom: 1em;
-} */
-
-.speeds {
-  font-family: "Comic Sans MS";
-  -webkit-user-select: none; /* Safari */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* IE10+/Edge */
-  user-select: none; /* Standard */
-  list-style-type: none;
-  padding: 0;
-  display: block;
-}
-
-
-/* #p1 { */
-  /* margin-top: 9px; */
-/* } */
-
-/* #p2 { */
-  /* margin-top: 9px; */
-/* } */
 
 #paddleLeft {
   /* appearance */
@@ -94,6 +42,22 @@ li {
   /* positioning */
   left: 630px;
   top: 180px;
+}
+
+.balls {
+  /* appearance */
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background-color: fuchsia;
+  
+  /* positioning */
+  left: 340px;
+  top: 210px;
+}
+
+.ballPit {
+  background-color: red;
 }
 
 #ball {
@@ -121,4 +85,70 @@ li {
     /* positioning */
     left: 10px;
     top: 10px;
+}
+
+.scoreboard {
+  /* appearance */
+  background-color: greenyellow;
+  width: 600px;
+  height: 40px;
+  display: table;
+  border-radius: 5px;
+  border: 1px solid black;
+
+  /* positioning */
+  left: 50px;
+  top: 10px;
+  position: relative;
+}
+
+.scores {
+  font-family: "Comic Sans MS";
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
+  font-size: 15px;
+  padding: 10px;
+  margin: 0px;
+  position: static;
+  /* display: inline-block; */
+  /* display: table-row-group; */
+  list-style-type: none;
+}
+
+.scores span {
+  font-family:"digital-clock-font";
+}
+
+#p1 {
+  /* positioning */
+  text-align: left;
+  display: table-cell;
+  /* left: 50px; */
+}
+
+#bounces {
+  /* positioning */
+  text-align: center;
+  display: table-cell;
+  /* left: 300px; */
+}
+
+#p2 {
+  /* positioning */
+  text-align: right;
+  display: table-cell;
+  /* left: 630px; */
+}
+
+.speeds {
+  font-family: "Comic Sans MS";
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
+  list-style-type: none;
+  padding: 0;
+  display: block;
 }
