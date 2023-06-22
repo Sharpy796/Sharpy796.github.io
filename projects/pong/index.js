@@ -674,15 +674,15 @@ function runProgram() {
         }
 
         if (autoPlay) {
+            $("#paddleLeft").css("background-color", "blue");
+            $("#paddleLeft").css("box-shadow", "0px 0px 0px 3px cyan inset");
+            $("#paddleRight").css("background-color", "maroon");
+            $("#paddleRight").css("box-shadow", "0px 0px 0px 3px red inset");
+        } else {
             $("#paddleLeft").css("background-color", "cyan");
             $("#paddleLeft").css("box-shadow", "0px 0px 0px 3px teal inset");
             $("#paddleRight").css("background-color", "hotpink");
             $("#paddleRight").css("box-shadow", "0px 0px 0px 3px maroon inset");
-        } else {
-            $("#paddleLeft").css("background-color", "teal");
-            $("#paddleLeft").css("box-shadow", "none");
-            $("#paddleRight").css("background-color", "maroon");
-            $("#paddleRight").css("box-shadow", "none");
         }
     }
 
