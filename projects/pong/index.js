@@ -515,7 +515,7 @@ function runProgram() {
         }
 
         // MultiBall Activation 
-        // TODO: Add a prompt to input an amount of balls
+        // TODONE: Add a prompt to input an amount of balls
         // TODO: Figure out how to restart the game without reloading the page
         // TODO: Figure out which modes need to accompany MultiBall for it to work properly
         else if (answer === "multiBall") {
@@ -526,7 +526,11 @@ function runProgram() {
                 alert("MultiBall is already activated.\nType 'noMulti' to deactivate it.");
                 multiBall = true;
             } else {
-                alert("MultiBall Activated!\nType 'noMulti' to deactivate MultiBall.");
+                do {
+                    ballCount = prompt("How many balls?");
+                    if (ballCount < 1) {alert("Please enter 1 or more balls.");}
+                } while (ballCount < 1);
+                alert("MultiBall Activated with " + ballCount + " balls!\nType 'noMulti' to deactivate MultiBall.");
                 multiBall = true;
             }
         }
