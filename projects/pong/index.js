@@ -82,8 +82,8 @@ function runProgram() {
     var firstTimeBouncedWall = true;
     var firstTimePaused = true;;
     var cheatMode = false;
-    var freePlay = false;
-    var autoPlay = true;
+    var freePlay = true;
+    var autoPlay = false;
     var multiBall = true;
     var slowDown = false;
     var ballPit = [];
@@ -120,7 +120,7 @@ function runProgram() {
     var ticks = 0;
     function newFrame() {
         if (ticks == 1) {
-            alert(ballCount + " balls\n interval of 1 ball per " + ticksPerBall + " frames");
+            // alert(ballCount + " balls\n interval of 1 ball per " + ticksPerBall + " frames");
         }
         if (!pause) {
             ticks++;
@@ -448,6 +448,9 @@ function runProgram() {
     ////////// Pause and Cheats \\\\\\\\\\
     ///////////////////\\\\\\\\\\\\\\\\\\\
 
+    // TODO: Create a side menu for game modes
+    // TODO: make the game screen bigger
+
     function pauseGame() {
         if (spaceIsDown) {
             if (firstTimePaused) {
@@ -548,10 +551,14 @@ function runProgram() {
             freePlay = false;
         }
 
-        // AutoPlay Deactivation TODO: have paddles snap to a multiple of fo the current ppf (5)
+        // AutoPlay Deactivation
         else if (answer === "noAuto") {
             if (autoPlay) {
                 alert("AutoPlay Deactivated.\nType 'autoPlay' to activate AutoPlay.");
+                // Snap paddles to a multiple of the pixels per frame speed to prevent
+                // collision between the paddles and wall from being off
+                paddleLeft.y -= paddleLeft.y % ppf;
+                paddleRight.y -= paddleRight.y % ppf;
             } else {
                 alert("AutoPlay is already deactivated.\nType 'autoPlay' to activate it.");
             }
@@ -807,7 +814,7 @@ function runProgram() {
         }
     }
 
-    function handlePaddleCollisions(paddle) { // TODO: Something happens when I absolutely *nail* the calculations. Gotta figure out what's happening.
+    function handlePaddleCollisions(paddle) {
         // if it is the first time bouncing on one
         if (firstTimeBouncedPaddle) {
             // Mix up the ball's predicted position in AutoPlay
@@ -917,6 +924,29 @@ function runProgram() {
     /////////////// Points \\\\\\\\\\\\\\\
     ///////////////////\\\\\\\\\\\\\\\\\\\
 
+    function handleScoreBoard() {
+        for (let i = 1; i <= score.p1; i++) {$("#p1Tally"+i).css("background-color", "blue");}
+        for (let i = 1; i <= score.p2; i++) {$("#p2Tally"+i).css("background-color", "red");}
+
+        if (score.p1 >= 10 || score.p2 >= 10) {
+            $(".winTallyMark").css("background-color", "lime");
+            if (score.p1 == score.p2) {
+                $(".winTallyMark").css("box-shadow", "0px 0px 0px 3px violet inset");
+                $(".tallyMark").css("box-shadow", "0px 0px 0px 3px violet inset");
+            } else if (score.p1 > score.p2) {
+                $(".tallyMark").css("box-shadow", "none");
+                $(".p1TallyMark").css("background-color", "lime");
+                $(".winTallyMark").css("box-shadow", "0px 0px 0px 3px blue inset");
+                $(".p1TallyMark").css("box-shadow", "0px 0px 0px 3px blue inset");
+            } else if (score.p2 > score.p1) {
+                $(".tallyMark").css("box-shadow", "none");
+                $(".p2TallyMark").css("background-color", "lime");
+                $(".winTallyMark").css("box-shadow", "0px 0px 0px 3px red inset");
+                $(".p2TallyMark").css("box-shadow", "0px 0px 0px 3px red inset");
+            }
+        }
+    }
+
     function playerLose(player) {
         if (firstTimeBouncedWall) {
             if (player === p1.id) {             // player 1's side
@@ -928,6 +958,7 @@ function runProgram() {
             } else {
                 console.log(text.error);
             }
+            handleScoreBoard();
         }
         if (!freePlay) {
             whoWon();
@@ -946,12 +977,14 @@ function runProgram() {
             $("#paddleLeft").css("background-color", "lime");
             alert(text.p1 + "\n" + text.restart);
             gameWon = true;
+            // redrawAllGameItems();
             endGame();
         }
         if (score.p2 >= 10 || String(score.p2) == "NaN") {
             $("#paddleRight").css("background-color", "lime");
             alert(text.p2 + "\n" + text.restart);
             gameWon = true;
+            // redrawAllGameItems();
             endGame();
         }
     }
@@ -1087,7 +1120,7 @@ function runProgram() {
         $(gameItem.id).css("top", gameItem.y);
     }
 
-    function redrawScores() { // TODO: Put the scores in a better place.
+    function redrawScores() {
         if (score.p1 > 999) {score.p1 = "?!?";}
         $("#p1 span").text(String(score.p1).padStart(3, "0"));
         if (score.bounced > 999) {score.bounced = "?!?";}

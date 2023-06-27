@@ -25,7 +25,8 @@ body {
   width: 20px;
   height: 80px;
   border-radius: 5px;
-  background-color: teal;
+  background-color: cyan;
+  box-shadow: 0px 0px 0px 3px teal inset;
 
   /* positioning */
   left: 50px;
@@ -37,7 +38,8 @@ body {
   width: 20px;
   height: 80px;
   border-radius: 5px;
-  background-color: maroon;
+  background-color: hotpink;
+  box-shadow: 0px 0px 0px 3px maroon inset;
 
   /* positioning */
   left: 630px;
@@ -150,15 +152,19 @@ body {
 }
 
 .p1TallyMark {
-  background-color: cyan;
+  /* background-color: cyan; */
+  background-color: darkblue;
 }
 
 .p2TallyMark {
-  background-color: red;
+  /* background-color: red; */
+  background-color: maroon;
 }
 
 .winTallyMark {
-  background-color: lime;
+  /* background-color: #03C03C; */
+  background-color: limegreen;
+  /* box-shadow: 0px 0px 0px 3px lime inset; */
 }
 
 .speeds {
