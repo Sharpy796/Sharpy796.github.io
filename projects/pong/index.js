@@ -438,15 +438,18 @@ function runProgram() {
     }
 
     function randBallVelocityY(ballObj) {
+        var min = 1;
+        var max = 4;
+        var randSign = 0;
         var randNum = 0;
 
         do {
-            var randSign = Math.random() * 1 - 0.5;
+            randSign = Math.random() * 1 - 0.5;
             if (randSign < 0) {randSign = -1;}
             else if (randSign > 0) {randSign = 1;}
             else {randSign = 1;}
             randNum = Math.random() * 10 * randSign;
-        } while (randNum < -5 || (randNum > -1 && randNum < 1) || randNum > 5);
+        } while (randNum < -max || (randNum > -min && randNum < min) || randNum > max);
         varVelocityY = randNum;
         if (varVelocityY > 0) {
         // if (ballObj.velocityY > 0) {
@@ -552,15 +555,28 @@ function runProgram() {
                     multiBall = true;
                 } else {
                     if (confirm("Enabling MultiBall will restart the current game. Do you still want to continue?")) {
+                        var ballCountOld = ballCount;
                         do {
-                            ballCount = Number(prompt("How many balls?"));
+                            ballCount = prompt("How many balls?");
+                            console.log("ballCountOld: " + ballCountOld);
+                            console.log("ballCount: " + ballCount);
+                            // Was Cancel pressed?
+                            if (ballCount == null) {break;}
+                            else {ballCount = Number(ballCount);}
+                            // Make sure a number is entered.
                             if (ballCount < 2) {alert("Please enter more than 1 ball.");}
                             else if (ballCount > 50) {alert("Please enter 50 or less balls.");}
                             else if (isNaN(ballCount)) {alert("Please enter a valid number.");}
                         } while (isNaN(ballCount) || ballCount < 2 || ballCount > 50);
-                        alert("MultiBall Activated with " + ballCount + " balls!\nType 'noMulti' to deactivate MultiBall.");
-                        multiBall = true;
-                        restartGame(p2.id);
+                        if (ballCount == null) {
+                            alert("MultiBall Cancelled."); 
+                            ballCount = ballCountOld;
+                            multiBall = false;
+                        } else {
+                            alert("MultiBall Activated with " + ballCount + " balls!\nType 'noMulti' to deactivate MultiBall.");
+                            multiBall = true;
+                            restartGame(p2.id);
+                        }
                     } else {
                         multiBall = false;
                     }
