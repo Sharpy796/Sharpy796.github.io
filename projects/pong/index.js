@@ -107,7 +107,8 @@ function runProgram() {
     alert(  "Welcome to Pong!\n" +
             "P1 Controls: W S\n" +
             "P2 Controls: Up Down\n" +
-            "Pause: Space");
+            "Pause: Space\n" + 
+            "Restart: R");
 
     ////////////////////////////////////////////////////////////////////////////////
     ///////////////////////// CORE LOGIC ///////////////////////////////////////////
