@@ -1095,6 +1095,8 @@ function runProgram() {
     }
 
     function restartRound(player) {
+        if (gameWon) {resetGame();}
+        
         score.bounced = 0;
         ticks = 0;
         restartTimer();
@@ -1156,12 +1158,15 @@ function runProgram() {
 
     function restartGame(player) {
         restartingRound = true;
+        clearInterval(interval);
+        setTimeout(restartRound.bind(null, player), 1000);
+    }
+
+    function resetGame() {
         resetVariables();
         resetSpeeds(paddleLeft);
         resetSpeeds(paddleRight);
         resetScores();
-        clearInterval(interval);
-        setTimeout(restartRound.bind(null, player), 1000);
     }
 
     function resetVariables() {
