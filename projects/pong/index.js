@@ -478,15 +478,6 @@ function runProgram() {
             if (firstTimePaused) {
                 pause = !pause;
                 console.log("Pause: " + pause);
-                // if (pause) {
-                //     pause = false;
-                //     $("#cheatIcon").hide();
-                //     console.log("unpause");
-                // } else {
-                //     pause = true;
-                //     $("#cheatIcon").show();
-                //     console.log("pause");
-                // }
             }
             firstTimePaused = false;
         } else {
@@ -650,12 +641,9 @@ function runProgram() {
         var $newBall = $("<div>")
             .appendTo('#ballPit')
             .addClass('gameItem balls')
-            // .addClass('balls')
             .attr("id", ballId)
             .css("left", 340)
             .css("top", 210)
-            // .css("width", 20)
-            // .css("height", 20)
             .css("background-color", "orange");
         // store the new div in a variable
         xDirection *= -1;
@@ -680,11 +668,8 @@ function runProgram() {
                     targetedBallRight = ballNullRight;
             }
 
-            var signLeft = 1;
-            var signRight = 1;
             if (targetedBallLeft.id == "#ballNull") {signLeft=-1;}
             if (targetedBallRight.id == "#ballNull") {signRight=-1;}
-
 
             if (ball.velocityX < 0 && 
                 ball.x > (paddleLeft.x) && 
@@ -792,31 +777,6 @@ function runProgram() {
                 firstTimeBouncedPaddle = true;
             }
         }
-
-        // if (cheatMode) {
-        //     for (let ball of ballPit) {
-        //         enforceNoNoZone(ball);
-        //     }
-        // } else {
-        //     for (let ball of ballPit) {
-        //         bounceBall(ball);
-        //         enforceNoNoZone(ball);
-        //     }
-        // }
-
-        // // check if the ball is touching the paddles
-        // for (let ball of ballPit){
-        //     if (doCollide(ball, paddleLeft)) {
-        //         console.log("ping");
-        //         handlePaddleCollisions(paddleLeft);     // left paddle
-        //     } else if (doCollide(ball, paddleRight)) {
-        //         console.log("pong");
-        //         handlePaddleCollisions(paddleRight);    // right paddle
-        //     } else {
-        //         // tell us we still have yet to bounce
-        //         firstTimeBouncedPaddle = true;
-        //     }
-        // }
     }
 
     function updateObjectBorders(obj) {
@@ -1071,22 +1031,14 @@ function runProgram() {
 
     function whoWon() { // TODO: Implement methods for if there is a tie, somehow (eh, maybe). It would get rid of the redundant double-win processes.
         if (score.p1 >= 10 || isNaN(score.p1)) {
-        // if (score.p1 >= 10 || String(score.p1) == "NaN") {
             $("#paddleLeft").css("background-color", "lime");
-            // redrawAllGameItems();
             alert(text.p1 + "\n" + text.restart);
             gameWon = true;
-            // if (playAgain()){restartGame();}
-            // else {endGame();}
         }
         if (score.p2 >= 10 || isNaN(score.p2)) {
-        // if (score.p2 >= 10 || String(score.p2) == "NaN") {
             $("#paddleRight").css("background-color", "lime");
-            // redrawAllGameItems();
             alert(text.p2 + "\n" + text.restart);
             gameWon = true;
-            // if (playAgain()){restartGame();}
-            // else {endGame();}
         }
     }
 
@@ -1130,31 +1082,6 @@ function runProgram() {
         // Tell that we have finished restarting the round
         restartingRound = false;
     }
-
-    // function resetVariables() {
-    //     pause = false;
-    //     spaceIsDown = false
-    //     firstTimeCheat = true;
-    //     firstTimeBouncedPaddle = true;
-    //     firstTimeBouncedWall = true;
-    //     firstTimePaused = true;
-    //     cheatMode = false;
-    //     freePlay = false;
-    //     autoPlay = true;
-    //     multiBall = true;
-    //     slowDown = false;
-    //     ballPit = [];
-    //     ballPit.push(ball0);
-    //     targetedBallLeft = ballNullLeft;
-    //     targetedBallRight = ballNullRight;
-    //     debug = false;
-    //     gameWon = false;
-    //     ppfStop = 0; // Pixels Per Frame at rest
-    //     ppf = 5;     // Pixels Per Frame
-    //     xDirection = -1;
-    //     varVelocityY = 5;
-    //     varPredictedPositionY = 0;
-    // }
 
     function restartGame(player) {
         restartingRound = true;
