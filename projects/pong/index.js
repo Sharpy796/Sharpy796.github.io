@@ -80,10 +80,10 @@ function runProgram() {
     var firstTimeCheat = true;
     var firstTimeBouncedPaddle = true;
     var firstTimeBouncedWall = true;
-    var firstTimePaused = true;;
+    var firstTimePaused = true;
     var cheatMode = false;
-    var freePlay = true;
-    var autoPlay = false;
+    var freePlay = false;
+    var autoPlay = true;
     var multiBall = true;
     var slowDown = false;
     var ballPit = [];
@@ -92,11 +92,13 @@ function runProgram() {
     var targetedBallRight = ballNullRight;
     var debug = false;
     var gameWon = false;
+    // var pageHasHadTimeToRedraw = false;
     var ppfStop = 0; // Pixels Per Frame at rest
     var ppf = 5;     // Pixels Per Frame
     var xDirection = -1;
     var varVelocityY = 5;
     var varPredictedPositionY = 0;
+    var restartingRound = false;
 
     function join(delimiter, arg1, arg2, arg3) {
         return arg1.concat(delimiter, arg2, delimiter, arg3)
@@ -129,8 +131,10 @@ function runProgram() {
                 // getBallPitTelemetry();
             }
             targetBall();
+            // if (true) {
             if (debug) {
-                // console.log(ticks);
+                console.log(ticks);
+                console.log(framesPerSecondInterval);
             }
         }
         if (slowDown) {
@@ -155,7 +159,12 @@ function runProgram() {
                 handleVelocity();
                 repositionAllGameItems();
             }
-        }
+        } //else {
+        //     if (pageHasHadTimeToRedraw) {
+        //         restartGame(p1.id);
+        //     }
+        //     pageHasHadTimeToRedraw = true;
+        // }
     }
 
     /* 
@@ -428,17 +437,26 @@ function runProgram() {
     }
 
     function randBallVelocityY(ballObj) {
-        var randNum = -999;
-        while (randNum >= 5 || randNum <= -5) {
-            randNum = Math.random() * 10;
-        }
+        var randNum = 0;
+
+        do {
+            var randSign = Math.random() * 1 - 0.5;
+            if (randSign < 0) {randSign = -1;}
+            else if (randSign > 0) {randSign = 1;}
+            else {randSign = 1;}
+            randNum = Math.random() * 10 * randSign;
+        } while (randNum < -5 || (randNum > -1 && randNum < 1) || randNum > 5);
         varVelocityY = randNum;
-        if (ballObj.velocityY > 0) {
+        if (varVelocityY > 0) {
+        // if (ballObj.velocityY > 0) {
             ballObj.speed.up = varVelocityY;
             ballObj.speed.down = 0;
-        } else if (ballObj.velocityY < 0) {
+        } else if (varVelocityY < 0) {
+        // } else if (ballObj.velocityY < 0) {
             ballObj.speed.up = 0;
-            ballObj.speed.down = varVelocityY;
+            ballObj.speed.down = -varVelocityY;
+        } else {
+            console.log(text.error + " in randBallVelocityY");
         }
         console.log("changed " + ballObj.id + " velocityY to " + varVelocityY);
     }
@@ -454,136 +472,157 @@ function runProgram() {
     function pauseGame() {
         if (spaceIsDown) {
             if (firstTimePaused) {
-                if (pause) {
-                    pause = false;
-                    $("#cheatIcon").hide();
-                    console.log("unpause");
-                } else {
-                    pause = true;
-                    $("#cheatIcon").show();
-                    console.log("pause");
-                }
+                pause = !pause;
+                console.log("Pause: " + pause);
+                // if (pause) {
+                //     pause = false;
+                //     $("#cheatIcon").hide();
+                //     console.log("unpause");
+                // } else {
+                //     pause = true;
+                //     $("#cheatIcon").show();
+                //     console.log("pause");
+                // }
             }
             firstTimePaused = false;
         } else {
             firstTimePaused = true;
         }
+
+        if (pause) {
+            $("#cheatIcon").show();
+        } else {
+            $("#cheatIcon").hide();
+        }
     }
 
     function activateCheatMode() {
-        var answer = prompt("Password:");
+        if (!restartingRound) {
+            var answer = prompt("Password:");
 
-        // Cheat Mode Activation
-        if (answer === "^^vv<><>ba") {
-            if (autoPlay) {
-                alert("Cannot activate Cheat Mode because AutoPlay is activated.\nType 'noAuto' to deactivate it.");
-                cheatMode = false;
-            } else if (multiBall) {
-                alert("Cannot activate Cheat Mode because MultiBall is activated.\nType 'noMulti' to deactivate it.");
-                cheatMode = false;
-            } else if (cheatMode) {
-                alert("Cheat Mode is already activated.\nType 'noCheat' to deactivate it.");
-                cheatMode = true;
-            } else {
-                alert("Cheat Mode Activated!\nUse these controls to move the ball:\nU: Up\nH: Left\nJ: Down\nK: Right\nType 'noCheat' to deactivate Cheat Mode.");
-                cheatMode = true;
+            // Cheat Mode Activation
+            if (answer === "^^vv<><>ba") {
+                if (autoPlay) {
+                    alert("Cannot activate Cheat Mode because AutoPlay is activated.\nType 'noAuto' to deactivate it.");
+                    cheatMode = false;
+                } else if (multiBall) {
+                    alert("Cannot activate Cheat Mode because MultiBall is activated.\nType 'noMulti' to deactivate it.");
+                    cheatMode = false;
+                } else if (cheatMode) {
+                    alert("Cheat Mode is already activated.\nType 'noCheat' to deactivate it.");
+                    cheatMode = true;
+                } else {
+                    alert("Cheat Mode Activated!\nUse these controls to move the ball:\nU: Up\nH: Left\nJ: Down\nK: Right\nType 'noCheat' to deactivate Cheat Mode.");
+                    cheatMode = true;
+                }
             }
-        }
 
-        // FreePlay Activation
-        else if (answer === "freePlay") {
-            if (freePlay) {
-                alert("FreePlay is already activated.\nType 'noFree' to deactivate it.");
-            } else {
-                alert("FreePlay Activated!\nType 'noFree' to deactivate FreePlay.");
+            // FreePlay Activation
+            else if (answer === "freePlay") {
+                if (freePlay) {
+                    alert("FreePlay is already activated.\nType 'noFree' to deactivate it.");
+                } else {
+                    alert("FreePlay Activated!\nType 'noFree' to deactivate FreePlay.");
+                }
+                freePlay = true;
             }
-            freePlay = true;
-        }
 
-        // AutoPlay Activation
-        else if (answer === "autoPlay") {
-            if (cheatMode) {
-                alert("Cannot activate AutoPlay because Cheat Mode is activated.\nType 'noCheat' to deactivate it.");
+            // AutoPlay Activation
+            else if (answer === "autoPlay") {
+                if (cheatMode) {
+                    alert("Cannot activate AutoPlay because Cheat Mode is activated.\nType 'noCheat' to deactivate it.");
+                    autoPlay = false;
+                } else if (autoPlay) {
+                    alert("AutoPlay is already activated.\nType 'noAuto' to deactivate it.");
+                    autoPlay = true;
+                } else {
+                    alert("AutoPlay Activated!\nType 'noAuto' to deactivate AutoPlay.");
+                    autoPlay = true;
+                }
+            }
+
+            // MultiBall Activation 
+            else if (answer === "multiBall") {
+                if (cheatMode) {
+                    alert("Cannot activate MultiBall because Cheat Mode is activated.\nType 'noCheat' to deactivate it.");
+                    multiBall = false;
+                } else if (multiBall) {
+                    alert("MultiBall is already activated.\nType 'noMulti' to deactivate it.");
+                    multiBall = true;
+                } else {
+                    if (confirm("Enabling MultiBall will restart the current game. Do you still want to continue?")) {
+                        do {
+                            ballCount = Number(prompt("How many balls?"));
+                            if (ballCount < 1) {alert("Please enter 1 or more balls.");}
+                            else if (isNaN(ballCount)) {alert("Please enter a valid number.");}
+                        } while (isNaN(ballCount) || ballCount < 1);
+                        alert("MultiBall Activated with " + ballCount + " balls!\nType 'noMulti' to deactivate MultiBall.");
+                        multiBall = true;
+                        restartGame(p1.id);
+                    } else {
+                        multiBall = false;
+                    }
+                }
+            }
+
+            // Cheat Mode Deactivation
+            else if (answer === "noCheat") {
+                if (cheatMode) {
+                    alert("Cheat Mode Deactivated.\nType the password to activate Cheat Mode.");
+                } else {
+                    alert("Cheat Mode is already deactivated.\nType the password to activate it.");
+                }
+                cheatMode = false;
+            }
+
+            // FreePlay Deactivation
+            else if (answer === "noFree") {
+                if (freePlay) {
+                    alert("FreePlay Deactivated.\nType 'freePlay' to activate FreePlay.");
+                } else {
+                    alert("FreePlay is already deactivated.\nType 'freePlay' to activate it.");
+                }
+                freePlay = false;
+            }
+
+            // AutoPlay Deactivation
+            else if (answer === "noAuto") {
+                if (autoPlay) {
+                    alert("AutoPlay Deactivated.\nType 'autoPlay' to activate AutoPlay.");
+                    // Snap paddles to a multiple of the pixels per frame speed to prevent
+                    // collision between the paddles and wall from being off
+                    paddleLeft.y -= paddleLeft.y % ppf;
+                    paddleRight.y -= paddleRight.y % ppf;
+                } else {
+                    alert("AutoPlay is already deactivated.\nType 'autoPlay' to activate it.");
+                }
                 autoPlay = false;
-            } else if (autoPlay) {
-                alert("AutoPlay is already activated.\nType 'noAuto' to deactivate it.");
-                autoPlay = true;
-            } else {
-                alert("AutoPlay Activated!\nType 'noAuto' to deactivate AutoPlay.");
-                autoPlay = true;
+            }
+
+            // MultiBall Deactivation
+            else if (answer === "noMulti") {
+                if (multiBall) {
+
+                    if (confirm("Disabling MultiBall will restart the current game. Do you still want to continue?")) {
+                        alert("MultiBall Deactivated.\nType 'multiBall' to activate MultiBall.");
+                        multiBall = false;
+                        restartGame(p1.id);
+                    } else {
+                        multiBall = true;
+                    }
+
+
+                } else {
+                    alert("MultiBall is already deactivated.\nType 'multiBall' to activate it.");
+                    multiBall = false;
+                }
+            }
+
+            // Wrong Password
+            else {
+                alert("Wrong Password.");
             }
         }
-
-        // MultiBall Activation 
-        // TODONE: Add a prompt to input an amount of balls
-        // TODO: Figure out how to restart the game without reloading the page
-        // TODO: Figure out which modes need to accompany MultiBall for it to work properly
-        else if (answer === "multiBall") {
-            if (cheatMode) {
-                alert("Cannot activate MultiBall because Cheat Mode is activated.\nType 'noCheat' to deactivate it.");
-                multiBall = false;
-            } else if (multiBall) {
-                alert("MultiBall is already activated.\nType 'noMulti' to deactivate it.");
-                multiBall = true;
-            } else {
-                do {
-                    ballCount = prompt("How many balls?");
-                    if (ballCount < 1) {alert("Please enter 1 or more balls.");}
-                } while (ballCount < 1);
-                alert("MultiBall Activated with " + ballCount + " balls!\nType 'noMulti' to deactivate MultiBall.");
-                multiBall = true;
-            }
-        }
-
-        // Cheat Mode Deactivation
-        else if (answer === "noCheat") {
-            if (cheatMode) {
-                alert("Cheat Mode Deactivated.\nType the password to activate Cheat Mode.");
-            } else {
-                alert("Cheat Mode is already deactivated.\nType the password to activate it.");
-            }
-            cheatMode = false;
-        }
-
-        // FreePlay Deactivation
-        else if (answer === "noFree") {
-            if (freePlay) {
-                alert("FreePlay Deactivated.\nType 'freePlay' to activate FreePlay.");
-            } else {
-                alert("FreePlay is already deactivated.\nType 'freePlay' to activate it.");
-            }
-            freePlay = false;
-        }
-
-        // AutoPlay Deactivation
-        else if (answer === "noAuto") {
-            if (autoPlay) {
-                alert("AutoPlay Deactivated.\nType 'autoPlay' to activate AutoPlay.");
-                // Snap paddles to a multiple of the pixels per frame speed to prevent
-                // collision between the paddles and wall from being off
-                paddleLeft.y -= paddleLeft.y % ppf;
-                paddleRight.y -= paddleRight.y % ppf;
-            } else {
-                alert("AutoPlay is already deactivated.\nType 'autoPlay' to activate it.");
-            }
-            autoPlay = false;
-        }
-
-        // MultiBall Deactivation
-        else if (answer === "noMulti") {
-            if (multiBall) {
-                alert("MultiBall Deactivated.\nType 'multiBall' to activate MultiBall.");
-            } else {
-                alert("MultiBall is already deactivated.\nType 'multiBall' to activate it.");
-            }
-            multiBall = false;
-        }
-
-        // Wrong Password
-        else {
-            alert("Wrong Password.");
-        }
-
     }
 
     function createNewBall() {
@@ -713,19 +752,17 @@ function runProgram() {
         // keep the objects in the borders
         enforceNoNoZone(paddleLeft);
         enforceNoNoZone(paddleRight);
-        if (cheatMode) {
-            for (let ball of ballPit) {
-                enforceNoNoZone(ball);
-            }
-        } else {
-            for (let ball of ballPit) {
-                bounceBall(ball);
-                enforceNoNoZone(ball);
-            }
-        }
 
-        // check if the ball is touching the paddles
-        for (let ball of ballPit){
+        for (let ball of ballPit) {
+            // handle ball/wall collisions
+            if (!cheatMode) {
+                bounceBall(ball);
+            }
+
+            // keep the balls in the borders
+            enforceNoNoZone(ball);
+
+            // handle ball/paddle collisions
             if (doCollide(ball, paddleLeft)) {
                 console.log("ping");
                 handlePaddleCollisions(paddleLeft);     // left paddle
@@ -737,6 +774,31 @@ function runProgram() {
                 firstTimeBouncedPaddle = true;
             }
         }
+
+        // if (cheatMode) {
+        //     for (let ball of ballPit) {
+        //         enforceNoNoZone(ball);
+        //     }
+        // } else {
+        //     for (let ball of ballPit) {
+        //         bounceBall(ball);
+        //         enforceNoNoZone(ball);
+        //     }
+        // }
+
+        // // check if the ball is touching the paddles
+        // for (let ball of ballPit){
+        //     if (doCollide(ball, paddleLeft)) {
+        //         console.log("ping");
+        //         handlePaddleCollisions(paddleLeft);     // left paddle
+        //     } else if (doCollide(ball, paddleRight)) {
+        //         console.log("pong");
+        //         handlePaddleCollisions(paddleRight);    // right paddle
+        //     } else {
+        //         // tell us we still have yet to bounce
+        //         firstTimeBouncedPaddle = true;
+        //     }
+        // }
     }
 
     function updateObjectBorders(obj) {
@@ -781,7 +843,7 @@ function runProgram() {
         }
     }
 
-    function bounceBall(ballObj) {
+    function bounceBall(ballObj) { // TODO: Add sounds!!!
         if (ballObj.leftX < BORDERS.LEFT) {
             if (freePlay) {
                 ballObj.speed.right = ballObj.speed.left;
@@ -929,71 +991,92 @@ function runProgram() {
     ///////////////////\\\\\\\\\\\\\\\\\\\
 
     function handleScoreBoard() {
+        $(".p1TallyMark").css("background-color", "darkblue");
+        $(".p2TallyMark").css("background-color", "maroon");
+        $(".winTallyMark").css("background-color", "limegreen");
+        $(".p1TallyMark").css("box-shadow", "none");
+        $(".p2TallyMark").css("box-shadow", "none");
+        $(".winTallyMark").css("box-shadow", "none");
+
         for (let i = 1; i <= score.p1; i++) {$("#p1Tally"+i).css("background-color", "blue");}
         for (let i = 1; i <= score.p2; i++) {$("#p2Tally"+i).css("background-color", "red");}
 
         if (score.p1 >= 10 || score.p2 >= 10) {
             $(".winTallyMark").css("background-color", "lime");
             if (score.p1 == score.p2) {
-                $(".winTallyMark").css("box-shadow", "0px 0px 0px 3px violet inset");
                 $(".tallyMark").css("box-shadow", "0px 0px 0px 3px violet inset");
+                $(".winTallyMark").css("box-shadow", "0px 0px 0px 3px violet inset");
             } else if (score.p1 > score.p2) {
                 $(".tallyMark").css("box-shadow", "none");
                 $(".p1TallyMark").css("background-color", "lime");
-                $(".winTallyMark").css("box-shadow", "0px 0px 0px 3px blue inset");
                 $(".p1TallyMark").css("box-shadow", "0px 0px 0px 3px blue inset");
+                $(".winTallyMark").css("box-shadow", "0px 0px 0px 3px blue inset");
             } else if (score.p2 > score.p1) {
                 $(".tallyMark").css("box-shadow", "none");
                 $(".p2TallyMark").css("background-color", "lime");
-                $(".winTallyMark").css("box-shadow", "0px 0px 0px 3px red inset");
                 $(".p2TallyMark").css("box-shadow", "0px 0px 0px 3px red inset");
+                $(".winTallyMark").css("box-shadow", "0px 0px 0px 3px red inset");
             }
         }
     }
 
     function playerLose(player) {
         if (firstTimeBouncedWall) {
-            if (player === p1.id) {             // player 1's side
+            if (player === p1.id) {         // player 1's side
                 score.p2++;
                 console.log("P2 scored a point! Total: " + score.p2);
-            } else if (player === p2.id) {      // player 2's side
+            } else if (player === p2.id) {  // player 2's side
                 score.p1++;
                 console.log("P1 scored a point! Total: " + score.p1);
             } else {
                 console.log(text.error);
             }
-            handleScoreBoard();
+            redrawScores();
         }
         if (!freePlay) {
+            $(".balls").css("background-color", "red");
             whoWon();
-            if (!gameWon) {
-                $("balls").css("background-color", "red");
-                clearInterval(interval);
-                setTimeout(restartGame.bind(null, player), 1000);
-            }
+            // if (pageHasHadTimeToRedraw) {
+                if (!gameWon) {
+                    restartingRound = true;
+                    clearInterval(interval);
+                    setTimeout(restartRound.bind(null, player), 1000);
+                } else { 
+                    if (playAgain()){restartGame(player);}
+                    else {endGame();}
+                }
+            // }
         }
         // tell us it isn't the first time bouncing anymore
         firstTimeBouncedWall = false;
     }
 
-    function whoWon() {
-        if (score.p1 >= 10 || String(score.p1) == "NaN") {
+    function whoWon() { // TODO: Implement methods for if there is a tie, somehow (eh, maybe). It would get rid of the redundant double-win processes.
+        if (score.p1 >= 10 || isNaN(score.p1)) {
+        // if (score.p1 >= 10 || String(score.p1) == "NaN") {
             $("#paddleLeft").css("background-color", "lime");
+            // redrawAllGameItems();
             alert(text.p1 + "\n" + text.restart);
             gameWon = true;
-            // redrawAllGameItems();
-            endGame();
+            // if (playAgain()){restartGame();}
+            // else {endGame();}
         }
-        if (score.p2 >= 10 || String(score.p2) == "NaN") {
+        if (score.p2 >= 10 || isNaN(score.p2)) {
+        // if (score.p2 >= 10 || String(score.p2) == "NaN") {
             $("#paddleRight").css("background-color", "lime");
+            // redrawAllGameItems();
             alert(text.p2 + "\n" + text.restart);
             gameWon = true;
-            // redrawAllGameItems();
-            endGame();
+            // if (playAgain()){restartGame();}
+            // else {endGame();}
         }
     }
 
-    function restartGame(player) {
+    function playAgain() {
+        return confirm("Good game! Play again?");
+    }
+
+    function restartRound(player) {
         score.bounced = 0;
         ticks = 0;
         restartTimer();
@@ -1016,11 +1099,77 @@ function runProgram() {
                 ball.speed.left = 5;
                 ball.speed.right = 0;
             } else {
-                alert(text.error + " in restartGame " + player);
+                alert(text.error + " in restartRound " + player);
             }
         }
         paddleLeft.y = 180;
         paddleRight.y = 180;
+        targetedBallLeft = ballNullLeft;
+        targetedBallRight = ballNullRight;
+
+        // Tell that we have finished restarting the round
+        restartingRound = false;
+    }
+
+    // function resetVariables() {
+    //     pause = false;
+    //     spaceIsDown = false
+    //     firstTimeCheat = true;
+    //     firstTimeBouncedPaddle = true;
+    //     firstTimeBouncedWall = true;
+    //     firstTimePaused = true;
+    //     cheatMode = false;
+    //     freePlay = false;
+    //     autoPlay = true;
+    //     multiBall = true;
+    //     slowDown = false;
+    //     ballPit = [];
+    //     ballPit.push(ball0);
+    //     targetedBallLeft = ballNullLeft;
+    //     targetedBallRight = ballNullRight;
+    //     debug = false;
+    //     gameWon = false;
+    //     ppfStop = 0; // Pixels Per Frame at rest
+    //     ppf = 5;     // Pixels Per Frame
+    //     xDirection = -1;
+    //     varVelocityY = 5;
+    //     varPredictedPositionY = 0;
+    // }
+
+    function restartGame(player) {
+        restartingRound = true;
+        resetVariables();
+        resetSpeeds(paddleLeft);
+        resetSpeeds(paddleRight);
+        resetScores();
+        clearInterval(interval);
+        setTimeout(restartRound.bind(null, player), 1000);
+    }
+
+    function resetVariables() {
+        pause = false;
+        spaceIsDown = false
+        firstTimeCheat = true;
+        firstTimeBouncedPaddle = true;
+        firstTimeBouncedWall = true;
+        firstTimePaused = true;
+        gameWon = false;
+        varPredictedPositionY = 0;
+    }
+
+    function resetScores() {
+        score.bounced = 0;
+        score.p1 = 0;
+        score.p2 = 0;
+    }
+
+    function resetSpeeds(obj) {
+        obj.speed.up = 0;
+        obj.speed.down = 0;
+        obj.speed.left = 0;
+        obj.speed.right = 0;
+        obj.velocityX = 0;
+        obj.velocityY = 0;
     }
 
 
@@ -1125,6 +1274,7 @@ function runProgram() {
     }
 
     function redrawScores() {
+        handleScoreBoard();
         if (score.p1 > 999) {score.p1 = "?!?";}
         $("#p1 span").text(String(score.p1).padStart(3, "0"));
         if (score.bounced > 999) {score.bounced = "?!?";}
