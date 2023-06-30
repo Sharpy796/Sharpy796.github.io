@@ -83,8 +83,8 @@ function runProgram() {
     var firstTimePaused = true;
     var cheatMode = false;
     var freePlay = false;
-    var autoPlay = true;
-    var multiBall = true;
+    var autoPlay = false;
+    var multiBall = false;
     var slowDown = false;
     var ballPit = [];
     ballPit.push(ball0);
@@ -181,6 +181,7 @@ function runProgram() {
             spaceIsDown = true;
             console.log("space pressed");
         } if (keycode === KEY.R) {          // restart
+            if (confirm("Reset Game?")) {restartGame(p2.id);}
             console.log("r pressed");
         }
 
@@ -553,12 +554,13 @@ function runProgram() {
                     if (confirm("Enabling MultiBall will restart the current game. Do you still want to continue?")) {
                         do {
                             ballCount = Number(prompt("How many balls?"));
-                            if (ballCount < 1) {alert("Please enter 1 or more balls.");}
+                            if (ballCount < 2) {alert("Please enter more than 1 ball.");}
+                            else if (ballCount > 50) {alert("Please enter 50 or less balls.");}
                             else if (isNaN(ballCount)) {alert("Please enter a valid number.");}
-                        } while (isNaN(ballCount) || ballCount < 1);
+                        } while (isNaN(ballCount) || ballCount < 2 || ballCount > 50);
                         alert("MultiBall Activated with " + ballCount + " balls!\nType 'noMulti' to deactivate MultiBall.");
                         multiBall = true;
-                        restartGame(p1.id);
+                        restartGame(p2.id);
                     } else {
                         multiBall = false;
                     }
@@ -606,7 +608,7 @@ function runProgram() {
                     if (confirm("Disabling MultiBall will restart the current game. Do you still want to continue?")) {
                         alert("MultiBall Deactivated.\nType 'multiBall' to activate MultiBall.");
                         multiBall = false;
-                        restartGame(p1.id);
+                        restartGame(p2.id);
                     } else {
                         multiBall = true;
                     }
