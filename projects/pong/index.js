@@ -171,7 +171,7 @@ function runProgram() {
     /* 
     Called in response to events.
     */
-    function handleKeyDown(event) {
+    function handleKeyDown(event) { // TODO: Make a button to activate cheat modes
         var keycode = event.which;
         console.log(keycode);
 
@@ -313,6 +313,8 @@ function runProgram() {
     ////////////////////////////////////////////////////////////////////////////////
     ////////////////////////// HELPER FUNCTIONS ////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
+
+    // TODO: Organize code into better helper functions to make code more readable
 
     function createGameObject(x, y, velocityX, velocityY, id) {
         var gameObject = {};
@@ -471,9 +473,6 @@ function runProgram() {
     ////////// Pause and Cheats \\\\\\\\\\
     ///////////////////\\\\\\\\\\\\\\\\\\\
 
-    // TODO: Create a side menu for game modes
-    // TODO: make the game screen bigger
-
     function pauseGame() {
         if (spaceIsDown) {
             if (firstTimePaused) {
@@ -492,6 +491,12 @@ function runProgram() {
         }
     }
 
+    // TODO: Create a better interafce for this. Probably a sidebar
+    // Include buttons!! Steal code from the StopLight program
+    // Green: Active
+    // Red: Inactive
+    // Grey: Unavailable
+    // Also TODO: Make the game screen bigger
     function activateCheatMode() {
         if (!restartingRound) {
             var answer = prompt("Password:");
@@ -692,6 +697,11 @@ function runProgram() {
         // console.log("Left Target: "+targetedBallLeft.id+"\nRight Target: "+targetedBallRight.id);
     }
 
+    // TODO: Need to do a color overhaul.
+    // - Make each ball more colorful? Idk, I kinda like the way the colors are now
+    // - Update the ball colors for when the game is paused
+    // - Make a unique visual for when MultiBall is enabled
+    // - Make a better pause menu
     function changeColors() {
 
         if (pause) {
@@ -999,6 +1009,8 @@ function runProgram() {
         }
     }
 
+    // TODO: Find a way to update the scoreboard *before* the game alerts who has won
+    // ...this is so simple. I'd need to move away from alert()s and start using on-screen text
     function playerLose(player) {
         if (firstTimeBouncedWall) {
             if (player === p1.id) {         // player 1's side
