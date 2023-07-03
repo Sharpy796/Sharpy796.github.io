@@ -171,7 +171,7 @@ function runProgram() {
     /* 
     Called in response to events.
     */
-    function handleKeyDown(event) { // TODO: Make a button to activate cheat modes
+    function handleKeyDown(event) { // TODO: Make a keydown button to activate cheat modes
         var keycode = event.which;
         console.log(keycode);
 
@@ -315,6 +315,8 @@ function runProgram() {
     ////////////////////////////////////////////////////////////////////////////////
 
     // TODO: Organize code into better helper functions to make code more readable
+    // TODO: Do a renaming overhaul of methods and variables
+    // TODO: Clean up old comments and get rid of old, unused telemetry OR create a way to isolate various parts of telemetry
 
     function createGameObject(x, y, velocityX, velocityY, id) {
         var gameObject = {};
@@ -491,12 +493,23 @@ function runProgram() {
         }
     }
 
-    // TODO: Create a better interafce for this. Probably a sidebar
+    // TODO: Create a better cheat mode interface. Probably a sidebar
     // Include buttons!! Steal code from the StopLight program
     // Green: Active
     // Red: Inactive
     // Grey: Unavailable
-    // Also TODO: Make the game screen bigger
+    // TODO: Make the game screen bigger
+
+    // TODO: CREATE A ONE-PLAYER MODE
+    // - One side is controlled
+    // - The other side is automated
+    // - The computer side needs to be consistent with player speed
+    // - Can still use position-predicting code, but make paddle speed static until it has reached +-X of a specific point
+    // - Perhaps remove the wall-bounce predicting feature for added inconsistency
+    // - and include the random y mod for even more inconsistency (make it slightly wider than the paddle)
+
+    // TODO: Create a startup menu for choosing initial game modes
+
     function activateCheatMode() {
         if (!restartingRound) {
             var answer = prompt("Password:");
@@ -832,7 +845,7 @@ function runProgram() {
         }
     }
 
-    function bounceBall(ballObj) { // TODO: Add sounds!!!
+    function bounceBall(ballObj) { // TODO: Add sounds to bounces!!!
         if (ballObj.leftX < BORDERS.LEFT) {
             if (freePlay) {
                 ballObj.speed.right = ballObj.speed.left;

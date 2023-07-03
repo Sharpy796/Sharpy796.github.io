@@ -405,7 +405,7 @@ function runProgram() {
     /////////// Apples & Bodies \\\\\\\\\\\
     ///////////////////|\\\\\\\\\\\\\\\\\\\
 
-    function eatApple() { // TODO: Code a wallMode
+    function eatApple() {
         // find a new valid random spot for the apple
         var randCol = Math.floor(Math.random() * 22);   // x
         var randRow = Math.floor(Math.random() * 22);   // y
