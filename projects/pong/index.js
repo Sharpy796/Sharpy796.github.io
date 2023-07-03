@@ -504,6 +504,7 @@ function runProgram() {
     // Green: Active
     // Red: Inactive
     // Grey: Unavailable
+    // TODO: Create a constructor function that creates a button with new variables to toggle it with
     // TODONE: Make the game screen bigger
 
     // TODO: CREATE A ONE-PLAYER MODE
