@@ -185,7 +185,7 @@ function runProgram() {
         } if (keycode === KEY.R) {          // restart
             console.log("r pressed");
             if (confirm("Reset Game?")) {restartGame(p2.id);}
-        } if (keycode === KEY.C) {
+        } if (keycode === KEY.C) {          // cheat
             console.log("c pressed");
         }
 
