@@ -8,8 +8,8 @@ body {
 }
 
 #board {
-  width: 700px;
-  height: 440px;
+  width: 750px;
+  height: 475px;
   border: 1px solid white;
   background-color: black;
   position: relative;
@@ -92,7 +92,7 @@ body {
 .scoreboard {
   /* appearance */
   background-color: black;
-  width: 600px;
+  width: 650px;
   height: 40px;
   /* display: table; */
   border-radius: 5px;
@@ -135,6 +135,7 @@ body {
 
 #bounces {
   /* positioning */
+  /* padding-left: 0px; */
   text-align: center;
   /* display: table-cell; */
   /* left: 300px; */

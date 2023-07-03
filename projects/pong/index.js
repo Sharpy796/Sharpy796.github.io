@@ -44,13 +44,13 @@ function runProgram() {
 
     // Game Item Objects
 
-    var paddleLeft = createGameObject(50, 180, 0, 0, "#paddleLeft");    // player 1
+    var paddleLeft = createGameObject(50, (BORDERS.BOTTOM/2)-($("#paddleLeft").height()/2), 0, 0, "#paddleLeft");    // player 1
     var p1 = paddleLeft;
 
-    var paddleRight = createGameObject(630, 180, 0, 0, "#paddleRight"); // player 2
+    var paddleRight = createGameObject(BORDERS.RIGHT-50-$("#paddleRight").width(), (BORDERS.BOTTOM/2)-($("#paddleRight").height()/2), 0, 0, "#paddleRight"); // player 2
     var p2 = paddleRight;
 
-    var ball0 = createGameObject(340, 210, -5, -2.5, "#ball0");         // ball
+    var ball0 = createGameObject((BORDERS.RIGHT/2)-($("#ball0").width()/2), (BORDERS.BOTTOM/2)-($("#ball0").height()/2), -5, -2.5, "#ball0");         // ball
 
     var ballNullLeft = createGameObject(99999, 210, 0, 0, "#ballNull");
     var ballNullRight = createGameObject(-99999, 210, 0, 0, "#ballNull");
@@ -504,7 +504,7 @@ function runProgram() {
     // Green: Active
     // Red: Inactive
     // Grey: Unavailable
-    // TODO: Make the game screen bigger
+    // TODONE: Make the game screen bigger
 
     // TODO: CREATE A ONE-PLAYER MODE
     // - One side is controlled
@@ -677,16 +677,21 @@ function runProgram() {
             .appendTo('#ballPit')
             .addClass('gameItem balls')
             .attr("id", ballId)
-            .css("left", 340)
-            .css("top", 210)
+            .css("left", (BORDERS.RIGHT/2)-($("#ball0").width()/2))
+            .css("top", (BORDERS.BOTTOM/2)-($("#ball0").height()/2))
             .css("background-color", "orange");
         // store the new div in a variable
         xDirection *= -1;
-        $newBall = createGameObject(340, 210, 5*xDirection, -2.5, "#"+ballId)
-        randBallVelocityY($newBall)
+        $newBall = createGameObject(
+            (BORDERS.RIGHT/2)-($("#ball0").width()/2),
+            (BORDERS.BOTTOM/2)-($("#ball0").height()/2),
+            5*xDirection,
+            -2.5,
+            "#"+ballId);
+        randBallVelocityY($newBall);
         // push the new body into the ballPit
         ballPit.push($newBall);
-        console.log("#"+ballId+" created!")
+        console.log("#"+ballId+" created!");
     }
 
     function targetBall() {
@@ -1103,8 +1108,8 @@ function runProgram() {
         console.log(ballPit);
         $("balls").css("background-color", "fuchsia");
         for (let ball of ballPit) {
-            ball.x = 340;
-            ball.y = 210;
+            ball.x = (BORDERS.RIGHT/2)-($("#ball0").width()/2);
+            ball.y = (BORDERS.BOTTOM/2)-($("#ball0").height()/2);
             randBallVelocityY(ball);
             if (player === p1.id) {
                 ball.speed.left = 0;
@@ -1116,8 +1121,8 @@ function runProgram() {
                 alert(text.error + " in restartRound " + player);
             }
         }
-        paddleLeft.y = 180;
-        paddleRight.y = 180;
+        paddleLeft.y = (BORDERS.BOTTOM/2)-($("#paddleLeft").height()/2);
+        paddleRight.y = (BORDERS.BOTTOM/2)-($("#paddleRight").height()/2);
         targetedBallLeft = ballNullLeft;
         targetedBallRight = ballNullRight;
         pause = false;
@@ -1211,9 +1216,10 @@ function runProgram() {
      */
     function predictBallPosition(obj, ballObj) {
         var predictedPosition = ballObj.y + (calculateTime(obj, ballObj, ballObj)*(ballObj.velocityY));
-        if (predictedPosition < BORDERS.TOP) {predictedPosition = -predictedPosition;}
-        else if (predictedPosition > BORDERS.BOTTOM) {predictedPosition = Math.floor(BORDERS.BOTTOM) + ((Math.floor(BORDERS.BOTTOM) - $(ballObj.id).height()*2) - predictedPosition);}
-        
+        do {
+            if (predictedPosition < BORDERS.TOP) {predictedPosition = -predictedPosition;}
+            else if (predictedPosition > BORDERS.BOTTOM) {predictedPosition = Math.floor(BORDERS.BOTTOM) + ((Math.floor(BORDERS.BOTTOM) - $(ballObj.id).height()*2) - predictedPosition);}
+        } while (predictedPosition < BORDERS.TOP || predictedPosition > BORDERS.BOTTOM);
         return predictedPosition - $(obj.id).height()/2 + $(ballObj.id).height()/2;// + varPredictedPositionY;
     }
 
