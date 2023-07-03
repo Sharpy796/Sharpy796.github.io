@@ -21,6 +21,7 @@ function runProgram() {
         ENTER: 16,  // ???
         SPACE: 32,  // pause
         R: 82,      // restart
+        C: 67,      // cheat
 
         /* P1 controls */
         W: 87,      // up
@@ -171,7 +172,7 @@ function runProgram() {
     /* 
     Called in response to events.
     */
-    function handleKeyDown(event) { // TODO: Make a keydown button to activate cheat modes
+    function handleKeyDown(event) { // TODONE: Make a keydown button to activate cheat modes
         var keycode = event.which;
         console.log(keycode);
 
@@ -182,8 +183,10 @@ function runProgram() {
             spaceIsDown = true;
             console.log("space pressed");
         } if (keycode === KEY.R) {          // restart
-            if (confirm("Reset Game?")) {restartGame(p2.id);}
             console.log("r pressed");
+            if (confirm("Reset Game?")) {restartGame(p2.id);}
+        } if (keycode === KEY.C) {
+            console.log("c pressed");
         }
 
         if (!autoPlay) {
@@ -258,6 +261,9 @@ function runProgram() {
             console.log("space released");
         } if (keycode === KEY.R) {
             console.log("r released");
+        } if (keycode === KEY.C) {
+            activateCheatMode();
+            console.log("c released");
         }
 
         if (!autoPlay) {
@@ -525,6 +531,9 @@ function runProgram() {
                 } else if (cheatMode) {
                     alert("Cheat Mode is already activated.\nType 'noCheat' to deactivate it.");
                     cheatMode = true;
+                } else if (!pause) {
+                    alert("Cannot activate Cheat Mode because the game is not paused.\nPress space to pause the game.");
+                    cheatMode = false;
                 } else {
                     alert("Cheat Mode Activated!\nUse these controls to move the ball:\nU: Up\nH: Left\nJ: Down\nK: Right\nType 'noCheat' to deactivate Cheat Mode.");
                     cheatMode = true;
@@ -596,11 +605,18 @@ function runProgram() {
             // Cheat Mode Deactivation
             else if (answer === "noCheat") {
                 if (cheatMode) {
-                    alert("Cheat Mode Deactivated.\nType the password to activate Cheat Mode.");
+                    if (!pause) {
+                        alert("Cannot deactivate Cheat Mode because the game is not paused.\nPress space to pause the game.");
+                        cheatMode = true;
+                    } else {
+                        alert("Cheat Mode Deactivated.\nType the password to activate Cheat Mode.");
+                        cheatMode = false;
+                    }
                 } else {
-                    alert("Cheat Mode is already deactivated.\nType the password to activate it.");
-                }
                 cheatMode = false;
+                    alert("Cheat Mode is already deactivated.\nType the password to activate it.");
+                    cheatMode = false;
+                }
             }
 
             // FreePlay Deactivation
