@@ -1079,6 +1079,7 @@ function runProgram() {
         paddleRight.y = 180;
         targetedBallLeft = ballNullLeft;
         targetedBallRight = ballNullRight;
+        pause = false;
 
         // Tell that we have finished restarting the round
         restartingRound = false;
