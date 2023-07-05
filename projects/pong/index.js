@@ -61,7 +61,7 @@ function runProgram() {
         p2: 0,
     }
 
-    var text = {
+    var text = { // TODO: Remove the "Reload the page to play again" message, and make that whole process more efficient.
         p1: "P1 WINS!",
         p2: "P2 WINS!",
         restart: "Reload the page to play again",
@@ -83,15 +83,13 @@ function runProgram() {
     var firstTimeBouncedWall = true;
     var firstTimePaused = true;
     var cheatMode = false;
-    var freePlay = false;
-    var autoPlay = false;
+    var freePlay = true;
+    var autoPlay = true;
     var multiBall = false;
-    var slowDown = false;
     var ballPit = [];
     ballPit.push(ball0);
     var targetedBallLeft = ballNullLeft;
     var targetedBallRight = ballNullRight;
-    var debug = false;
     var gameWon = false;
     // var pageHasHadTimeToRedraw = false;
     var ppfStop = 0; // Pixels Per Frame at rest
@@ -100,6 +98,17 @@ function runProgram() {
     var varVelocityY = 5;
     var varPredictedPositionY = 0;
     var restartingRound = false;
+
+    // Telemetry Modes
+    var slowDown = false;                   // Slows down the game at some intervals
+    var showTelemetryMultiBall = false;     // Shows MultiBall telemetry
+    var showTelemetryBallBounce = false;    // Makes ball colors change according to the direction they're bouncing
+    var showTelemetryBallNumbers = true;   // Shows each ball's number on the balls
+    var showTelemetryMetaData = false;      // Shows the hidden miscellaneous telemetry below the scoreboard.
+    var showTelemetryTicks = false;         // Shows the tick count in the console 
+    var showTelemetryFPS = false;           // Shows FPS telemetry in the console
+    var showTelemetryCollision = false;     // Shows collision telemetry
+    var showTelemetryVelocity = false;      // Shows velocity telemetry
 
     function join(delimiter, arg1, arg2, arg3) {
         return arg1.concat(delimiter, arg2, delimiter, arg3)
@@ -123,37 +132,22 @@ function runProgram() {
     var ticksPerBall = 50;
     var ticks = 0;
     function newFrame() {
-        if (ticks == 1) {
-            // alert(ballCount + " balls\n interval of 1 ball per " + ticksPerBall + " frames");
-        }
+        getTelemetryMultiBall();
         if (!pause) {
             ticks++;
             if (multiBall && ticks%ticksPerBall == 0 && ticks <= ticksPerBall*(ballCount-1)) {
                 createNewBall();
-                // getBallPitTelemetry();
             }
             targetBall();
-            // if (true) {
-            if (debug) {
-                console.log(ticks);
-                console.log(framesPerSecondInterval);
-            }
+            getTelemetryTicks();
+            getTelemetryFPS();
         }
-        if (slowDown) {
-            if (ticks > 160) {FRAMES = 1;}
-            if (ticks > 170) {FRAMES = 60;}
-            if (ticks > 265) {FRAMES = 1;}
-            if (ticks > 280) {FRAMES = 60;}
-            if (ticks > 370) {FRAMES = 1;}
-            modifyGameSpeed();
-        }
+        debugSlowDown();
         updateTemporaryVelocity(ball0);
         pauseGame();
         changeColors()
-        if (debug) {
-            showTelemetries();
-            // getCollisionTelemetry(ball0, paddleLeft);
-        }
+        showTelemetries();
+        getCollisionTelemetry(ball0, paddleLeft);
         handleCollisions();
         redrawAllGameItems();
         if (!gameWon) {
@@ -322,8 +316,8 @@ function runProgram() {
 
     // TODO: Organize code into better helper functions to make code more readable
     // TODO: Do a renaming overhaul of methods and variables
-    // TODO: Clean up old comments and get rid of old, unused telemetry
-    // TODO: Create a way to isolate various parts of telemetry
+    // TODOING: Clean up old comments and get rid of old, unused telemetry
+    // TODOING: Create a way to isolate various parts of telemetry
 
     function createGameObject(x, y, velocityX, velocityY, id) {
         var gameObject = {};
@@ -357,6 +351,29 @@ function runProgram() {
         return gameObject;
     }
 
+    function getTelemetryTicks() {
+        if (showTelemetryTicks) {console.log(ticks);}
+    }
+
+    function getTelemetryFPS() {
+        if(showTelemetryFPS) {console.log(framesPerSecondInterval);}
+    }
+
+    function getTelemetryMultiBall() {
+        if (ticks == 1 && showTelemetryMultiBall) {alert(ballCount + " balls\n interval of 1 ball per " + ticksPerBall + " frames");}
+    }
+
+    function debugSlowDown() {
+        if (slowDown) {
+            if (ticks > 160) {FRAMES = 1;}
+            if (ticks > 170) {FRAMES = 60;}
+            if (ticks > 265) {FRAMES = 1;}
+            if (ticks > 280) {FRAMES = 60;}
+            if (ticks > 370) {FRAMES = 1;}
+            modifyGameSpeed();
+        }
+    }
+
     function restartTimer() {
         framesPerSecondInterval = 1000 / (FRAMES + score.bounced * 2);
         interval = setInterval(newFrame, framesPerSecondInterval);
@@ -378,40 +395,48 @@ function runProgram() {
         if (targetedBallLeft.id == "#ballNull") {signLeft=-1;}
         if (targetedBallRight.id == "#ballNull") {signRight=-1;}
 
-        // Targeted Left Telemetries
-        $("#speeds b").text("Targeted Left: " + targetedBallLeft.id + " (SignLeft " + signLeft + ")");
-        $("#up span").text("PaddleLeft X: " + paddleLeft.x + " | PaddleLeft Y: " + paddleLeft.y);
-        $("#left span").text("Targeted X: " + targetedBallLeft.x);
-        $("#down span").text("VelocityX: " + targetedBallLeft.velocityX);
-        $("#right span").text("Target Calc Time: " + calculateTime(paddleLeft, targetedBallLeft, targetedBallLeft)*signLeft);
+        if (showTelemetryMetaData) {
+            $(".speeds").show();
 
-        // Targeted Right Telemetries
-        $("#tempSpeeds b").text("Targeted Right: " + targetedBallRight.id + " (SignRight " + signRight + ")");
-        $("#tempUp span").text("PaddleRight X: " + paddleRight.x + " | PaddleRight Y: " + paddleRight.y);
-        $("#tempLeft span").text("Targeted X: " + targetedBallRight.x);
-        $("#tempDown span").text("VelocityX: " + targetedBallRight.velocityX);
-        $("#tempRight span").text("Target Calc Time: " + calculateTime(paddleRight, targetedBallRight, targetedBallRight)*signRight);
+            // Targeted Left Telemetries
+            $("#speeds b").text("Targeted Left: " + targetedBallLeft.id + " (SignLeft " + signLeft + ")");
+            $("#up span").text("PaddleLeft X: " + paddleLeft.x + " | PaddleLeft Y: " + paddleLeft.y);
+            $("#left span").text("Targeted X: " + targetedBallLeft.x);
+            $("#down span").text("VelocityX: " + targetedBallLeft.velocityX);
+            $("#right span").text("Target Calc Time: " + calculateTime(paddleLeft, targetedBallLeft, targetedBallLeft)*signLeft);
 
-        // Ball0 Telemetries
-        $("#0Speeds b").text("Ball0: " + ball0.id);
-        $("#0Up span").text("Ball0 X: " + ball0.x + " | Ball0 Y: " + ball0.y);
-        $("#0Left span").text("VelocityX: " + ball0.velocityX);
-        $("#0Left2 span").text("VelocityY: " + ball0.velocityY);
-        $("#0Down span").text("Left Pred Position: " + predictBallPosition(paddleLeft, ball0, ball0));
-        $("#0Right span").text("Right Pred Position: " + predictBallPosition(paddleRight, ball0, ball0));
+            // Targeted Right Telemetries
+            $("#tempSpeeds b").text("Targeted Right: " + targetedBallRight.id + " (SignRight " + signRight + ")");
+            $("#tempUp span").text("PaddleRight X: " + paddleRight.x + " | PaddleRight Y: " + paddleRight.y);
+            $("#tempLeft span").text("Targeted X: " + targetedBallRight.x);
+            $("#tempDown span").text("VelocityX: " + targetedBallRight.velocityX);
+            $("#tempRight span").text("Target Calc Time: " + calculateTime(paddleRight, targetedBallRight, targetedBallRight)*signRight);
+
+            // Ball0 Telemetries
+            $("#0Speeds b").text("Ball0: " + ball0.id);
+            $("#0Up span").text("Ball0 X: " + ball0.x + " | Ball0 Y: " + ball0.y);
+            $("#0Left span").text("VelocityX: " + ball0.velocityX);
+            $("#0Left2 span").text("VelocityY: " + ball0.velocityY);
+            $("#0Down span").text("Left Pred Position: " + predictBallPosition(paddleLeft, ball0, ball0));
+            $("#0Right span").text("Right Pred Position: " + predictBallPosition(paddleRight, ball0, ball0));
+        } else {
+            $(".speeds").hide();
+        }
     }
 
-    function tellVelocities(ballObj) {
-        console.log("Velocities:" +
-            "\nUp:    " + ballObj.speed.up +
-            "\nLeft:  " + ballObj.speed.left +
-            "\nDown:  " + ballObj.speed.down +
-            "\nRight: " + ballObj.speed.right +
-            "\nTemp Velocities:" +
-            "\nUp:    " + ballObj.temporaryVelocity.up +
-            "\nLeft:  " + ballObj.temporaryVelocity.left +
-            "\nDown:  " + ballObj.temporaryVelocity.down +
-            "\nRight: " + ballObj.temporaryVelocity.right);
+    function tellVelocities(ballObj) { // BUG: Velocity Telemetry
+        if (showTelemetryVelocity) {
+            console.log("Velocities:" +
+                "\nUp:    " + ballObj.speed.up +
+                "\nLeft:  " + ballObj.speed.left +
+                "\nDown:  " + ballObj.speed.down +
+                "\nRight: " + ballObj.speed.right +
+                "\nTemp Velocities:" +
+                "\nUp:    " + ballObj.temporaryVelocity.up +
+                "\nLeft:  " + ballObj.temporaryVelocity.left +
+                "\nDown:  " + ballObj.temporaryVelocity.down +
+                "\nRight: " + ballObj.temporaryVelocity.right);
+        }
     }
 
     function updateTemporaryVelocity(ballObj) {
@@ -566,21 +591,24 @@ function runProgram() {
                 }
             }
 
-            // MultiBall Activation 
+            // MultiBall Activation // TODOING: Find a way to restart MultiBall with a new set of balls if it is still enabled
             else if (answer === "multiBall") {
                 if (cheatMode) {
                     alert("Cannot activate MultiBall because Cheat Mode is activated.\nType 'noCheat' to deactivate it.");
                     multiBall = false;
-                } else if (multiBall) {
-                    alert("MultiBall is already activated.\nType 'noMulti' to deactivate it.");
-                    multiBall = true;
+                // } else if (multiBall) {
+                //     alert("MultiBall is already activated.\nType 'noMulti' to deactivate it.");
+                //     multiBall = true;
                 } else {
-                    if (confirm("Enabling MultiBall will restart the current game. Do you still want to continue?")) {
+                    // var c = ((a < b) ? 'minor' : 'major');
+                    if (confirm(((multiBall) ? "Rea" : "A") + "ctivating MultiBall will restart the current game. Do you still want to continue?")) {
                         var ballCountOld = ballCount;
                         do {
                             ballCount = prompt("How many balls?");
-                            console.log("ballCountOld: " + ballCountOld);
-                            console.log("ballCount: " + ballCount);
+                            if (showTelemetryMultiBall) {
+                                console.log("ballCountOld: " + ballCountOld);
+                                console.log("ballCount: " + ballCount);
+                            }
                             // Was Cancel pressed?
                             if (ballCount == null) {break;}
                             else {ballCount = Number(ballCount);}
@@ -590,7 +618,7 @@ function runProgram() {
                             else if (isNaN(ballCount)) {alert("Please enter a valid number.");}
                         } while (isNaN(ballCount) || ballCount < 2 || ballCount > 50);
                         if (ballCount == null) {
-                            alert("MultiBall Cancelled."); 
+                            alert("MultiBall Cancelled." + ((multiBall) ? "\nType 'noMulti' to deactivate MultiBall." : "")); 
                             ballCount = ballCountOld;
                             multiBall = false;
                         } else {
@@ -598,7 +626,8 @@ function runProgram() {
                             multiBall = true;
                             restartGame(p2.id);
                         }
-                    } else {
+                    } else { // FIXME: Working on fixing up the MultiBall if statements with inline if statements
+                        if (multiBall) {alert("Type 'noMulti' if you'd like to deactivate MultiBall.");}
                         multiBall = false;
                     }
                 }
@@ -648,7 +677,6 @@ function runProgram() {
             // MultiBall Deactivation
             else if (answer === "noMulti") {
                 if (multiBall) {
-
                     if (confirm("Disabling MultiBall will restart the current game. Do you still want to continue?")) {
                         alert("MultiBall Deactivated.\nType 'multiBall' to activate MultiBall.");
                         multiBall = false;
@@ -656,8 +684,6 @@ function runProgram() {
                     } else {
                         multiBall = true;
                     }
-
-
                 } else {
                     alert("MultiBall is already deactivated.\nType 'multiBall' to activate it.");
                     multiBall = false;
@@ -676,7 +702,7 @@ function runProgram() {
         }
     }
 
-    function createNewBall() {
+    function createNewBall() { // FIXME: Test if this is working
         // create a new id for the ball
         var ballId = 'ball' + (ballPit.length);
         // create a new div for the ball
@@ -687,6 +713,9 @@ function runProgram() {
             .css("left", (BORDERS.RIGHT/2)-($("#ball0").width()/2))
             .css("top", (BORDERS.BOTTOM/2)-($("#ball0").height()/2))
             .css("background-color", "orange");
+        $("<span>")
+            .appendTo("#"+ballId)
+            .text(ballId.replace(/\D/g, ''));
         // store the new div in a variable
         xDirection *= -1;
         $newBall = createGameObject(
@@ -730,12 +759,9 @@ function runProgram() {
                 ball.x > targetedBallRight.x
                 ) {
                 targetedBallRight = ball;
-                // console.log(targetedBallRight.id + " is being targeted by RightPaddle!");
+                console.log(targetedBallRight.id + " is being targeted by RightPaddle!");
             }
-            // console.log("Calculated Time Left: " + calculateTime(paddleLeft, each, each));
-            // console.log(calculateTime(paddleLeft, each, each));
         }
-        // console.log("Left Target: "+targetedBallLeft.id+"\nRight Target: "+targetedBallRight.id);
     }
 
     // TODO: Need to do a color overhaul.
@@ -748,16 +774,23 @@ function runProgram() {
         if (pause) {
             // $(".balls").css("background-color", "lime");
         } else {
-            
-            for (let ball of ballPit) {
-                if (ball != targetedBallLeft && ball != targetedBallRight) {$(ball.id).css("background-color", "fuchsia");}
-                if (ball.velocityX < 0) {$(ball.id).css("background-color", "blue");}
-                if (ball.velocityX > 0) {$(ball.id).css("background-color", "maroon");}
-                if (ball == targetedBallLeft) {$(ball.id).css("background-color", "cyan");}
-                if (ball == targetedBallRight) {$(ball.id).css("background-color", "hotpink");}
-                
-                $(ball.id).text(ball.id.replace(/\D/g, '')).css("text-align", "center");
-                // TODO: Create a way to show and hide the ball numbers
+            if (showTelemetryBallBounce) {
+                for (let ball of ballPit) {
+                    if (ball != targetedBallLeft && ball != targetedBallRight) {$(ball.id).css("background-color", "fuchsia");}
+                    if (ball.velocityX < 0) {$(ball.id).css("background-color", "blue");}
+                    if (ball.velocityX > 0) {$(ball.id).css("background-color", "maroon");}
+                    if (ball == targetedBallLeft) {$(ball.id).css("background-color", "cyan");}
+                    if (ball == targetedBallRight) {$(ball.id).css("background-color", "hotpink");}
+                    // TODOING: Create a way to show and hide the ball numbers
+                }
+            } else {
+                $(".balls").css("background-color", "fuchsia");
+            }
+
+            if (showTelemetryBallNumbers) {
+                $(".balls span").show();
+            } else {
+                $(".balls span").hide();
             }
         }
 
@@ -920,8 +953,6 @@ function runProgram() {
             for (let ball of ballPit) {
                 if (whichBorder(ball, paddle) === "left") {
                     // tell where the ball is and should have been
-                    console.log("Predicted Position: TBD");
-                    console.log("Actual Position: " + ball.y);
                     // bounce the ball left
                     ball.speed.left = 5;
                     ball.speed.right = 0;
@@ -938,8 +969,6 @@ function runProgram() {
                 // if it bounced off the paddle's right border
                 else if (whichBorder(ball, paddle) === "right") {
                     // tell where the ball is and should have been
-                    console.log("Predicted Position: TBD");
-                    console.log("Actual Position: " + ball.y);
                     // bounce the ball right
                     ball.speed.left = 0;
                     ball.speed.right = 5;
@@ -993,27 +1022,29 @@ function runProgram() {
     }
 
     function getCollisionTelemetry(obj1, obj2) {
-        console.log("---------------------------");
-        console.log(">>> COLLISION DETECTION <<<");
-        console.log("Do " + obj1.id + " and " + obj2.id + " collide? " + doCollide(obj1, obj2));
-        console.log("They collide on the paddle's *" + whichBorder(obj1, obj2) + "* border.");
-        console.log("Calculated Time: " + calculateTime(obj2, obj1, obj1));
-        console.log("Predicted Position: " + predictBallPosition(obj2, obj1));
-        console.log("paddleLeft.y = " + obj2.y);
-        console.log("Predicted Movement: " + (predictBallPosition(obj2, obj1)-obj2.y) / (calculateTime(obj2, obj1, obj1)))
-        console.log("---------------------------");
-        console.log("OBJECT 1: " + obj1.id);
-        console.log("xLeft: " + obj1.leftX);
-        console.log("xRight: " + obj1.rightX);
-        console.log("yTop: " + obj1.topY);
-        console.log("yBottom: " + obj1.bottomY);
-        console.log("---------------------------");
-        console.log("OBJECT 2: " + obj2.id);
-        console.log("xLeft: " + obj2.leftX);
-        console.log("xRight: " + obj2.rightX);
-        console.log("yTop: " + obj2.topY);
-        console.log("yBottom: " + obj2.bottomY);
-        console.log("---------------------------")
+        if (showTelemetryCollision) {
+            console.log("---------------------------");
+            console.log(">>> COLLISION DETECTION <<<");
+            console.log("Do " + obj1.id + " and " + obj2.id + " collide? " + doCollide(obj1, obj2));
+            console.log("They collide on the paddle's *" + whichBorder(obj1, obj2) + "* border.");
+            console.log("Calculated Time: " + calculateTime(obj2, obj1, obj1));
+            console.log("Predicted Position: " + predictBallPosition(obj2, obj1));
+            console.log("paddleLeft.y = " + obj2.y);
+            console.log("Predicted Movement: " + (predictBallPosition(obj2, obj1)-obj2.y) / (calculateTime(obj2, obj1, obj1)))
+            console.log("---------------------------");
+            console.log("OBJECT 1: " + obj1.id);
+            console.log("xLeft: " + obj1.leftX);
+            console.log("xRight: " + obj1.rightX);
+            console.log("yTop: " + obj1.topY);
+            console.log("yBottom: " + obj1.bottomY);
+            console.log("---------------------------");
+            console.log("OBJECT 2: " + obj2.id);
+            console.log("xLeft: " + obj2.leftX);
+            console.log("xRight: " + obj2.rightX);
+            console.log("yTop: " + obj2.topY);
+            console.log("yBottom: " + obj2.bottomY);
+            console.log("---------------------------")
+        }
     }
 
 
@@ -1113,7 +1144,7 @@ function runProgram() {
             }
         }
         ballPit.splice(1, ballPit.length);
-        console.log(ballPit);
+        if (showTelemetryMultiBall) {console.log(ballPit);}
         $("balls").css("background-color", "fuchsia");
         for (let ball of ballPit) {
             ball.x = (BORDERS.RIGHT/2)-($("#ball0").width()/2);

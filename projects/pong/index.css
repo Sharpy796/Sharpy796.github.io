@@ -52,6 +52,7 @@ body {
   height: 20px;
   border-radius: 10px;
   background-color: fuchsia;
+  text-align: center;
   
   /* positioning */
   left: 340px;
