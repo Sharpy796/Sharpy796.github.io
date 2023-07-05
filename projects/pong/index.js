@@ -322,7 +322,8 @@ function runProgram() {
 
     // TODO: Organize code into better helper functions to make code more readable
     // TODO: Do a renaming overhaul of methods and variables
-    // TODO: Clean up old comments and get rid of old, unused telemetry OR create a way to isolate various parts of telemetry
+    // TODO: Clean up old comments and get rid of old, unused telemetry
+    // TODO: Create a way to isolate various parts of telemetry
 
     function createGameObject(x, y, velocityX, velocityY, id) {
         var gameObject = {};
@@ -663,6 +664,11 @@ function runProgram() {
                 }
             }
 
+            // Pressed Cancel
+            else if (answer === null || answer === "") {
+                // Do nothing.
+            }
+
             // Wrong Password
             else {
                 alert("Wrong Password.");
@@ -751,6 +757,7 @@ function runProgram() {
                 if (ball == targetedBallRight) {$(ball.id).css("background-color", "hotpink");}
                 
                 $(ball.id).text(ball.id.replace(/\D/g, '')).css("text-align", "center");
+                // TODO: Create a way to show and hide the ball numbers
             }
         }
 
@@ -1134,6 +1141,7 @@ function runProgram() {
 
     function restartGame(player) {
         restartingRound = true;
+        gameWon = true;
         clearInterval(interval);
         setTimeout(restartRound.bind(null, player), 1000);
     }
