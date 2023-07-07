@@ -53,6 +53,9 @@ function runProgram() {
         J: 74,      // down
         K: 75,      // right
     }
+    
+    var PPF_STOP = 0; // Pixels Per Frame at rest
+    var PPF = 5;     // Pixels Per Frame
 
     // Game Item Objects
 
@@ -65,7 +68,7 @@ function runProgram() {
     var p2 = paddleRight;
 
     // initial ball
-    var ball0 = createGameObject(CENTER.BORDER.HORIZONTAL-CENTER.BALL, CENTER.BORDER.VERTICAL-CENTER.BALL, -5, -2.5, "#ball0");
+    var ball0 = createGameObject(CENTER.BORDER.HORIZONTAL-CENTER.BALL, CENTER.BORDER.VERTICAL-CENTER.BALL, -PPF, -2.5, "#ball0");
 
     // references for targeting balls in AutoPlay
     var ballNullLeft = createGameObject(99999, 0, 0, 0, "#ballNull");
@@ -116,8 +119,6 @@ function runProgram() {
     var targetedBallRight = ballNullRight;
     // var pageHasHadTimeToRedraw = false;
     // Motion Variables
-    var ppfStop = 0; // Pixels Per Frame at rest
-    var ppf = 5;     // Pixels Per Frame
     var xDirection = -1;
     var varVelocityY = 5;
     var varPredictedPositionY = 0;
@@ -221,12 +222,12 @@ function runProgram() {
         if (!autoPlay) {
             /* P1 controls */
             if (keycode === KEY.W) {            // up
-                paddleLeft.speed.up = ppf;
+                paddleLeft.speed.up = PPF;
                 console.log("w pressed");
             } if (keycode === KEY.A) {          // left
                 console.log("a pressed");
             } if (keycode === KEY.S) {          // down
-                paddleLeft.speed.down = ppf;
+                paddleLeft.speed.down = PPF;
                 console.log("s pressed");
             } if (keycode === KEY.D) {          // right
                 console.log("d pressed");
@@ -234,12 +235,12 @@ function runProgram() {
 
             /* P2 controls */
             if (keycode === KEY.UP) {           // up
-                paddleRight.speed.up = ppf;
+                paddleRight.speed.up = PPF;
                 console.log("up pressed");
             } if (keycode === KEY.LEFT) {       // left
                 console.log("left pressed");
             } if (keycode === KEY.DOWN) {       // down
-                paddleRight.speed.down = ppf;
+                paddleRight.speed.down = PPF;
                 console.log("down pressed");
             } if (keycode === KEY.RIGHT) {      // right
                 console.log("right pressed");
@@ -256,16 +257,16 @@ function runProgram() {
             }
             firstTimeCheat = false;
             if (keycode === KEY.U) {        // up
-                ball0.speed.up = ppf;
+                ball0.speed.up = PPF;
                 console.log("u pressed");
             } if (keycode === KEY.H) {      // left
-                ball0.speed.left = ppf;
+                ball0.speed.left = PPF;
                 console.log("h pressed");
             } if (keycode === KEY.J) {      // down
-                ball0.speed.down = ppf;
+                ball0.speed.down = PPF;
                 console.log("j pressed");
             } if (keycode === KEY.K) {      // right
-                ball0.speed.right = ppf;
+                ball0.speed.right = PPF;
                 console.log("k pressed");
             }
         } else {
@@ -299,47 +300,47 @@ function runProgram() {
             /* P1 controls */
             if (event.which === KEY.W) {
                 console.log("w released");
-                paddleLeft.speed.up = ppfStop;
+                paddleLeft.speed.up = PPF_STOP;
             } if (keycode === KEY.A) {
                 console.log("a released");
-                paddleLeft.speed.left = ppfStop;
+                paddleLeft.speed.left = PPF_STOP;
             } if (keycode === KEY.S) {
                 console.log("s released");
-                paddleLeft.speed.down = ppfStop;
+                paddleLeft.speed.down = PPF_STOP;
             } if (keycode === KEY.D) {
                 console.log("d released");
-                paddleLeft.speed.right = ppfStop;
+                paddleLeft.speed.right = PPF_STOP;
             }
 
             /* P2 controls */
             if (keycode === KEY.UP) {
                 console.log("up released");
-                paddleRight.speed.up = ppfStop;
+                paddleRight.speed.up = PPF_STOP;
             } if (keycode === KEY.LEFT) {
                 console.log("left released");
-                paddleRight.speed.left = ppfStop;
+                paddleRight.speed.left = PPF_STOP;
             } if (keycode === KEY.DOWN) {
                 console.log("down released");
-                paddleRight.speed.down = ppfStop;
+                paddleRight.speed.down = PPF_STOP;
             } if (keycode === KEY.RIGHT) {
                 console.log("right released");
-                paddleRight.speed.right = ppfStop;
+                paddleRight.speed.right = PPF_STOP;
             }
 
             /* ball controls */
             if (cheatMode) {
                 if (keycode === KEY.U) {
                     console.log("u released");
-                    ball0.speed.up = ppfStop;
+                    ball0.speed.up = PPF_STOP;
                 } if (keycode === KEY.H) {
                     console.log("h released");
-                    ball0.speed.left = ppfStop;
+                    ball0.speed.left = PPF_STOP;
                 } if (keycode === KEY.J) {
                     console.log("j released");
-                    ball0.speed.down = ppfStop;
+                    ball0.speed.down = PPF_STOP;
                 } if (keycode === KEY.K) {
                     console.log("k released");
-                    ball0.speed.right = ppfStop;
+                    ball0.speed.right = PPF_STOP;
                 }
             }
         }
@@ -751,8 +752,8 @@ function runProgram() {
                     alert("AutoPlay Deactivated.\nType 'autoPlay' to activate AutoPlay.");
                     // Snap paddles to a multiple of the pixels per frame speed to prevent
                     // collision between the paddles and wall from being off
-                    paddleLeft.y -= paddleLeft.y % ppf;
-                    paddleRight.y -= paddleRight.y % ppf;
+                    paddleLeft.y -= paddleLeft.y % PPF;
+                    paddleRight.y -= paddleRight.y % PPF;
                 } else {
                     alert("AutoPlay is already deactivated.\nType 'autoPlay' to activate it.");
                 }
@@ -849,13 +850,15 @@ function runProgram() {
             // handle ball/paddle collisions
             if (doCollide(ball, paddleLeft)) {
                 console.log("ping");
-                handlePaddleCollisions(paddleLeft);     // left paddle
-            } else if (doCollide(ball, paddleRight)) {
+                handlePaddleCollisions(ball, paddleLeft);     // left paddle
+            }
+            if (doCollide(ball, paddleRight)) {
                 console.log("pong");
-                handlePaddleCollisions(paddleRight);    // right paddle
-            } else {
+                handlePaddleCollisions(ball, paddleRight);    // right paddle
+            } 
+            if (!doCollide(ball, paddleLeft) || !doCollide(ball, paddleRight)) {
                 // tell us we still have yet to bounce
-                firstTimeBouncedPaddle = true;
+                ball.firstTimeBouncedPaddle = true;
             }
         }
     }
@@ -915,50 +918,48 @@ function runProgram() {
         }
         else {
             // tell us we still have yet to bounce
-            firstTimeBouncedWall = true
+            firstTimeBouncedWall = true;
         }
     }
 
-    function handlePaddleCollisions(paddle) { // BUG: Balls' velocityXs reset to 0 when caught in the center of a paddle
+    function handlePaddleCollisions(ball, paddle) { // BUG: Balls' velocityXs reset to 0 when caught in the center of a paddle
         // if it is the first time bouncing on one
-        if (firstTimeBouncedPaddle) {
+        if (ball.firstTimeBouncedPaddle) {
             // Mix up the ball's predicted position in AutoPlay
             randPredictedPositionYMod();
             // if it bounced off the paddle's left border...
-            for (let ball of ballPit) {
-                if (whichBorder(ball, paddle) === "left") {
-                    // bounce the ball left
-                    ball.x -= ball.velocityX;
-                    ball.speed.left = ball.speed.right;
-                    ball.speed.right = 0;
-                    // increase the score
-                    if (paddle === paddleRight) {
-                        score.bounced++;
-                        if (!multiBall) {
-                            increaseGameSpeed();
-                        }
+            if (whichBorder(ball, paddle) === "left") {
+                // bounce the ball left
+                ball.x -= ball.velocityX;
+                ball.speed.left = PPF;
+                ball.speed.right = 0;
+                // increase the score
+                if (paddle === paddleRight) {
+                    score.bounced++;
+                    if (!multiBall) {
+                        increaseGameSpeed();
                     }
-                    console.log(ball.id+" bounced " + tellPaddle(paddle) + " paddle's left border");
                 }
-                // if it bounced off the paddle's right border...
-                else if (whichBorder(ball, paddle) === "right") {
-                    // bounce the ball right
-                    ball.x -= ball.velocityX;
-                    ball.speed.right = ball.speed.left;
-                    ball.speed.left = 0;
-                    // increase the score
-                    if (paddle === paddleLeft) {
-                        score.bounced++;
-                        if (!multiBall) {
-                            increaseGameSpeed();
-                        }
-                    }
-                    console.log(ball.id+" bounced " + tellPaddle(paddle) + " paddle's right border");
-                }
+                console.log(ball.id+" bounced " + tellPaddle(paddle) + " paddle's left border");
             }
+            // if it bounced off the paddle's right border...
+            else if (whichBorder(ball, paddle) === "right") {
+                // bounce the ball right
+                ball.x -= ball.velocityX;
+                ball.speed.right = PPF;
+                ball.speed.left = 0;
+                // increase the score
+                if (paddle === paddleLeft) {
+                    score.bounced++;
+                    if (!multiBall) {
+                        increaseGameSpeed();
+                    }
+                }
+                console.log(ball.id+" bounced " + tellPaddle(paddle) + " paddle's right border");
+            }
+            // tell us it isn't the first time bouncing anymore
+            ball.firstTimeBouncedPaddle = false;
         }
-        // tell us it isn't the first time bouncing anymore
-        firstTimeBouncedPaddle = false;
     }
 
     function whichBorder(obj1, obj2) {
@@ -1290,9 +1291,9 @@ function runProgram() {
             randBallVelocityY(ball);
             if (player === p1.id) {
                 ball.speed.left = 0;
-                ball.speed.right = ppf;
+                ball.speed.right = PPF;
             } else if (player === p2.id) {
-                ball.speed.left = ppf;
+                ball.speed.left = PPF;
                 ball.speed.right = 0;
             } else {
                 alert(text.error + " in restartRound " + player);
@@ -1322,11 +1323,11 @@ function runProgram() {
         resetScores();
     }
 
-    function resetVariables() {
+    function resetVariables() { // FIXME: Work on putting the firsttime bounced variables into the ball objects
         pause = false;
         spaceIsDown = false
         firstTimeCheat = true;
-        firstTimeBouncedPaddle = true;
+        ball0.firstTimeBouncedPaddle = true;
         firstTimeBouncedWall = true;
         firstTimePaused = true;
         gameWon = false;
