@@ -84,7 +84,7 @@ function runProgram() {
     var firstTimePaused = true;
     var cheatMode = false;
     var freePlay = false;
-    var autoPlay = true;
+    var autoPlay = false;
     var multiBall = false;
     var slowDown = false;
     var ballPit = [];
