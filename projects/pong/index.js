@@ -57,19 +57,19 @@ function runProgram() {
     // Game Item Objects
 
     // player 1
-    var paddleLeft = createGameObject(50, (CENTER.BORDER.VERTICAL)-(CENTER.PADDLE.VERTICAL), 0, 0, "#paddleLeft");
+    var paddleLeft = createGameObject(50, CENTER.BORDER.VERTICAL-CENTER.PADDLE.VERTICAL, 0, 0, "#paddleLeft");
     var p1 = paddleLeft;
 
     // player 2
-    var paddleRight = createGameObject(BORDERS.RIGHT-50-$("#paddleRight").width(), (CENTER.BORDER.VERTICAL)-(CENTER.PADDLE.VERTICAL), 0, 0, "#paddleRight");
+    var paddleRight = createGameObject(BORDERS.RIGHT-50-$("#paddleRight").width(), CENTER.BORDER.VERTICAL-CENTER.PADDLE.VERTICAL, 0, 0, "#paddleRight");
     var p2 = paddleRight;
 
     // initial ball
-    var ball0 = createGameObject((CENTER.BORDER.HORIZONTAL)-(CENTER.BALL), (CENTER.BORDER.VERTICAL)-(CENTER.BALL), -5, -2.5, "#ball0");
+    var ball0 = createGameObject(CENTER.BORDER.HORIZONTAL-CENTER.BALL, CENTER.BORDER.VERTICAL-CENTER.BALL, -5, -2.5, "#ball0");
 
     // references for targeting balls in AutoPlay
-    var ballNullLeft = createGameObject(99999, 210, 0, 0, "#ballNull");
-    var ballNullRight = createGameObject(-99999, 210, 0, 0, "#ballNull");
+    var ballNullLeft = createGameObject(99999, 0, 0, 0, "#ballNull");
+    var ballNullRight = createGameObject(-99999, 0, 0, 0, "#ballNull");
 
     // scores
     var score = {
@@ -135,10 +135,6 @@ function runProgram() {
     var showTelemetryCollision = false;     // Shows collision telemetry
     var showTelemetryVelocity = false;      // Shows velocity telemetry
 
-    function join(delimiter, arg1, arg2, arg3) {
-        return arg1.concat(delimiter, arg2, delimiter, arg3)
-    }
-
     alert(  "Welcome to Pong!\n" +
             "P1 Controls: W S\n" +
             "P2 Controls: Up Down\n" +
@@ -185,7 +181,7 @@ function runProgram() {
         getTelemetryMetaData();
 
         // Collisions and repositioning! Also is where scores are handled.
-        getCollisionTelemetry(ball0, paddleLeft);
+        getTelemetryCollision(ball0, paddleLeft);
         handleCollisions();
         redrawAllGameItems();
         if (!gameWon) {
@@ -193,7 +189,7 @@ function runProgram() {
                 handleVelocity();
                 repositionAllGameItems();
             }
-        } 
+        }
         //else {
         //     if (pageHasHadTimeToRedraw) {
         //         restartGame(p1.id);
@@ -206,7 +202,7 @@ function runProgram() {
     Called in response to events.
     */
     function handleKeyDown(event) { // TODONE: Make a keydown button to activate cheat modes
-        var keycode = event.which;
+        let keycode = event.which;
         console.log(keycode);
 
         /* general controls */
@@ -283,7 +279,7 @@ function runProgram() {
     }
 
     function handleKeyUp(event) { // TODONE: Create a global ppf (pixels per frame) speed
-        var keycode = event.which;
+        let keycode = event.which;
         console.log(keycode);
 
         /* general controls */
@@ -354,12 +350,12 @@ function runProgram() {
     ////////////////////////////////////////////////////////////////////////////////
 
     // TODOING: Organize code into better helper functions to make code more readable
-    // TODOING: Do a renaming overhaul of methods and variables
-    // TODOING: Clean up old comments and get rid of old, unused telemetry
+    // TODONE: Do a renaming overhaul of methods and variables
+    // TODONE: Clean up old comments and get rid of old, unused telemetry
     // TODONE: Create a way to isolate various parts of telemetry
 
     function createGameObject(x, y, velocityX, velocityY, id) {
-        var gameObject = {};
+        let gameObject = {};
         gameObject.id = id;
         gameObject.color = getRandomColor();
         gameObject.x = x;
@@ -391,17 +387,55 @@ function runProgram() {
         return gameObject;
     }
 
-    function getTelemetryTicks() {
-        if (showTelemetryTicks) {console.log(ticks);}
+    function createNewBall() {
+        // create a new id for the ball
+        let ballId = 'ball' + (ballPit.length);
+        // create a new div for the ball
+        let $newBall = $("<div>")
+            .appendTo('#ballPit')
+            .addClass('gameItem balls')
+            .attr("id", ballId)
+            .css("left", (CENTER.BORDER.HORIZONTAL)-(CENTER.BALL))
+            .css("top", (CENTER.BORDER.VERTICAL)-(CENTER.BALL));
+        $("<span>")
+            .appendTo("#"+ballId)
+            .text(ballId.replace(/\D/g, ''));
+        // store the new div in a variable
+        xDirection *= -1;
+        $newBall = createGameObject(
+            (CENTER.BORDER.HORIZONTAL)-(CENTER.BALL),
+            (CENTER.BORDER.VERTICAL)-(CENTER.BALL),
+            5*xDirection,
+            -2.5,
+            "#"+ballId);
+            $($newBall.id).css("background-color", $newBall.color);
+        randBallVelocityY($newBall);
+        // push the new body into the ballPit
+        ballPit.push($newBall);
+        console.log("#"+ballId+" created!");
+        if (showTelemetryMultiBall) {console.log(ballPit);}
+    }
+    
+    function getRandomColor() {
+        let h = Math.floor(Math.random() * 360);
+        let s = "100%";
+        let l = "50%";
+
+        if (h > 360) {
+            h = 0;
+        }
+        let hslString = "hsl(" + h + "," + s + "," + l + ")";
+        return hslString;
     }
 
-    function getTelemetryFPS() {
-        if(showTelemetryFPS) {console.log(framesPerSecondInterval);}
+    function join(delimiter, arg1, arg2, arg3) {
+        return arg1.concat(delimiter, arg2, delimiter, arg3)
     }
 
-    function getTelemetryMultiBall() {
-        if (multiBall && ticks == 1 && showTelemetryMultiBall) {alert(ballCount + " balls\n interval of 1 ball per " + ticksPerBall + " frames");}
-    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////// TELEMETRY & DEBUGGING ///////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
 
     function debugSlowDown() {
         if (slowDown) {
@@ -414,24 +448,13 @@ function runProgram() {
         }
     }
 
-    function restartTimer() {
-        framesPerSecondInterval = 1000 / (FRAMES + score.bounced * 2);
-        interval = setInterval(newFrame, framesPerSecondInterval);
+    function getTelemetryMultiBall() {
+        if (multiBall && ticks == 1 && showTelemetryMultiBall) {alert(ballCount + " balls\n interval of 1 ball per " + ticksPerBall + " frames");}
     }
-
-    function modifyTimer() {
-        framesPerSecondInterval = 1000 / FRAMES;
-        interval = setInterval(newFrame, framesPerSecondInterval);
-    }
-
-
-    ///////////////////|\\\\\\\\\\\\\\\\\\\
-    /////////////// Velocity \\\\\\\\\\\\\\
-    ///////////////////|\\\\\\\\\\\\\\\\\\\
-
+    
     function getTelemetryMetaData() {
-        var signLeft = 1;
-        var signRight = 1;
+        let signLeft = 1;
+        let signRight = 1;
         if (targetedBallLeft.id == "#ballNull") {signLeft=-1;}
         if (targetedBallRight.id == "#ballNull") {signRight=-1;}
 
@@ -464,7 +487,41 @@ function runProgram() {
         }
     }
 
-    function tellVelocities(ballObj) {
+    function getTelemetryTicks() {
+        if (showTelemetryTicks) {console.log(ticks);}
+    }
+
+    function getTelemetryFPS() {
+        if(showTelemetryFPS) {console.log(framesPerSecondInterval);}
+    }
+
+    function getTelemetryCollision(obj1, obj2) {
+        if (showTelemetryCollision) {
+            console.log("---------------------------");
+            console.log(">>> COLLISION DETECTION <<<");
+            console.log("Do " + obj1.id + " and " + obj2.id + " collide? " + doCollide(obj1, obj2));
+            console.log("They collide on the paddle's *" + whichBorder(obj1, obj2) + "* border.");
+            console.log("Calculated Time: " + calculateTime(obj2, obj1, obj1));
+            console.log("Predicted Position: " + predictBallPosition(obj2, obj1));
+            console.log("paddleLeft.y = " + obj2.y);
+            console.log("Predicted Movement: " + (predictBallPosition(obj2, obj1)-obj2.y) / (calculateTime(obj2, obj1, obj1)))
+            console.log("---------------------------");
+            console.log("OBJECT 1: " + obj1.id);
+            console.log("xLeft: " + obj1.leftX);
+            console.log("xRight: " + obj1.rightX);
+            console.log("yTop: " + obj1.topY);
+            console.log("yBottom: " + obj1.bottomY);
+            console.log("---------------------------");
+            console.log("OBJECT 2: " + obj2.id);
+            console.log("xLeft: " + obj2.leftX);
+            console.log("xRight: " + obj2.rightX);
+            console.log("yTop: " + obj2.topY);
+            console.log("yBottom: " + obj2.bottomY);
+            console.log("---------------------------")
+        }
+    }
+
+    function getTelemetryVelocities(ballObj) {
         if (showTelemetryVelocity) {
             console.log("Velocities:" +
                 "\nUp:    " + ballObj.speed.up +
@@ -479,14 +536,10 @@ function runProgram() {
         }
     }
 
-    function updateTemporaryVelocity(ballObj) {
-        if (!pause && !cheatMode) {
-            ballObj.temporaryVelocity.up = ballObj.speed.up;
-            ballObj.temporaryVelocity.left = ballObj.speed.left;
-            ballObj.temporaryVelocity.down = ballObj.speed.down;
-            ballObj.temporaryVelocity.right = ballObj.speed.right;
-        }
-    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////// VELOCITY FUNCTIONS //////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
 
     function handleVelocity() {
         // p1 Velocity
@@ -504,21 +557,20 @@ function runProgram() {
         }
     }
 
-    function increaseGameSpeed() {
-        clearInterval(interval);
-        setTimeout(restartTimer, 0);
-    }
-
-    function modifyGameSpeed() {
-        clearInterval(interval);
-        setTimeout(modifyTimer, 0);
+    function updateTemporaryVelocity(ballObj) {
+        if (!pause && !cheatMode) {
+            ballObj.temporaryVelocity.up = ballObj.speed.up;
+            ballObj.temporaryVelocity.left = ballObj.speed.left;
+            ballObj.temporaryVelocity.down = ballObj.speed.down;
+            ballObj.temporaryVelocity.right = ballObj.speed.right;
+        }
     }
 
     function randBallVelocityY(ballObj) {
-        var min = 1;
-        var max = 4;
-        var randSign = 0;
-        var randNum = 0;
+        let min = 1;
+        let max = 4;
+        let randSign = 0;
+        let randNum = 0;
 
         do {
             randSign = Math.random() * 1 - 0.5;
@@ -529,11 +581,9 @@ function runProgram() {
         } while (randNum < -max || (randNum > -min && randNum < min) || randNum > max);
         varVelocityY = randNum;
         if (varVelocityY > 0) {
-        // if (ballObj.velocityY > 0) {
             ballObj.speed.up = varVelocityY;
             ballObj.speed.down = 0;
         } else if (varVelocityY < 0) {
-        // } else if (ballObj.velocityY < 0) {
             ballObj.speed.up = 0;
             ballObj.speed.down = -varVelocityY;
         } else {
@@ -543,9 +593,9 @@ function runProgram() {
     }
 
 
-    ///////////////////\\\\\\\\\\\\\\\\\\\
-    ////////// Pause and Cheats \\\\\\\\\\
-    ///////////////////\\\\\\\\\\\\\\\\\\\
+    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////// PAUSE & CHEATS //////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
 
     function pauseGame() {
         if (spaceIsDown) {
@@ -585,7 +635,7 @@ function runProgram() {
 
     function activateCheatMode() {
         if (!restartingRound) {
-            var answer = prompt("Password:");
+            let answer = prompt("Password:");
 
             // Cheat Mode Activation
             if (answer === "^^vv<><>ba") {
@@ -638,7 +688,7 @@ function runProgram() {
                     multiBall = false;
                 } else {
                     if (confirm(((multiBall) ? "Rea" : "A") + "ctivating MultiBall will restart the current game. Do you still want to continue?")) {
-                        var ballCountOld = ballCount;
+                        let ballCountOld = ballCount;
                         do {
                             ballCount = prompt("How many balls?");
                             if (showTelemetryMultiBall) {
@@ -737,35 +787,6 @@ function runProgram() {
         }
     }
 
-    function createNewBall() {
-        // create a new id for the ball
-        var ballId = 'ball' + (ballPit.length);
-        // create a new div for the ball
-        var $newBall = $("<div>")
-            .appendTo('#ballPit')
-            .addClass('gameItem balls')
-            .attr("id", ballId)
-            .css("left", (CENTER.BORDER.HORIZONTAL)-(CENTER.BALL))
-            .css("top", (CENTER.BORDER.VERTICAL)-(CENTER.BALL));
-        $("<span>")
-            .appendTo("#"+ballId)
-            .text(ballId.replace(/\D/g, ''));
-        // store the new div in a variable
-        xDirection *= -1;
-        $newBall = createGameObject(
-            (CENTER.BORDER.HORIZONTAL)-(CENTER.BALL),
-            (CENTER.BORDER.VERTICAL)-(CENTER.BALL),
-            5*xDirection,
-            -2.5,
-            "#"+ballId);
-            $($newBall.id).css("background-color", $newBall.color);
-        randBallVelocityY($newBall);
-        // push the new body into the ballPit
-        ballPit.push($newBall);
-        console.log("#"+ballId+" created!");
-        if (showTelemetryMultiBall) {console.log(ballPit);}
-    }
-
     function targetBall() {
         for (let ball of ballPit) {
 
@@ -799,94 +820,11 @@ function runProgram() {
             }
         }
     }
-    
-    function getRandomColor() {
-        let h = Math.floor(Math.random() * 360);
-        let s = "100%";
-        let l = "50%";
-
-        if (h > 360) {
-            h = 0;
-        }
-        var hslString = "hsl(" + h + "," + s + "," + l + ")";
-        return hslString;
-    }
-
-    // TODOING: Need to do a color overhaul.
-    // [x] Make each ball more colorful? Idk, I kinda like the way the colors are now
-    // [x] Update the ball colors for when the game is paused
-    // [ ] Make a unique visual for when MultiBall is enabled
-    // [ ] Make a better pause menu
-    function changeColors() {
-
-        // Ball colors
-        if (showTelemetryBallBounce) {
-            for (let ball of ballPit) {
-                if (ball != targetedBallLeft && ball != targetedBallRight) {$(ball.id).css("background-color", "fuchsia");}
-                if (ball.velocityX < 0) {$(ball.id).css("background-color", "blue");}
-                if (ball.velocityX > 0) {$(ball.id).css("background-color", "maroon");}
-                if (ball == targetedBallLeft) {$(ball.id).css("background-color", "cyan");}
-                if (ball == targetedBallRight) {$(ball.id).css("background-color", "hotpink");}
-            }
-        } else {
-            $(".balls").css("background-color", "fuchsia");
-            for (let ball of ballPit) {
-                $(ball.id).css("background-color", ball.color);
-            }
-        }
-
-        // TODONE: Create a way to show and hide the ball numbers
-        if (showTelemetryBallNumbers) {
-            $(".balls span").show();
-        } else {
-            $(".balls span").hide();
-        }
-        
-        
-        // cheat mode colors
-        if (cheatMode) {
-            if (pause) {
-                $("#ball0").css("background-color", "green");
-                $("#ball0").css("box-shadow", "0px 0px 0px 3px lime inset");
-            } else {
-                $("#ball0").css("background-color", "lightpink");
-                $("#ball0").css("box-shadow", "0px 0px 0px 3px fuchsia inset");
-            }
-        } else {
-            // if (pause) {
-            //     $(".balls").css("box-shadow", "0px 0px 0px 3px lime inset");
-            // } else {
-                $(".balls").css("box-shadow", "none");   
-            // }
-        }
-
-        // Border colors
-        if (pause) {
-            $("#board").css("border-color", "lime");
-        } else if (freePlay) {
-            $("#board").css("border-color", "orange");
-        } else {
-            $("#board").css("border-color", "white");
-        }
-
-        // paddle colors
-        if (autoPlay) {
-            $("#paddleLeft").css("background-color", "blue");
-            $("#paddleLeft").css("box-shadow", "0px 0px 0px 3px cyan inset");
-            $("#paddleRight").css("background-color", "maroon");
-            $("#paddleRight").css("box-shadow", "0px 0px 0px 3px red inset");
-        } else {
-            $("#paddleLeft").css("background-color", "cyan");
-            $("#paddleLeft").css("box-shadow", "0px 0px 0px 3px teal inset");
-            $("#paddleRight").css("background-color", "hotpink");
-            $("#paddleRight").css("box-shadow", "0px 0px 0px 3px maroon inset");
-        }
-    }
 
 
-    ///////////////////|\\\\\\\\\\\\\\\\\\\
-    ///////////// Collissions \\\\\\\\\\\\\
-    ///////////////////|\\\\\\\\\\\\\\\\\\\
+    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////// COLLISION FUNCTIONS /////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
 
     function handleCollisions() {
         // update object borders
@@ -946,38 +884,6 @@ function runProgram() {
             obj.y -= obj.velocityY;
             console.log(obj.id + " passed bottom border")
         }
-        // if (obj.leftX < BORDERS.LEFT) {
-        //     obj.x -= -5;
-        //     // obj.x -= obj.velocityX;
-        //     console.log(obj.id + " passed left border")
-        // }
-        // if (obj.topY < BORDERS.TOP) {
-        //     if (ballPit.includes(obj)) {
-        //         obj.y -= -5;
-        //     } else if (autoPlay) {
-        //         obj.y = BORDERS.TOP;
-        //     } else {
-        //         obj.y -= -5;
-        //     }
-        //     // obj.y -= obj.velocityY;
-        //     console.log(obj.id + " passed top border")
-        // }
-        // if (obj.rightX > BORDERS.RIGHT) {
-        //     obj.x -= 5;
-        //     // obj.x -= obj.velocityX;
-        //     console.log(obj.id + " passed right border")
-        // }
-        // if (obj.bottomY > BORDERS.BOTTOM) {
-        //     if (ballPit.includes(obj)) {
-        //         obj.y -= 5;
-        //     } else if (autoPlay) {
-        //         obj.y = BORDERS.BOTTOM - $(obj.id).height();
-        //     } else {
-        //         obj.y -= 5;
-        //     }
-        //     // obj.y -= obj.velocityY;
-        //     console.log(obj.id + " passed bottom border")
-        // }
     }
 
     function bounceBall(ballObj) { // TODO: Add sounds to bounces!!!
@@ -1013,7 +919,7 @@ function runProgram() {
         }
     }
 
-    function handlePaddleCollisions(paddle) {
+    function handlePaddleCollisions(paddle) { // BUG: Balls' velocityXs reset to 0 when caught in the center of a paddle
         // if it is the first time bouncing on one
         if (firstTimeBouncedPaddle) {
             // Mix up the ball's predicted position in AutoPlay
@@ -1088,69 +994,13 @@ function runProgram() {
         }
     }
 
-    function getCollisionTelemetry(obj1, obj2) {
-        if (showTelemetryCollision) {
-            console.log("---------------------------");
-            console.log(">>> COLLISION DETECTION <<<");
-            console.log("Do " + obj1.id + " and " + obj2.id + " collide? " + doCollide(obj1, obj2));
-            console.log("They collide on the paddle's *" + whichBorder(obj1, obj2) + "* border.");
-            console.log("Calculated Time: " + calculateTime(obj2, obj1, obj1));
-            console.log("Predicted Position: " + predictBallPosition(obj2, obj1));
-            console.log("paddleLeft.y = " + obj2.y);
-            console.log("Predicted Movement: " + (predictBallPosition(obj2, obj1)-obj2.y) / (calculateTime(obj2, obj1, obj1)))
-            console.log("---------------------------");
-            console.log("OBJECT 1: " + obj1.id);
-            console.log("xLeft: " + obj1.leftX);
-            console.log("xRight: " + obj1.rightX);
-            console.log("yTop: " + obj1.topY);
-            console.log("yBottom: " + obj1.bottomY);
-            console.log("---------------------------");
-            console.log("OBJECT 2: " + obj2.id);
-            console.log("xLeft: " + obj2.leftX);
-            console.log("xRight: " + obj2.rightX);
-            console.log("yTop: " + obj2.topY);
-            console.log("yBottom: " + obj2.bottomY);
-            console.log("---------------------------")
-        }
-    }
 
-
-    ///////////////////\\\\\\\\\\\\\\\\\\\
-    /////////////// Points \\\\\\\\\\\\\\\
-    ///////////////////\\\\\\\\\\\\\\\\\\\
-
-    function handleScoreBoard() {
-        $(".p1TallyMark").css("background-color", "darkblue");
-        $(".p2TallyMark").css("background-color", "maroon");
-        $(".winTallyMark").css("background-color", "limegreen");
-        $(".p1TallyMark").css("box-shadow", "none");
-        $(".p2TallyMark").css("box-shadow", "none");
-        $(".winTallyMark").css("box-shadow", "none");
-
-        for (let i = 1; i <= score.p1; i++) {$("#p1Tally"+i).css("background-color", "blue");}
-        for (let i = 1; i <= score.p2; i++) {$("#p2Tally"+i).css("background-color", "red");}
-
-        if (score.p1 >= 10 || score.p2 >= 10) {
-            $(".winTallyMark").css("background-color", "lime");
-            if (score.p1 == score.p2) {
-                $(".tallyMark").css("box-shadow", "0px 0px 0px 3px violet inset");
-                $(".winTallyMark").css("box-shadow", "0px 0px 0px 3px violet inset");
-            } else if (score.p1 > score.p2) {
-                $(".tallyMark").css("box-shadow", "none");
-                $(".p1TallyMark").css("background-color", "lime");
-                $(".p1TallyMark").css("box-shadow", "0px 0px 0px 3px blue inset");
-                $(".winTallyMark").css("box-shadow", "0px 0px 0px 3px blue inset");
-            } else if (score.p2 > score.p1) {
-                $(".tallyMark").css("box-shadow", "none");
-                $(".p2TallyMark").css("background-color", "lime");
-                $(".p2TallyMark").css("box-shadow", "0px 0px 0px 3px red inset");
-                $(".winTallyMark").css("box-shadow", "0px 0px 0px 3px red inset");
-            }
-        }
-    }
+    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////// POINTS & SCOREBOARD /////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
 
     // TODO: Find a way to update the scoreboard *before* the game alerts who has won
-    // ...this is so simple. I'd need to move away from alert()s and start using on-screen text
+    // ...this is so simple. I'd need to move away from alert()s and // TODO: start using on-screen text for menus
     function playerLose(player) {
         if (firstTimeBouncedWall) {
             if (player === p1.id) {         // player 1's side
@@ -1194,6 +1044,227 @@ function runProgram() {
             gameWon = true;
         }
     }
+
+
+    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////// REPOSITIONING FUNCTIONS /////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
+
+    function randPredictedPositionYMod() {
+        varPredictedPositionY = Math.floor(Math.random() * 60) - 30;
+        console.log("predicted ball position modified by " + varPredictedPositionY);
+    }
+
+    /**
+     * Calculates the amount of frames it will take for one point to reach the second point.
+     * - Distance from point A to point B...
+     * - Divided by distance/frame.
+     * @param {double} pointPaddle - The first point of reference.
+     * @param {double} pointBall - The second point of reference (which has a velocity).
+     * @param {double} velocityBall - The pixels/frame velocity of one of the two points.
+     */
+    function calculateTime(pointPaddle, pointBall, velocityBall) {
+        let predictedPosition;
+        if (pointPaddle.id == "#paddleLeft") {
+            predictedPosition = ((pointPaddle.rightX)-pointBall.x)/velocityBall.velocityX;
+        } else if (pointPaddle.id == "#paddleRight") {
+            predictedPosition = (pointPaddle.x-(pointBall.rightX))/velocityBall.velocityX;
+        } else {
+            predictedPosition = (pointPaddle.x-pointBall.x)/velocityBall.velocityX; 
+        }
+        return predictedPosition;
+    }
+
+    /**
+     * Algorithm to predict the ball's future position upon meeting the X value of an object.
+     * - We start with `ball.y`, the ball's initial height.
+     *   - This will increase as the ball moves upward.
+     * - We then `calculateTime()` the ball takes to get to the object's X value.
+     * - We multiply that time by the `ball.velocityY` (frames * dist/frames) to get how far up the 
+     *   ball would move by the time it reaches the object.
+     *   - This will decrease as the ball moves closer to the object.
+     * - We then add that total Y displacement to the current `ball.y` to get a predicted Y position.
+     * - After that we subtract half the object's height and add half the ball's height to center the
+     *   object on the ball.
+     * @param {object} obj - The object to use as a second point of reference.
+     * @returns {double} The Y position of the ball where it meets the object's X position.
+     */
+    function predictBallPosition(obj, ballObj) {
+        let predictedPosition = ballObj.y + (calculateTime(obj, ballObj, ballObj)*(ballObj.velocityY));
+        do {
+            if (predictedPosition < BORDERS.TOP) {predictedPosition = -predictedPosition;}
+            else if (predictedPosition > BORDERS.BOTTOM) {predictedPosition = Math.floor(BORDERS.BOTTOM) + ((Math.floor(BORDERS.BOTTOM) - $(ballObj.id).height()*2) - predictedPosition);}
+        } while (predictedPosition < BORDERS.TOP || predictedPosition > BORDERS.BOTTOM);
+        return predictedPosition - $(obj.id).height()/2 + $(ballObj.id).height()/2;// + varPredictedPositionY;
+    }
+
+    /**
+     * Calculates the pixels/frame required for an object to catch the ball in time.
+     * - First, we find the distance between the ball's predicted Y position and the 
+     *   object's current Y position.
+     * - Then, we calculate the amount of frames it will take for the ball's X position
+     *   to reach the object's X position.
+     * - We divide pixels by frames, and we get a velocity.
+     * - Sometimes the calculated time is zero. We force the added value to be 0 to prevent a Divide By Zero error.
+     * @param {object} gameItem - The object whose required velocity will be calculated. 
+     * @param {object} ballObj - The object whose velocity will be used in the calculations.
+     * @returns {double} The Y velocity required to reach the ball before it passes the object up.
+     */
+    function moveToPredictedBallPosition(gameItem, ballObj) {
+        let predictedMovement = predictBallPosition(gameItem, ballObj) - gameItem.y;
+        let calculatedTime = calculateTime(gameItem, ballObj, ballObj);
+        
+        if (calculatedTime == 0) {gameItem.velocityY = 0;} 
+        else {gameItem.velocityY = predictedMovement / calculatedTime;}
+    }
+
+    function repositionGameItem(gameItem) {
+        gameItem.x += gameItem.velocityX;
+        gameItem.y += gameItem.velocityY;
+    }
+
+    function repositionAllGameItems() {
+        // Paddle Repositioning
+        if (autoPlay) {
+            if (targetedBallLeft.id != "#ballNull") {moveToPredictedBallPosition(paddleLeft, targetedBallLeft);}
+            if (targetedBallRight.id != "#ballNull") {moveToPredictedBallPosition(paddleRight, targetedBallRight);}
+        }
+        repositionGameItem(paddleLeft);
+        repositionGameItem(paddleRight);
+        // Ball Repositioning
+        for (let ball of ballPit) {
+            repositionGameItem(ball);
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////// REDRAWING FUNCTIONS /////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
+
+    // TODOING: Need to do a color overhaul.
+    // [x] Make each ball more colorful? Idk, I kinda like the way the colors are now
+    // [x] Update the ball colors for when the game is paused
+    // [ ] Make a unique visual for when MultiBall is enabled
+    // [ ] Make a better pause menu
+    function changeColors() {
+        // Ball colors
+        if (showTelemetryBallBounce) {
+            for (let ball of ballPit) {
+                if (ball != targetedBallLeft && ball != targetedBallRight) {$(ball.id).css("background-color", "fuchsia");}
+                if (ball.velocityX < 0) {$(ball.id).css("background-color", "blue");}
+                if (ball.velocityX > 0) {$(ball.id).css("background-color", "maroon");}
+                if (ball == targetedBallLeft) {$(ball.id).css("background-color", "cyan");}
+                if (ball == targetedBallRight) {$(ball.id).css("background-color", "hotpink");}
+            }
+        } else {
+            $(".balls").css("background-color", "fuchsia");
+            for (let ball of ballPit) {
+                $(ball.id).css("background-color", ball.color);
+            }
+        }
+
+        // TODONE: Create a way to show and hide the ball numbers
+        if (showTelemetryBallNumbers) {
+            $(".balls span").show();
+        } else {
+            $(".balls span").hide();
+        }
+        
+        // cheat mode colors
+        if (cheatMode) {
+            if (pause) {
+                $("#ball0").css("background-color", "green");
+                $("#ball0").css("box-shadow", "0px 0px 0px 3px lime inset");
+            } else {
+                $("#ball0").css("background-color", "lightpink");
+                $("#ball0").css("box-shadow", "0px 0px 0px 3px fuchsia inset");
+            }
+        } else {
+            $(".balls").css("box-shadow", "none");
+        }
+
+        // Border colors
+        if (pause) {
+            $("#board").css("border-color", "lime");
+        } else if (freePlay) {
+            $("#board").css("border-color", "orange");
+        } else {
+            $("#board").css("border-color", "white");
+        }
+
+        // paddle colors
+        if (autoPlay) {
+            $("#paddleLeft").css("background-color", "blue");
+            $("#paddleLeft").css("box-shadow", "0px 0px 0px 3px cyan inset");
+            $("#paddleRight").css("background-color", "maroon");
+            $("#paddleRight").css("box-shadow", "0px 0px 0px 3px red inset");
+        } else {
+            $("#paddleLeft").css("background-color", "cyan");
+            $("#paddleLeft").css("box-shadow", "0px 0px 0px 3px teal inset");
+            $("#paddleRight").css("background-color", "hotpink");
+            $("#paddleRight").css("box-shadow", "0px 0px 0px 3px maroon inset");
+        }
+    }
+
+    function redrawGameItem(gameItem) {
+        $(gameItem.id).css("left", gameItem.x);
+        $(gameItem.id).css("top", gameItem.y);
+    }
+
+    function redrawScoreBoard() {
+        $(".p1TallyMark").css("background-color", "darkblue");
+        $(".p2TallyMark").css("background-color", "maroon");
+        $(".winTallyMark").css("background-color", "limegreen");
+        $(".p1TallyMark").css("box-shadow", "none");
+        $(".p2TallyMark").css("box-shadow", "none");
+        $(".winTallyMark").css("box-shadow", "none");
+
+        for (let i = 1; i <= score.p1; i++) {$("#p1Tally"+i).css("background-color", "blue");}
+        for (let i = 1; i <= score.p2; i++) {$("#p2Tally"+i).css("background-color", "red");}
+
+        if (score.p1 >= 10 || score.p2 >= 10) {
+            $(".winTallyMark").css("background-color", "lime");
+            if (score.p1 == score.p2) {
+                $(".tallyMark").css("box-shadow", "0px 0px 0px 3px violet inset");
+                $(".winTallyMark").css("box-shadow", "0px 0px 0px 3px violet inset");
+            } else if (score.p1 > score.p2) {
+                $(".tallyMark").css("box-shadow", "none");
+                $(".p1TallyMark").css("background-color", "lime");
+                $(".p1TallyMark").css("box-shadow", "0px 0px 0px 3px blue inset");
+                $(".winTallyMark").css("box-shadow", "0px 0px 0px 3px blue inset");
+            } else if (score.p2 > score.p1) {
+                $(".tallyMark").css("box-shadow", "none");
+                $(".p2TallyMark").css("background-color", "lime");
+                $(".p2TallyMark").css("box-shadow", "0px 0px 0px 3px red inset");
+                $(".winTallyMark").css("box-shadow", "0px 0px 0px 3px red inset");
+            }
+        }
+    }
+
+    function redrawScores() {
+        redrawScoreBoard();
+        if (score.p1 > 999) {score.p1 = "?!?";}
+        $("#p1 span").text(String(score.p1).padStart(3, "0"));
+        if (score.bounced > 999) {score.bounced = "?!?";}
+        $("#bounces span").text(String(score.bounced).padStart(3, "0"));
+        if (score.p2 > 999) {score.p2 = "?!?";}
+        $("#p2 span").text(String(score.p2).padStart(3, "0"));
+    }
+
+    function redrawAllGameItems() {
+        redrawGameItem(paddleLeft);
+        redrawGameItem(paddleRight);
+        for (let ball of ballPit) {
+            redrawGameItem(ball);
+        }
+        redrawScores();
+    }
+
+    
+    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////// GAME FUNCTIONS //////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
 
     function playAgain() {
         return confirm("Good game! Play again?");
@@ -1276,126 +1347,25 @@ function runProgram() {
         obj.velocityX = 0;
         obj.velocityY = 0;
     }
-
-
-    ///////////////////|\\\\\\\\\\\\\\\\\\\
-    //////////// Repositioning \\\\\\\\\\\\
-    ///////////////////|\\\\\\\\\\\\\\\\\\\
-
-    function randPredictedPositionYMod() {
-        varPredictedPositionY = Math.floor(Math.random() * 60) - 30;
-        console.log("predicted ball position modified by " + varPredictedPositionY);
+    
+    function increaseGameSpeed() {
+        clearInterval(interval);
+        setTimeout(restartTimer, 0);
     }
 
-    /**
-     * Calculates the amount of frames it will take for one point to reach the second point.
-     * - Distance from point A to point B...
-     * - Divided by distance/frame.
-     * @param {double} pointPaddle - The first point of reference.
-     * @param {double} pointBall - The second point of reference (which has a velocity).
-     * @param {double} velocityBall - The pixels/frame velocity of one of the two points.
-     */
-    function calculateTime(pointPaddle, pointBall, velocityBall) {
-        var predictedPosition;
-        if (pointPaddle.id == "#paddleLeft") {
-            predictedPosition = ((pointPaddle.rightX)-pointBall.x)/velocityBall.velocityX;
-        } else if (pointPaddle.id == "#paddleRight") {
-            predictedPosition = (pointPaddle.x-(pointBall.rightX))/velocityBall.velocityX;
-        } else {
-            predictedPosition = (pointPaddle.x-pointBall.x)/velocityBall.velocityX; 
-        }
-        return predictedPosition;
+    function modifyGameSpeed() {
+        clearInterval(interval);
+        setTimeout(modifyTimer, 0);
     }
 
-    /**
-     * Algorithm to predict the ball's future position upon meeting the X value of an object.
-     * - We start with `ball.y`, the ball's initial height.
-     *   - This will increase as the ball moves upward.
-     * - We then `calculateTime()` the ball takes to get to the object's X value.
-     * - We multiply that time by the `ball.velocityY` (frames * dist/frames) to get how far up the 
-     *   ball would move by the time it reaches the object.
-     *   - This will decrease as the ball moves closer to the object.
-     * - We then add that total Y displacement to the current `ball.y` to get a predicted Y position.
-     * - After that we subtract half the object's height and add half the ball's height to center the
-     *   object on the ball.
-     * @param {object} obj - The object to use as a second point of reference.
-     * @returns {double} The Y position of the ball where it meets the object's X position.
-     */
-    function predictBallPosition(obj, ballObj) {
-        var predictedPosition = ballObj.y + (calculateTime(obj, ballObj, ballObj)*(ballObj.velocityY));
-        do {
-            if (predictedPosition < BORDERS.TOP) {predictedPosition = -predictedPosition;}
-            else if (predictedPosition > BORDERS.BOTTOM) {predictedPosition = Math.floor(BORDERS.BOTTOM) + ((Math.floor(BORDERS.BOTTOM) - $(ballObj.id).height()*2) - predictedPosition);}
-        } while (predictedPosition < BORDERS.TOP || predictedPosition > BORDERS.BOTTOM);
-        return predictedPosition - $(obj.id).height()/2 + $(ballObj.id).height()/2;// + varPredictedPositionY;
+    function restartTimer() {
+        framesPerSecondInterval = 1000 / (FRAMES + score.bounced * 2);
+        interval = setInterval(newFrame, framesPerSecondInterval);
     }
 
-    /**
-     * Calculates the pixels/frame required for an object to catch the ball in time.
-     * - First, we find the distance between the ball's predicted Y position and the 
-     *   object's current Y position.
-     * - Then, we calculate the amount of frames it will take for the ball's X position
-     *   to reach the object's X position.
-     * - We divide pixels by frames, and we get a velocity.
-     * - Sometimes the calculated time is zero. We force the added value to be 0 to prevent a Divide By Zero error.
-     * @param {object} gameItem - The object whose required velocity will be calculated. 
-     * @param {object} ballObj - The object whose velocity will be used in the calculations.
-     * @returns {double} The Y velocity required to reach the ball before it passes the object up.
-     */
-    function moveToPredictedBallPosition(gameItem, ballObj) {
-        var predictedMovement = predictBallPosition(gameItem, ballObj) - gameItem.y;
-        var calculatedTime = calculateTime(gameItem, ballObj, ballObj);
-        
-        if (calculatedTime == 0) {gameItem.velocityY = 0;} 
-        else {gameItem.velocityY = predictedMovement / calculatedTime;}
-    }
-
-    function repositionGameItem(gameItem) {
-        gameItem.x += gameItem.velocityX;
-        gameItem.y += gameItem.velocityY;
-    }
-
-    function repositionAllGameItems() {
-        // Paddle Repositioning
-        if (autoPlay) {
-            if (targetedBallLeft.id != "#ballNull") {moveToPredictedBallPosition(paddleLeft, targetedBallLeft);}
-            if (targetedBallRight.id != "#ballNull") {moveToPredictedBallPosition(paddleRight, targetedBallRight);}
-        }
-        repositionGameItem(paddleLeft);
-        repositionGameItem(paddleRight);
-        // Ball Repositioning
-        for (let ball of ballPit) {
-            repositionGameItem(ball);
-        }
-    }
-
-
-    ///////////////////|\\\\\\\\\\\\\\\\\\\
-    ////////////// Redrawing \\\\\\\\\\\\\\
-    ///////////////////|\\\\\\\\\\\\\\\\\\\
-
-    function redrawGameItem(gameItem) {
-        $(gameItem.id).css("left", gameItem.x);
-        $(gameItem.id).css("top", gameItem.y);
-    }
-
-    function redrawScores() {
-        handleScoreBoard();
-        if (score.p1 > 999) {score.p1 = "?!?";}
-        $("#p1 span").text(String(score.p1).padStart(3, "0"));
-        if (score.bounced > 999) {score.bounced = "?!?";}
-        $("#bounces span").text(String(score.bounced).padStart(3, "0"));
-        if (score.p2 > 999) {score.p2 = "?!?";}
-        $("#p2 span").text(String(score.p2).padStart(3, "0"));
-    }
-
-    function redrawAllGameItems() {
-        redrawGameItem(paddleLeft);
-        redrawGameItem(paddleRight);
-        for (let ball of ballPit) {
-            redrawGameItem(ball);
-        }
-        redrawScores();
+    function modifyTimer() {
+        framesPerSecondInterval = 1000 / FRAMES;
+        interval = setInterval(newFrame, framesPerSecondInterval);
     }
 
     function endGame() {
