@@ -177,18 +177,17 @@ function runProgram() {
 
         // Handles colors
         changeColors()
-
-        // More telemetry on miscellaneous info
-        getTelemetryMetaData();
-
-        // Collisions and repositioning! Also is where scores are handled.
-        getTelemetryCollision(ball0, paddleLeft);
+        if (debug) {
+            showTelemetries();
+            // getCollisionTelemetry(ball0, paddleLeft);
+        }
         handleCollisions();
         redrawAllGameItems();
         if (!gameWon) {
             if (!pause) {
                 handleVelocity();
                 repositionAllGameItems();
+                handleCollisions();
             }
         }
         //else {
@@ -831,11 +830,7 @@ function runProgram() {
 
     function handleCollisions() {
         // update object borders
-        updateObjectBorders(paddleLeft);
-        updateObjectBorders(paddleRight);
-        for (let ball of ballPit) {
-            updateObjectBorders(ball);
-        }
+        updateAllObjectBorders();
 
         // keep the objects in the borders
         enforceNoNoZone(paddleLeft);
@@ -1072,7 +1067,7 @@ function runProgram() {
         if (pointPaddle.id == "#paddleLeft") {
             predictedPosition = ((pointPaddle.rightX)-pointBall.x)/velocityBall.velocityX;
         } else if (pointPaddle.id == "#paddleRight") {
-            predictedPosition = (pointPaddle.x-(pointBall.rightX))/velocityBall.velocityX;
+            predictedPosition = (pointPaddle.x-(pointBall.rightX))/velocityBall.velocityX; // Add 1 to account for the reversed borders
         } else {
             predictedPosition = (pointPaddle.x-pointBall.x)/velocityBall.velocityX; 
         }
@@ -1128,7 +1123,18 @@ function runProgram() {
         gameItem.y += gameItem.velocityY;
     }
 
+    function updateAllObjectBorders() {
+        // update object borders
+        updateObjectBorders(paddleLeft);
+        updateObjectBorders(paddleRight);
+        for (let ball of ballPit) {
+            updateObjectBorders(ball);
+        }
+    }
+
     function repositionAllGameItems() {
+        updateAllObjectBorders();
+
         // Paddle Repositioning
         if (autoPlay) {
             if (targetedBallLeft.id != "#ballNull") {moveToPredictedBallPosition(paddleLeft, targetedBallLeft);}
