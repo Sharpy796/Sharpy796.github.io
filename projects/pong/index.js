@@ -870,7 +870,10 @@ function runProgram() {
             }
             // Check if the value is a valid value
             if (playerChosen != "p1" && playerChosen != "p2") {alert("Please enter either 'P1' or 'P2'.");}
-            else {alert("Player " + playerChosen.slice(1) + " chosen!");}
+            else {
+                alert("Player " + playerChosen.slice(1) + " chosen!\n" + 
+                ((playerChosen === "p1") ? "P1 Controls: W S" : "P2 Controls: Up Down"));
+            }
         } while (playerChosen != "p1" && playerChosen != "p2");
     }
 
@@ -1289,14 +1292,17 @@ function runProgram() {
         }
 
         // paddle colors
-        if (autoPlay) {
+        if (autoPlay || (singlePlayer && playerChosen === "p2")) {
             $("#paddleLeft").css("background-color", "blue");
             $("#paddleLeft").css("box-shadow", "0px 0px 0px 3px cyan inset");
-            $("#paddleRight").css("background-color", "maroon");
-            $("#paddleRight").css("box-shadow", "0px 0px 0px 3px red inset");
         } else {
             $("#paddleLeft").css("background-color", "cyan");
             $("#paddleLeft").css("box-shadow", "0px 0px 0px 3px teal inset");
+        }
+        if (autoPlay || (singlePlayer && playerChosen === "p1")) {
+            $("#paddleRight").css("background-color", "maroon");
+            $("#paddleRight").css("box-shadow", "0px 0px 0px 3px red inset");
+        } else {
             $("#paddleRight").css("background-color", "hotpink");
             $("#paddleRight").css("box-shadow", "0px 0px 0px 3px maroon inset");
         }
