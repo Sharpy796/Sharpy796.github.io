@@ -79,7 +79,7 @@ function runProgram() {
         bounced: 0,
         p1: 0,
         p2: 0,
-        WIN: 2,
+        WIN: 10,
     }
 
     var text = { // TODONE: Remove the "Reload the page to play again" message, and make that whole process more efficient.
@@ -176,11 +176,8 @@ function runProgram() {
         pauseGame();
 
         // Handles colors
-        changeColors()
-        if (debug) {
-            showTelemetries();
-            // getCollisionTelemetry(ball0, paddleLeft);
-        }
+        changeColors();
+
         handleCollisions();
         redrawAllGameItems();
         if (!gameWon) {
@@ -867,6 +864,15 @@ function runProgram() {
         obj.bottomY = obj.y + $(obj.id).height();
     }
 
+    function updateAllObjectBorders() {
+        // update object borders
+        updateObjectBorders(paddleLeft);
+        updateObjectBorders(paddleRight);
+        for (let ball of ballPit) {
+            updateObjectBorders(ball);
+        }
+    }
+
     function enforceNoNoZone(obj) {
         if (obj.leftX < BORDERS.LEFT) {
             obj.x -= obj.velocityX;
@@ -1121,15 +1127,6 @@ function runProgram() {
     function repositionGameItem(gameItem) {
         gameItem.x += gameItem.velocityX;
         gameItem.y += gameItem.velocityY;
-    }
-
-    function updateAllObjectBorders() {
-        // update object borders
-        updateObjectBorders(paddleLeft);
-        updateObjectBorders(paddleRight);
-        for (let ball of ballPit) {
-            updateObjectBorders(ball);
-        }
     }
 
     function repositionAllGameItems() {
