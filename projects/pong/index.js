@@ -16,7 +16,6 @@ function runProgram() {
         BOTTOM: $("#board").height(),
         RIGHT: $("#board").width(),
     }
-    // TODONE: Work on creating better variable names for these
     var CENTERS = {
         BORDER: {
             HORIZONTAL: $("#board").width()/2,
@@ -82,7 +81,7 @@ function runProgram() {
         WIN: 10,
     }
 
-    var text = { // TODONE: Remove the "Reload the page to play again" message, and make that whole process more efficient.
+    var text = {
         p1: "P1 WINS!",
         p2: "P2 WINS!",
         pause: "PAUSED",
@@ -198,7 +197,7 @@ function runProgram() {
     /* 
     Called in response to events.
     */
-    function handleKeyDown(event) { // TODONE: Make a keydown button to activate cheat modes
+    function handleKeyDown(event) {
         let keycode = event.which;
         console.log(keycode);
 
@@ -275,7 +274,7 @@ function runProgram() {
 
     }
 
-    function handleKeyUp(event) { // TODONE: Create a global ppf (pixels per frame) speed
+    function handleKeyUp(event) {
         let keycode = event.which;
         console.log(keycode);
 
@@ -345,11 +344,6 @@ function runProgram() {
     ////////////////////////////////////////////////////////////////////////////////
     ////////////////////////// HELPER FUNCTIONS ////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
-
-    // TODONE: Organize code into better helper functions to make code more readable
-    // TODONE: Do a renaming overhaul of methods and variables
-    // TODONE: Clean up old comments and get rid of old, unused telemetry
-    // TODONE: Create a way to isolate various parts of telemetry
 
     function createGameObject(x, y, velocityX, velocityY, id) {
         let gameObject = {};
@@ -620,7 +614,6 @@ function runProgram() {
     // Red: Inactive
     // Grey: Unavailable
     // TODO: Create a constructor function that creates a button with new variables to toggle it with
-    // TODONE: Make the game screen bigger
 
     // TODO: CREATE A ONE-PLAYER MODE
     // - One side is controlled
@@ -680,7 +673,7 @@ function runProgram() {
                 }
             }
 
-            // MultiBall Activation // TODONE: Find a way to restart MultiBall with a new set of balls if it is still enabled
+            // MultiBall Activation
             else if (answer === "multiBall") {
                 if (cheatMode) {
                     alert("Cannot activate MultiBall because Cheat Mode is activated.\nType 'noCheat' to deactivate it.");
@@ -1172,7 +1165,6 @@ function runProgram() {
             }
         }
 
-        // TODONE: Create a way to show and hide the ball numbers
         if (showTelemetryBallNumbers) {
             $(".balls span").show();
         } else {
