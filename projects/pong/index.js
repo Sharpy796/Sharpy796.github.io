@@ -1223,9 +1223,11 @@ function runProgram() {
     function repositionAllGameItems() {
         updateAllObjectBorders();
 
-        // Paddle Repositioning
-        if (autoPlay) {
+        // Paddle Repositioning // FIXME: Make singlePlayer mode beatable
+        if (autoPlay || (singlePlayer && playerChosen === "p2")) {
             if (targetedBallLeft.id != "#ballNull") {moveToPredictedBallPosition(paddleLeft, targetedBallLeft);}
+        }
+        if (autoPlay || (singlePlayer && playerChosen === "p1")) {
             if (targetedBallRight.id != "#ballNull") {moveToPredictedBallPosition(paddleRight, targetedBallRight);}
         }
         repositionGameItem(paddleLeft);
@@ -1308,7 +1310,7 @@ function runProgram() {
         }
 
         // singlePlayer
-        testMode(singlePlayer);
+        // testMode(singlePlayer);
     }
 
     function testMode(mode) {
