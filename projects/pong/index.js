@@ -107,7 +107,7 @@ function runProgram() {
     var cheatMode = false;
     var firstTimeCheat = true;
     var freePlay = true;
-    var autoPlay = true;
+    var autoPlay = false;
     var multiBall = false;
     // MultiBall Variables
     var ballCount = 1;
@@ -384,6 +384,8 @@ function runProgram() {
             gameObject.temporaryVelocity.left = gameObject.speed.left;
             gameObject.temporaryVelocity.down = gameObject.speed.down;
             gameObject.temporaryVelocity.right = gameObject.speed.right;
+            gameObject.firstTimeBouncedPaddle = true;
+            gameObject.firstTimeBouncedWall = true;
         }
         return gameObject;
     }
@@ -852,11 +854,11 @@ function runProgram() {
                 console.log("ping");
                 handlePaddleCollisions(ball, paddleLeft);     // left paddle
             }
-            if (doCollide(ball, paddleRight)) {
+            else if (doCollide(ball, paddleRight)) {
                 console.log("pong");
                 handlePaddleCollisions(ball, paddleRight);    // right paddle
             } 
-            if (!doCollide(ball, paddleLeft) || !doCollide(ball, paddleRight)) {
+            else if (!doCollide(ball, paddleLeft) || !doCollide(ball, paddleRight)) {
                 // tell us we still have yet to bounce
                 ball.firstTimeBouncedPaddle = true;
             }
@@ -895,7 +897,7 @@ function runProgram() {
                 ballObj.speed.right = ballObj.speed.left;
                 ballObj.speed.left = 0;
             }
-            playerLose(p1.id);
+            playerLose(ballObj, p1.id);
             console.log(ballObj.id+" bounced left border");
         }
         else if (ballObj.topY < BORDERS.TOP) {
@@ -908,7 +910,7 @@ function runProgram() {
                 ballObj.speed.left = ballObj.speed.right;
                 ballObj.speed.right = 0;
             }
-            playerLose(p2.id);
+            playerLose(ballObj, p2.id);
             console.log(ballObj.id+" bounced right border");
         }
         else if (ballObj.bottomY > BORDERS.BOTTOM) {
@@ -918,11 +920,11 @@ function runProgram() {
         }
         else {
             // tell us we still have yet to bounce
-            firstTimeBouncedWall = true;
+            ballObj.firstTimeBouncedWall = true;
         }
     }
 
-    function handlePaddleCollisions(ball, paddle) { // BUG: Balls' velocityXs reset to 0 when caught in the center of a paddle
+    function handlePaddleCollisions(ball, paddle) {
         // if it is the first time bouncing on one
         if (ball.firstTimeBouncedPaddle) {
             // Mix up the ball's predicted position in AutoPlay
@@ -1002,8 +1004,8 @@ function runProgram() {
 
     // TODO: Find a way to update the scoreboard *before* the game alerts who has won
     // ...this is so simple. I'd need to move away from alert()s and // TODO: start using on-screen text for menus
-    function playerLose(player) {
-        if (firstTimeBouncedWall) {
+    function playerLose(ballObj, player) {
+        if (ballObj.firstTimeBouncedWall) {
             if (player === p1.id) {         // player 1's side
                 score.p2++;
                 console.log("P2 scored a point! Total: " + score.p2);
@@ -1030,7 +1032,7 @@ function runProgram() {
             // }
         }
         // tell us it isn't the first time bouncing anymore
-        firstTimeBouncedWall = false;
+        ballObj.firstTimeBouncedWall = false;
     }
 
     function whoWon() { // TODO: Implement methods for if there is a tie, somehow (eh, maybe). It would get rid of the redundant double-win processes.
@@ -1323,12 +1325,12 @@ function runProgram() {
         resetScores();
     }
 
-    function resetVariables() { // FIXME: Work on putting the firsttime bounced variables into the ball objects
+    function resetVariables() {
         pause = false;
         spaceIsDown = false
         firstTimeCheat = true;
         ball0.firstTimeBouncedPaddle = true;
-        firstTimeBouncedWall = true;
+        ball0.firstTimeBouncedWall = true;
         firstTimePaused = true;
         gameWon = false;
         varPredictedPositionY = 0;
