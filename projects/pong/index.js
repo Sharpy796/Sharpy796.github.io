@@ -615,7 +615,7 @@ function runProgram() {
     // Grey: Unavailable
     // TODO: Create a constructor function that creates a button with new variables to toggle it with
 
-    // TODO: CREATE A ONE-PLAYER MODE
+    // TODOING: CREATE A ONE-PLAYER MODE
     // - One side is controlled
     // - The other side is automated
     // - The computer side needs to be consistent with player speed
