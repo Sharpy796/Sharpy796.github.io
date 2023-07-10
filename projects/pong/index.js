@@ -16,8 +16,8 @@ function runProgram() {
         BOTTOM: $("#board").height(),
         RIGHT: $("#board").width(),
     }
-    // TODOING: Work on creating better variable names for these
-    var CENTER = {
+    // TODONE: Work on creating better variable names for these
+    var CENTERS = {
         BORDER: {
             HORIZONTAL: $("#board").width()/2,
             VERTICAL: $("#board").height()/2,
@@ -60,15 +60,15 @@ function runProgram() {
     // Game Item Objects
 
     // player 1
-    var paddleLeft = createGameObject(50, CENTER.BORDER.VERTICAL-CENTER.PADDLE.VERTICAL, 0, 0, "#paddleLeft");
+    var paddleLeft = createGameObject(50, CENTERS.BORDER.VERTICAL-CENTERS.PADDLE.VERTICAL, 0, 0, "#paddleLeft");
     var p1 = paddleLeft;
 
     // player 2
-    var paddleRight = createGameObject(BORDERS.RIGHT-50-$("#paddleRight").width(), CENTER.BORDER.VERTICAL-CENTER.PADDLE.VERTICAL, 0, 0, "#paddleRight");
+    var paddleRight = createGameObject(BORDERS.RIGHT-50-$("#paddleRight").width(), CENTERS.BORDER.VERTICAL-CENTERS.PADDLE.VERTICAL, 0, 0, "#paddleRight");
     var p2 = paddleRight;
 
     // initial ball
-    var ball0 = createGameObject(CENTER.BORDER.HORIZONTAL-CENTER.BALL, CENTER.BORDER.VERTICAL-CENTER.BALL, -PPF, -2.5, "#ball0");
+    var ball0 = createGameObject(CENTERS.BORDER.HORIZONTAL-CENTERS.BALL, CENTERS.BORDER.VERTICAL-CENTERS.BALL, -PPF, -2.5, "#ball0");
 
     // references for targeting balls in AutoPlay
     var ballNullLeft = createGameObject(99999, 0, 0, 0, "#ballNull");
@@ -350,7 +350,7 @@ function runProgram() {
     ////////////////////////// HELPER FUNCTIONS ////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
 
-    // TODOING: Organize code into better helper functions to make code more readable
+    // TODONE: Organize code into better helper functions to make code more readable
     // TODONE: Do a renaming overhaul of methods and variables
     // TODONE: Clean up old comments and get rid of old, unused telemetry
     // TODONE: Create a way to isolate various parts of telemetry
@@ -394,24 +394,24 @@ function runProgram() {
         // create a new id for the ball
         let ballId = 'ball' + (ballPit.length);
         // create a new div for the ball
-        let $newBall = $("<div>")
+        let $newBall = $("<div>") // The ball
             .appendTo('#ballPit')
             .addClass('gameItem balls')
             .attr("id", ballId)
-            .css("left", (CENTER.BORDER.HORIZONTAL)-(CENTER.BALL))
-            .css("top", (CENTER.BORDER.VERTICAL)-(CENTER.BALL));
-        $("<span>")
+            .css("left", (CENTERS.BORDER.HORIZONTAL)-(CENTERS.BALL))
+            .css("top", (CENTERS.BORDER.VERTICAL)-(CENTERS.BALL));
+        $("<span>") // The text inside the ball
             .appendTo("#"+ballId)
             .text(ballId.replace(/\D/g, ''));
         // store the new div in a variable
         xDirection *= -1;
         $newBall = createGameObject(
-            (CENTER.BORDER.HORIZONTAL)-(CENTER.BALL),
-            (CENTER.BORDER.VERTICAL)-(CENTER.BALL),
+            (CENTERS.BORDER.HORIZONTAL)-(CENTERS.BALL),
+            (CENTERS.BORDER.VERTICAL)-(CENTERS.BALL),
             5*xDirection,
             -2.5,
             "#"+ballId);
-            $($newBall.id).css("background-color", $newBall.color);
+        $($newBall.id).css("background-color", $newBall.color);
         randBallVelocityY($newBall);
         // push the new body into the ballPit
         ballPit.push($newBall);
@@ -1062,9 +1062,9 @@ function runProgram() {
      * Calculates the amount of frames it will take for one point to reach the second point.
      * - Distance from point A to point B...
      * - Divided by distance/frame.
-     * @param {double} pointPaddle - The first point of reference.
-     * @param {double} pointBall - The second point of reference (which has a velocity).
-     * @param {double} velocityBall - The pixels/frame velocity of one of the two points.
+     * @param {object} pointPaddle - The first point of reference.
+     * @param {object} pointBall - The second point of reference (which has a velocity).
+     * @param {object} velocityBall - The pixels/frame velocity of one of the two points.
      */
     function calculateTime(pointPaddle, pointBall, velocityBall) {
         let predictedPosition;
@@ -1089,16 +1089,17 @@ function runProgram() {
      * - We then add that total Y displacement to the current `ball.y` to get a predicted Y position.
      * - After that we subtract half the object's height and add half the ball's height to center the
      *   object on the ball.
-     * @param {object} obj - The object to use as a second point of reference.
+     * @param {object} paddleObj - The object to use as a second point of reference.
+     * @param {object} ballObj - The ball whose position is being predicted.
      * @returns {double} The Y position of the ball where it meets the object's X position.
      */
-    function predictBallPosition(obj, ballObj) {
-        let predictedPosition = ballObj.y + (calculateTime(obj, ballObj, ballObj)*(ballObj.velocityY));
+    function predictBallPosition(paddleObj, ballObj) {
+        let predictedPosition = ballObj.y + (calculateTime(paddleObj, ballObj, ballObj)*(ballObj.velocityY));
         do {
             if (predictedPosition < BORDERS.TOP) {predictedPosition = -predictedPosition;}
             else if (predictedPosition > BORDERS.BOTTOM) {predictedPosition = Math.floor(BORDERS.BOTTOM) + ((Math.floor(BORDERS.BOTTOM) - $(ballObj.id).height()*2) - predictedPosition);}
         } while (predictedPosition < BORDERS.TOP || predictedPosition > BORDERS.BOTTOM);
-        return predictedPosition - $(obj.id).height()/2 + $(ballObj.id).height()/2;// + varPredictedPositionY;
+        return predictedPosition - $(paddleObj.id).height()/2 + $(ballObj.id).height()/2;// + varPredictedPositionY;
     }
 
     /**
@@ -1109,16 +1110,16 @@ function runProgram() {
      *   to reach the object's X position.
      * - We divide pixels by frames, and we get a velocity.
      * - Sometimes the calculated time is zero. We force the added value to be 0 to prevent a Divide By Zero error.
-     * @param {object} gameItem - The object whose required velocity will be calculated. 
+     * @param {object} paddleObj - The object whose required velocity will be calculated. 
      * @param {object} ballObj - The object whose velocity will be used in the calculations.
      * @returns {double} The Y velocity required to reach the ball before it passes the object up.
      */
-    function moveToPredictedBallPosition(gameItem, ballObj) {
-        let predictedMovement = predictBallPosition(gameItem, ballObj) - gameItem.y;
-        let calculatedTime = calculateTime(gameItem, ballObj, ballObj);
+    function moveToPredictedBallPosition(paddleObj, ballObj) {
+        let predictedMovement = predictBallPosition(paddleObj, ballObj) - paddleObj.y;
+        let calculatedTime = calculateTime(paddleObj, ballObj, ballObj);
         
-        if (calculatedTime == 0) {gameItem.velocityY = 0;} 
-        else {gameItem.velocityY = predictedMovement / calculatedTime;}
+        if (calculatedTime == 0) {paddleObj.velocityY = 0;} 
+        else {paddleObj.velocityY = predictedMovement / calculatedTime;}
     }
 
     function repositionGameItem(gameItem) {
@@ -1274,37 +1275,48 @@ function runProgram() {
     }
 
     function restartRound(player) {
+        // Check if the game is won
         if (gameWon) {resetGame();}
         
+        // Reset the score
         score.bounced = 0;
         ticks = 0;
+        // Reset the frame rate
         restartTimer();
+        // Reset the balls
         for (let ball of ballPit) {
+            // Remove excess balls from the screen
             if (ball != ball0) {
                 $(ball.id).remove();
             }
-        }
-        ballPit.splice(1, ballPit.length);
-        if (showTelemetryMultiBall) {console.log(ballPit);}
-        $("balls").css("background-color", "fuchsia");
-        for (let ball of ballPit) {
-            ball.x = CENTER.BORDER.HORIZONTAL-CENTER.BALL;
-            ball.y = CENTER.BORDER.VERTICAL-CENTER.BALL;
-            randBallVelocityY(ball);
-            if (player === p1.id) {
-                ball.speed.left = 0;
-                ball.speed.right = PPF;
-            } else if (player === p2.id) {
-                ball.speed.left = PPF;
-                ball.speed.right = 0;
-            } else {
-                alert(text.error + " in restartRound " + player);
+            // Reset the original ball
+            else {
+                ball.color = getRandomColor();
+                ball.x = CENTERS.BORDER.HORIZONTAL-CENTERS.BALL;
+                ball.y = CENTERS.BORDER.VERTICAL-CENTERS.BALL;
+                randBallVelocityY(ball);
+                if (player === p1.id) {
+                    ball.speed.left = 0;
+                    ball.speed.right = PPF;
+                    xDirection = 1;
+                } else if (player === p2.id) {
+                    ball.speed.left = PPF;
+                    ball.speed.right = 0;
+                    xDirection = -1;
+                } else {
+                    alert(text.error + " in restartRound " + player);
+                }
             }
         }
-        paddleLeft.y = CENTER.BORDER.VERTICAL-CENTER.PADDLE.VERTICAL;
-        paddleRight.y = CENTER.BORDER.VERTICAL-CENTER.PADDLE.VERTICAL;
+        // Remove excess balls from the ballPit
+        ballPit.splice(1, ballPit.length);
+        // Reset the paddles' positions
+        paddleLeft.y = CENTERS.BORDER.VERTICAL-CENTERS.PADDLE.VERTICAL;
+        paddleRight.y = CENTERS.BORDER.VERTICAL-CENTERS.PADDLE.VERTICAL;
+        // Reset the targeted balls
         targetedBallLeft = ballNullLeft;
         targetedBallRight = ballNullRight;
+        // Unpause the game
         pause = false;
 
         // Tell that we have finished restarting the round
