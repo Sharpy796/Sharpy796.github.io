@@ -54,8 +54,8 @@ function runProgram() {
         K: 75,      // right
     }
     
-    var PPF_STOP = 0; // Pixels Per Frame at rest
-    var PPF = 5;     // Pixels Per Frame
+    var PPF_STOP = 0;   // Pixels Per Frame at rest
+    var PPF = 5;        // Pixels Per Frame
 
     // Game Item Objects
 
@@ -79,12 +79,12 @@ function runProgram() {
         bounced: 0,
         p1: 0,
         p2: 0,
+        WIN: 2,
     }
 
-    var text = { // TODO: Remove the "Reload the page to play again" message, and make that whole process more efficient.
+    var text = { // TODONE: Remove the "Reload the page to play again" message, and make that whole process more efficient.
         p1: "P1 WINS!",
         p2: "P2 WINS!",
-        restart: "Reload the page to play again",
         pause: "PAUSED",
         error: "ERROR",
     }
@@ -106,13 +106,12 @@ function runProgram() {
     // Mode Variables
     var cheatMode = false;
     var firstTimeCheat = true;
-    var freePlay = true;
+    var freePlay = false;
     var autoPlay = false;
     var multiBall = false;
     // MultiBall Variables
-    var ballCount = 1;
+    var ballCount = 2;
     var ticksPerBall = 50;
-    var ticks = 0;
     var ballPit = [];
     ballPit.push(ball0);
     var targetedBallLeft = ballNullLeft;
@@ -122,7 +121,8 @@ function runProgram() {
     var xDirection = -1;
     var varVelocityY = 5;
     var varPredictedPositionY = 0;
-    // Game Finalization Variables
+    // Game Variables
+    var ticks = 0;
     var gameWon = false;
     var restartingRound = false;
     // Telemetry Variables
@@ -1021,14 +1021,15 @@ function runProgram() {
             $(".balls").css("background-color", "red");
             whoWon();
             // if (pageHasHadTimeToRedraw) {
-                if (!gameWon) {
-                    restartingRound = true;
-                    clearInterval(interval);
-                    setTimeout(restartRound.bind(null, player), 1000);
-                } else { 
-                    if (playAgain()){restartGame(player);}
-                    else {endGame();}
-                }
+            if (!gameWon) {
+                restartingRound = true;
+                clearInterval(interval);
+                setTimeout(restartRound.bind(null, player), 1000);
+            } else {
+                $(".balls").css("background-color", "lime");
+                if (playAgain()){restartGame(player);}
+                else {endGame();}
+            }
             // }
         }
         // tell us it isn't the first time bouncing anymore
@@ -1036,14 +1037,14 @@ function runProgram() {
     }
 
     function whoWon() { // TODO: Implement methods for if there is a tie, somehow (eh, maybe). It would get rid of the redundant double-win processes.
-        if (score.p1 >= 10 || isNaN(score.p1)) {
+        if (score.p1 >= score.WIN || isNaN(score.p1)) {
             $("#paddleLeft").css("background-color", "lime");
-            alert(text.p1 + "\n" + text.restart);
+            alert(text.p1);
             gameWon = true;
         }
-        if (score.p2 >= 10 || isNaN(score.p2)) {
+        if (score.p2 >= score.WIN || isNaN(score.p2)) {
             $("#paddleRight").css("background-color", "lime");
-            alert(text.p2 + "\n" + text.restart);
+            alert(text.p2);
             gameWon = true;
         }
     }
