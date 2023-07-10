@@ -108,6 +108,7 @@ function runProgram() {
     var freePlay = false;
     var autoPlay = false;
     var multiBall = false;
+    var singlePlayer = false;
     // MultiBall Variables
     var ballCount = 2;
     var ticksPerBall = 50;
@@ -115,11 +116,13 @@ function runProgram() {
     ballPit.push(ball0);
     var targetedBallLeft = ballNullLeft;
     var targetedBallRight = ballNullRight;
-    // var pageHasHadTimeToRedraw = false;
+    // SinglePlayer Variables
+    var playerChosen = null;
     // Motion Variables
     var xDirection = -1;
     var varVelocityY = 5;
     var varPredictedPositionY = 0;
+    // var pageHasHadTimeToRedraw = false;
     // Game Variables
     var ticks = 0;
     var gameWon = false;
@@ -634,6 +637,9 @@ function runProgram() {
                 if (autoPlay) {
                     alert("Cannot activate Cheat Mode because AutoPlay is activated.\nType 'noAuto' to deactivate it.");
                     cheatMode = false;
+                } else if (singlePlayer) {
+                    alert("Cannot activate Cheat Mode because Single Player Mode is activated.\nType 'multiPlayer' to deactivate it.");
+                    cheatMode = false;
                 } else if (multiBall) {
                     alert("Cannot activate Cheat Mode because MultiBall is activated.\nType 'noMulti' to deactivate it.");
                     cheatMode = false;
@@ -644,7 +650,7 @@ function runProgram() {
                     alert("Cannot activate Cheat Mode because the game is not paused.\nPress space to pause the game.");
                     cheatMode = false;
                 } else {
-                    alert("Cheat Mode Activated!\nUse these controls to move the ball:\nU: Up\nH: Left\nJ: Down\nK: Right\nType 'noCheat' to deactivate Cheat Mode.");
+                    alert("Cheat Mode activated!\nUse these controls to move the ball:\nU: Up\nH: Left\nJ: Down\nK: Right\nType 'noCheat' to deactivate Cheat Mode.");
                     cheatMode = true;
                 }
             }
@@ -654,7 +660,7 @@ function runProgram() {
                 if (freePlay) {
                     alert("FreePlay is already activated.\nType 'noFree' to deactivate it.");
                 } else {
-                    alert("FreePlay Activated!\nType 'noFree' to deactivate FreePlay.");
+                    alert("FreePlay activated!\nType 'noFree' to deactivate it.");
                 }
                 freePlay = true;
             }
@@ -664,11 +670,21 @@ function runProgram() {
                 if (cheatMode) {
                     alert("Cannot activate AutoPlay because Cheat Mode is activated.\nType 'noCheat' to deactivate it.");
                     autoPlay = false;
+                } else if (singlePlayer) {
+                    if (confirm("Activating AutoPlay will deactivate Single Player Mode. Continue?")) {
+                        alert("AutoPlay activated!\nType 'noAuto' to deactivate it.\n\nSingle Player Mode deactivated.\nType 'singlePlayer' to reactivate it.");
+                        singlePlayer = false;
+                        autoPlay = true;
+                    } else {
+                        alert("AutoPlay activation cancelled.\nType 'autoPlay' to activate AutoPlay.\nType 'multiPlayer' to deactivate Single Player Mode.");
+                        singlePlayer = true;
+                        autoPlay = false;
+                    }
                 } else if (autoPlay) {
                     alert("AutoPlay is already activated.\nType 'noAuto' to deactivate it.");
                     autoPlay = true;
                 } else {
-                    alert("AutoPlay Activated!\nType 'noAuto' to deactivate AutoPlay.");
+                    alert("AutoPlay activated!\nType 'noAuto' to deactivate it.");
                     autoPlay = true;
                 }
             }
@@ -700,12 +716,58 @@ function runProgram() {
                             alert("MultiBall activation cancelled." + ((multiBall) ? "\nType 'noMulti' to deactivate MultiBall." : "")); 
                             ballCount = ballCountOld;
                         } else {
-                            alert("MultiBall Activated with " + ballCount + " balls!\nType 'noMulti' to deactivate MultiBall.");
+                            alert("MultiBall activated with " + ballCount + " balls!\nType 'noMulti' to deactivate it.");
                             multiBall = true;
                             restartGame(p2.id);
                         }
                     } else {
                         alert("MultiBall activation cancelled." + ((multiBall) ? "\nType 'noMulti' to deactivate MultiBall." : ""));
+                    }
+                }
+            }
+
+            // SinglePlayer Activation
+            else if (answer === "singlePlayer") {
+                if (cheatMode) {
+                    alert("Cannot activate Single Player Mode because Cheat Mode is activated.\nType 'noCheat' to deactivate it.");
+                    singlePlayer = false;
+                } else if (autoPlay) {
+                    if (confirm("Activating Single Player Mode will deactivate AutoPlay. Continue?")) {
+                        choosePlayer();
+                        if (playerChosen === null) {
+                            alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to activate Single Player Mode.\nType 'noAuto' to deactivate AutoPlay.");
+                            autoPlay = true;
+                            singlePlayer = false;
+                        } else {
+                            alert("Single Player Mode activated!\nType 'multiPlayer' to deactivate it.\n\nAutoPlay deactivated.\nType 'autoPlay' to reactivate it.");
+                            autoPlay = false;
+                            singlePlayer = true;
+                        }
+                    } else {
+                        alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to activate Single Player Mode.\nType 'noAuto' to deactivate AutoPlay.");
+                        autoPlay = true;
+                        singlePlayer = false;
+                    }
+                } else if (singlePlayer) {
+                    if (confirm("Single Player Mode is already activated.\nWould you like to select a different player?")) {
+                        choosePlayer();
+                        if (playerChosen === null) {
+                            alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to choose a different player.\nType 'multiPlayer' to deactivate Single Player Mode.");
+                        } else {
+                            alert("Single Player Mode reactivated!\nType 'multiPlayer' to deactivate it.");
+                            singlePlayer = true;
+                        }
+                    } else {
+                        alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to choose a different player.\nType 'multiPlayer' to deactivate Single Player Mode.");
+                    }
+                } else {
+                    choosePlayer();
+                    if (playerChosen === null) {
+                        alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to activate Single Player Mode.");
+                        singlePlayer = false;
+                    } else {
+                        alert("Single Player Mode activated!\nType 'multiPlayer' to deactivate it.");
+                        singlePlayer = true;
                     }
                 }
             }
@@ -717,7 +779,7 @@ function runProgram() {
                         alert("Cannot deactivate Cheat Mode because the game is not paused.\nPress space to pause the game.");
                         cheatMode = true;
                     } else {
-                        alert("Cheat Mode Deactivated.\nType the password to activate Cheat Mode.");
+                        alert("Cheat Mode deactivated.\nType the password to reactivate it.");
                         cheatMode = false;
                     }
                 } else {
@@ -730,7 +792,7 @@ function runProgram() {
             // FreePlay Deactivation
             else if (answer === "noFree") {
                 if (freePlay) {
-                    alert("FreePlay Deactivated.\nType 'freePlay' to activate FreePlay.");
+                    alert("FreePlay deactivated.\nType 'freePlay' to reactivate it.");
                 } else {
                     alert("FreePlay is already deactivated.\nType 'freePlay' to activate it.");
                 }
@@ -740,7 +802,7 @@ function runProgram() {
             // AutoPlay Deactivation
             else if (answer === "noAuto") {
                 if (autoPlay) {
-                    alert("AutoPlay Deactivated.\nType 'autoPlay' to activate AutoPlay.");
+                    alert("AutoPlay deactivated.\nType 'autoPlay' to reactivate it.");
                     // Snap paddles to a multiple of the pixels per frame speed to prevent
                     // collision between the paddles and wall from being off
                     paddleLeft.y -= paddleLeft.y % PPF;
@@ -755,7 +817,7 @@ function runProgram() {
             else if (answer === "noMulti") {
                 if (multiBall) {
                     if (confirm("Disabling MultiBall will restart the current game. Do you still want to continue?")) {
-                        alert("MultiBall Deactivated.\nType 'multiBall' to activate MultiBall.");
+                        alert("MultiBall deactivated.\nType 'multiBall' to reactivate it.");
                         multiBall = false;
                         restartGame(p2.id);
                     } else {
@@ -765,6 +827,20 @@ function runProgram() {
                     alert("MultiBall is already deactivated.\nType 'multiBall' to activate it.");
                     multiBall = false;
                 }
+            }
+
+            // SinglePlayer Deactivation
+            else if (answer === "multiPlayer") {
+                if (singlePlayer) {
+                    alert("Single Player Mode deactivated\nType 'singlePlayer to reactivate it.")
+                    // Snap paddles to a multiple of the pixels per frame speed to prevent
+                    // collision between the paddles and wall from being off
+                    paddleLeft.y -= paddleLeft.y % PPF;
+                    paddleRight.y -= paddleRight.y % PPF;
+                } else {
+                    alert("Single Player Mode is already deactivated.\nType 'singlePlayer' to activate it.");
+                }
+                singlePlayer = false;
             }
 
             // Pressed Cancel
@@ -777,6 +853,25 @@ function runProgram() {
                 alert("Wrong Password.");
             }
         }
+    }
+
+    function choosePlayer() {
+        do {
+            playerChosen = prompt("Choose a Player:\nP1 or P2");
+            console.log(playerChosen);
+            // Check if the value is null, otherwise convert the value to a lowercase string
+            if (playerChosen === null) {break;}
+            else {playerChosen = playerChosen.toString().toLowerCase();}
+            // Check if the value is "close enough"
+            if (playerChosen === "1" || playerChosen === "player1" || playerChosen === "player 1" || playerChosen === "blue" || playerChosen === "cyan") {
+                playerChosen = "p1";
+            } else if (playerChosen === "2" || playerChosen === "player2" || playerChosen === "player 2" || playerChosen === "red" || playerChosen === "pink") {
+                playerChosen = "p2";
+            }
+            // Check if the value is a valid value
+            if (playerChosen != "p1" && playerChosen != "p2") {alert("Please enter either 'P1' or 'P2'.");}
+            else {alert("Player " + playerChosen.slice(1) + " chosen!");}
+        } while (playerChosen != "p1" && playerChosen != "p2");
     }
 
     function targetBall() {
@@ -1204,6 +1299,17 @@ function runProgram() {
             $("#paddleLeft").css("box-shadow", "0px 0px 0px 3px teal inset");
             $("#paddleRight").css("background-color", "hotpink");
             $("#paddleRight").css("box-shadow", "0px 0px 0px 3px maroon inset");
+        }
+
+        // singlePlayer
+        testMode(singlePlayer);
+    }
+
+    function testMode(mode) {
+        if (mode) {
+            $("body").css("background-color", "hotpink");
+        } else {
+            $("body").css("background-color", "darkgreen");
         }
     }
 
