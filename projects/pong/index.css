@@ -20,11 +20,15 @@ body {
   position: absolute;
 }
 
-#paddleLeft {
+.paddles {
   /* appearance */
   width: 20px;
   height: 80px;
   border-radius: 5px;
+}
+
+#paddleLeft {
+  /* appearance */
   background-color: cyan;
   box-shadow: 0px 0px 0px 3px teal inset;
 
@@ -35,9 +39,6 @@ body {
 
 #paddleRight {
   /* appearance */
-  width: 20px;
-  height: 80px;
-  border-radius: 5px;
   background-color: hotpink;
   box-shadow: 0px 0px 0px 3px maroon inset;
 
@@ -52,6 +53,7 @@ body {
   height: 20px;
   border-radius: 10px;
   background-color: fuchsia;
+  text-align: center;
   
   /* positioning */
   left: 340px;
