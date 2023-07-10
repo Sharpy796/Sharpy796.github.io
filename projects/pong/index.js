@@ -619,12 +619,12 @@ function runProgram() {
     // TODO: Create a constructor function that creates a button with new variables to toggle it with
 
     // TODOING: CREATE A ONE-PLAYER MODE
-    // - One side is controlled
-    // - The other side is automated
-    // - The computer side needs to be consistent with player speed
-    // - Can still use position-predicting code, but make paddle speed static until it has reached +-X of a specific point
-    // - Perhaps remove the wall-bounce predicting feature for added inconsistency
-    // - and include the random y mod for even more inconsistency (make it slightly wider than the paddle)
+    // [x] One side is controlled
+    // [x] The other side is automated
+    // [ ] The computer side needs to be consistent with player speed
+    // [ ] Can still use position-predicting code, but make paddle speed static until it has reached +-X of a specific point
+    // [ ] Perhaps remove the wall-bounce predicting feature for added inconsistency
+    // [ ] and include the random y mod for even more inconsistency (make it slightly wider than the paddle)
 
     // TODO: Create a startup menu for choosing initial game modes
 
