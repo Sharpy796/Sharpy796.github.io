@@ -8,7 +8,7 @@ function runProgram() {
     ////////////////////////////////////////////////////////////////////////////////
 
     // Constant Variables
-    var FRAMES = 60; // default is 60
+    var FRAMES = 30; // default is 60
     var framesPerSecondInterval = 1000 / FRAMES;
     var BORDERS = {
         TOP: 0,
@@ -632,7 +632,7 @@ function runProgram() {
     // TODOING: CREATE A ONE-PLAYER MODE
     // [x] One side is controlled
     // [x] The other side is automated
-    // [ ] The computer side needs to be consistent with player speed
+    // [x] The computer side needs to be consistent with player speed
     // [ ] Can still use position-predicting code, but make paddle speed static until it has reached +-X of a specific point
     // [ ] Perhaps remove the wall-bounce predicting feature for added inconsistency
     // [ ] and include the random y mod for even more inconsistency (make it slightly wider than the paddle)
@@ -1250,13 +1250,14 @@ function runProgram() {
     function moveToPredictedBallPositionSinglePlayer(paddleObj, ballObj) {
         let predictedPosition = predictBallPosition(paddleObj, ballObj);
         let predictedMovement = predictedPosition - paddleObj.y;
-        if (predictedMovement > 0) {predictedMovement += paddleObj.height/2;}
-        else if (predictedMovement < 0) {predictedMovement -= paddleObj.height/2;}
-        else {/*Do Nothing*/}
+        // if (predictedMovement > 0) {predictedMovement += paddleObj.height/2;}
+        // else if (predictedMovement < 0) {predictedMovement -= paddleObj.height/2;}
+        // else {/*Do Nothing*/}
         // Negative predictedMovement: Up
         // Positive predictedMovement: Down
         updateObjectBorders(paddleObj);
         updateObjectBorders(ballObj);
+        // BUG: This position is being miscalculated.
         if (predictedPosition <= (paddleObj.borderTop /*+ paddleObj.height/4*/) || predictedPosition >= (paddleObj.borderBottom /*- paddleObj.height/4*/)) {
             if (predictedMovement > 0) {paddleObj.velocityY = PPF;}
             else if (predictedMovement < 0) {paddleObj.velocityY = -PPF;}
@@ -1265,6 +1266,7 @@ function runProgram() {
         console.log("Border.Top: " + paddleObj.borderTop);
         console.log("PredictedPosition: " + predictedPosition);
         console.log("Border.Bottom: " + paddleObj.borderBottom);
+        console.log(ball0.y)
         console.log("PredictedMovement: " + predictedMovement);
         
     }
