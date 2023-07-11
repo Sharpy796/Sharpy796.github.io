@@ -8,7 +8,7 @@ function runProgram() {
     ////////////////////////////////////////////////////////////////////////////////
 
     // Constant Variables
-    var FRAMES = 30; // default is 60
+    var FRAMES = 60; // default is 60
     var framesPerSecondInterval = 1000 / FRAMES;
     var BORDERS = {
         TOP: 0,
@@ -964,6 +964,7 @@ function runProgram() {
                 bounceBall(ball);
             }
 
+            // BUG: Ball/paddle collisions are broken, somehow
             // handle ball/paddle collisions
             if (doCollide(ball, paddleLeft)) {
                 console.log("ping");
@@ -1056,7 +1057,7 @@ function runProgram() {
             // if it bounced off the paddle's left border...
             if (whichBorder(ball, paddle) === "left") {
                 // bounce the ball left
-                ball.x -= ball.velocityX;
+                ball.x -= PPF;
                 ball.speed.left = PPF;
                 ball.speed.right = 0;
                 // increase the score
@@ -1071,7 +1072,7 @@ function runProgram() {
             // if it bounced off the paddle's right border...
             else if (whichBorder(ball, paddle) === "right") {
                 // bounce the ball right
-                ball.x -= ball.velocityX;
+                ball.x += PPF;
                 ball.speed.right = PPF;
                 ball.speed.left = 0;
                 // increase the score
@@ -1248,7 +1249,11 @@ function runProgram() {
     }
 
     function moveToPredictedBallPositionSinglePlayer(paddleObj, ballObj) {
-        let predictedPosition = predictBallPosition(paddleObj, ballObj);
+        let predictedPosition = predictBallPosition(paddleObj, ballObj) + paddleObj.height/2 - ballObj.height/2;
+        // Snap position to a multiple of the pixels per frame speed to prevent
+        // collision between the paddles and wall from being off, and to prevent
+        // odd collision bugs with the paddle and ball
+        predictedPosition += PPF - (predictedPosition % PPF);
         let predictedMovement = predictedPosition - paddleObj.y;
         // if (predictedMovement > 0) {predictedMovement += paddleObj.height/2;}
         // else if (predictedMovement < 0) {predictedMovement -= paddleObj.height/2;}
@@ -1257,8 +1262,9 @@ function runProgram() {
         // Positive predictedMovement: Down
         updateObjectBorders(paddleObj);
         updateObjectBorders(ballObj);
-        // BUG: This position is being miscalculated.
-        if (predictedPosition <= (paddleObj.borderTop /*+ paddleObj.height/4*/) || predictedPosition >= (paddleObj.borderBottom /*- paddleObj.height/4*/)) {
+        // BUG: The top border is being funky
+        if (predictedPosition < (paddleObj.borderTop + paddleObj.height/4) || predictedPosition > (paddleObj.borderBottom - paddleObj.height/4)) {
+        // if (predictedPosition <= (paddleObj.y /*+ paddleObj.height/4*/) || predictedPosition >= (paddleObj.y + $(paddleObj.id).height() /*- paddleObj.height/4*/)) {
             if (predictedMovement > 0) {paddleObj.velocityY = PPF;}
             else if (predictedMovement < 0) {paddleObj.velocityY = -PPF;}
             else {paddleObj.velocityY = PPF_STOP;}
@@ -1266,8 +1272,10 @@ function runProgram() {
         console.log("Border.Top: " + paddleObj.borderTop);
         console.log("PredictedPosition: " + predictedPosition);
         console.log("Border.Bottom: " + paddleObj.borderBottom);
-        console.log(ball0.y)
+        console.log(ball0.y);
         console.log("PredictedMovement: " + predictedMovement);
+        console.log("Paddle Height: " + $(paddleObj.id).height());
+        console.log("Paddle Velocity: " + paddleObj.velocityY);
         
     }
 
