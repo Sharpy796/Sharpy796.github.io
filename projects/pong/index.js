@@ -8,7 +8,7 @@ function runProgram() {
     ////////////////////////////////////////////////////////////////////////////////
 
     // Constant Variables
-    var FRAMES = 60; // default is 60
+    var FRAMES = 10; // default is 60
     var framesPerSecondInterval = 1000 / FRAMES;
     var BORDERS = {
         TOP: 0,
@@ -135,7 +135,7 @@ function runProgram() {
     var showTelemetryBallNumbers = true;   // Shows each ball's number on the balls
     var showTelemetryMetaData = false;      // Shows the hidden miscellaneous telemetry below the scoreboard.
     var showTelemetryTicks = false;         // Shows the tick count in the console 
-    var showTelemetryFPS = true;           // Shows FPS telemetry in the console
+    var showTelemetryFPS = false;           // Shows FPS telemetry in the console
     var showTelemetryCollision = false;     // Shows collision telemetry
     var showTelemetryVelocity = false;      // Shows velocity telemetry
 
@@ -182,14 +182,18 @@ function runProgram() {
         // Handles colors
         changeColors();
 
-        redrawAllGameItems();
         if (!gameWon) {
             if (!pause) {
-                handleVelocity();
+                console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+                console.log("ball0.speed.left" + ball0.speed.left);
+                console.log("ball0.speed.right" + ball0.speed.right);
+                console.log("ball0.velocityX" + ball0.velocityX);
+                console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
                 repositionAllGameItems();
                 handleCollisions();
             }
         }
+        redrawAllGameItems();
         //else {
         //     if (pageHasHadTimeToRedraw) {
         //         restartGame(p1.id);
@@ -946,6 +950,9 @@ function runProgram() {
     ////////////////////////////////////////////////////////////////////////////////
 
     function handleCollisions() {
+        // update all velocities
+        handleVelocity();
+
         // update object borders
         updateAllObjectBorders();
 
@@ -1054,15 +1061,37 @@ function runProgram() {
             if (whichBorder(ball, paddle) === "left") {
                 // bounce the ball left
                 // FIXME: Ball direction isn't changing if a keydown event is being held.
-                console.log("ONE<<<<<<<<<<<<<<<<<<<<");
                 ball.x -= PPF;
-                console.log("TWO<<<<<<<<<<<<<<<<<<<<");
                 ball.speed.left = PPF;
-                console.log("THREE<<<<<<<<<<<<<<<<<<<<");
                 ball.speed.right = 0;
-                console.log("FOUR<<<<<<<<<<<<<<<<<<<<");
                 // increase the score
                 if (paddle === paddleRight) {
+                    score.bounced++;
+                    if (!multiBall) {
+                        increaseGameSpeed();
+                    }
+                }
+                console.log(ball.id+" bounced " + tellPaddle(paddle) + " paddle's left border");
+            }
+            // if it bounced off the paddle's right border...
+            else if (whichBorder(ball, paddle) === "right") {
+                // BUG: Found out where the collision issue lies. The speeds are updating inside this method, but aren't updating outside this method.
+                // FIXME: Test if this is a "values aren't updating across loops" issue by iterating.
+
+                // bounce the ball right
+                console.log("ONE<<<<<<<<<<<<<<<<<<<<");
+                ball.x += PPF;
+                console.log("TWO<<<<<<<<<<<<<<<<<<<<");
+                console.log("ball.speed.right OLD: " + ball.speed.right);
+                ball.speed.right = PPF;
+                console.log("ball.speed.right NEW: " + ball.speed.right);
+                console.log("THREE<<<<<<<<<<<<<<<<<<<<");
+                console.log("ball.speed.left OLD: " + ball.speed.left);
+                ball.speed.left = 0;
+                console.log("ball.speed.left NEW: " + ball.speed.left);
+                console.log("FOUR<<<<<<<<<<<<<<<<<<<<");
+                // increase the score
+                if (paddle === paddleLeft) {
                     console.log("FIVE<<<<<<<<<<<<<<<<<<<<");
                     score.bounced++;
                     console.log("SIX<<<<<<<<<<<<<<<<<<<<");
@@ -1071,21 +1100,6 @@ function runProgram() {
                         increaseGameSpeed();
                     }
                     console.log("EIGHT<<<<<<<<<<<<<<<<<<<<");
-                }
-                console.log(ball.id+" bounced " + tellPaddle(paddle) + " paddle's left border");
-            }
-            // if it bounced off the paddle's right border...
-            else if (whichBorder(ball, paddle) === "right") {
-                // bounce the ball right
-                ball.x += PPF;
-                ball.speed.right = PPF;
-                ball.speed.left = 0;
-                // increase the score
-                if (paddle === paddleLeft) {
-                    score.bounced++;
-                    if (!multiBall) {
-                        increaseGameSpeed();
-                    }
                 }
                 console.log(ball.id+" bounced " + tellPaddle(paddle) + " paddle's right border");
             }
@@ -1300,6 +1314,10 @@ function runProgram() {
     }
 
     function repositionAllGameItems() {
+        // update all velocities
+        handleVelocity();
+
+        // update the object borders
         updateAllObjectBorders();
 
         // Paddle Repositioning // FIXME: Make singlePlayer mode beatable
