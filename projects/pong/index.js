@@ -105,20 +105,20 @@ function runProgram() {
     // Mode Variables
     var cheatMode = false;
     var firstTimeCheat = true;
-    var freePlay = false;
-    var autoPlay = false;
+    var freePlay = true;
+    var autoPlay = true;
     var multiBall = false;
     var singlePlayer = false;
     var paddleControl = false;
     // MultiBall Variables
-    var ballCount = 2;
-    var ticksPerBall = 50;
+    var ballCount = 10;
+    var ticksPerBall = 45;
     var ballPit = [];
     ballPit.push(ball0);
     var targetedBallLeft = ballNullLeft;
     var targetedBallRight = ballNullRight;
     // SinglePlayer Variables
-    var playerChosen = null;
+    var playerChosen = "p1";
     // Motion Variables
     var xDirection = -1;
     var varVelocityY = 5;
@@ -131,11 +131,11 @@ function runProgram() {
     // Telemetry Variables
     var slowDown = false;                   // Slows down the game at some intervals
     var showTelemetryMultiBall = false;     // Shows MultiBall telemetry
-    var showTelemetryBallBounce = false;    // Makes ball colors change according to the direction they're bouncing
-    var showTelemetryBallNumbers = false;   // Shows each ball's number on the balls
+    var showTelemetryBallBounce = true;    // Makes ball colors change according to the direction they're bouncing
+    var showTelemetryBallNumbers = true;   // Shows each ball's number on the balls
     var showTelemetryMetaData = false;      // Shows the hidden miscellaneous telemetry below the scoreboard.
     var showTelemetryTicks = false;         // Shows the tick count in the console 
-    var showTelemetryFPS = false;           // Shows FPS telemetry in the console
+    var showTelemetryFPS = true;           // Shows FPS telemetry in the console
     var showTelemetryCollision = false;     // Shows collision telemetry
     var showTelemetryVelocity = false;      // Shows velocity telemetry
 
@@ -163,7 +163,7 @@ function runProgram() {
             if (multiBall && ticks%ticksPerBall == 0 && ticks <= ticksPerBall*(ballCount-1)) {
                 createNewBall();
             }
-            targetBall();
+            if (autoPlay || singlePlayer) {targetBall();}
             // Telemetry on the game
             getTelemetryTicks();
             getTelemetryFPS();
@@ -225,13 +225,13 @@ function runProgram() {
                     paddleLeft.speed.up = PPF;
                     console.log("w pressed");
                 } if (keycode === KEY.A) {          // left
-                    if (paddleControl) {paddleLeft.speed.left = PPF;}
+                    // if (paddleControl) {paddleLeft.speed.left = PPF;}
                     console.log("a pressed");
                 } if (keycode === KEY.S) {          // down
                     paddleLeft.speed.down = PPF;
                     console.log("s pressed");
                 } if (keycode === KEY.D) {          // right
-                    if (paddleControl) {paddleLeft.speed.right = PPF;}
+                    // if (paddleControl) {paddleLeft.speed.right = PPF;}
                     console.log("d pressed");
                 }
             }
@@ -242,13 +242,13 @@ function runProgram() {
                     paddleRight.speed.up = PPF;
                     console.log("up pressed");
                 } if (keycode === KEY.LEFT) {       // left
-                    if (paddleControl) {paddleRight.speed.left = PPF;}
+                    // if (paddleControl) {paddleRight.speed.left = PPF;}
                     console.log("left pressed");
                 } if (keycode === KEY.DOWN) {       // down
                     paddleRight.speed.down = PPF;
                     console.log("down pressed");
                 } if (keycode === KEY.RIGHT) {      // right
-                    if (paddleControl) {paddleRight.speed.right = PPF;}
+                    // if (paddleControl) {paddleRight.speed.right = PPF;}
                     console.log("right pressed");
                 }
             }
@@ -648,9 +648,9 @@ function runProgram() {
                 if (autoPlay) {
                     alert("Cannot activate Cheat Mode because AutoPlay is activated.\nType 'noAuto' to deactivate it.");
                     cheatMode = false;
-                } else if (singlePlayer) {
-                    alert("Cannot activate Cheat Mode because Single Player Mode is activated.\nType 'multiPlayer' to deactivate it.");
-                    cheatMode = false;
+                // } else if (singlePlayer) {
+                //     alert("Cannot activate Cheat Mode because Single Player Mode is activated.\nType 'multiPlayer' to deactivate it.");
+                //     cheatMode = false;
                 } else if (multiBall) {
                     alert("Cannot activate Cheat Mode because MultiBall is activated.\nType 'noMulti' to deactivate it.");
                     cheatMode = false;
@@ -681,16 +681,16 @@ function runProgram() {
                 if (cheatMode) {
                     alert("Cannot activate AutoPlay because Cheat Mode is activated.\nType 'noCheat' to deactivate it.");
                     autoPlay = false;
-                } else if (singlePlayer) {
-                    if (confirm("Activating AutoPlay will deactivate Single Player Mode. Continue?")) {
-                        alert("AutoPlay activated!\nType 'noAuto' to deactivate it.\n\nSingle Player Mode deactivated.\nType 'singlePlayer' to reactivate it.");
-                        singlePlayer = false;
-                        autoPlay = true;
-                    } else {
-                        alert("AutoPlay activation cancelled.\nType 'autoPlay' to activate AutoPlay.\nType 'multiPlayer' to deactivate Single Player Mode.");
-                        singlePlayer = true;
-                        autoPlay = false;
-                    }
+                // } else if (singlePlayer) {
+                //     if (confirm("Activating AutoPlay will deactivate Single Player Mode. Continue?")) {
+                //         alert("AutoPlay activated!\nType 'noAuto' to deactivate it.\n\nSingle Player Mode deactivated.\nType 'singlePlayer' to reactivate it.");
+                //         singlePlayer = false;
+                //         autoPlay = true;
+                //     } else {
+                //         alert("AutoPlay activation cancelled.\nType 'autoPlay' to activate AutoPlay.\nType 'multiPlayer' to deactivate Single Player Mode.");
+                //         singlePlayer = true;
+                //         autoPlay = false;
+                //     }
                 } else if (autoPlay) {
                     alert("AutoPlay is already activated.\nType 'noAuto' to deactivate it.");
                     autoPlay = true;
@@ -738,61 +738,61 @@ function runProgram() {
             }
 
             // SinglePlayer Activation
-            else if (answer === "singlePlayer") {
-                if (cheatMode) {
-                    alert("Cannot activate Single Player Mode because Cheat Mode is activated.\nType 'noCheat' to deactivate it.");
-                    singlePlayer = false;
-                } else if (autoPlay) {
-                    if (confirm("Activating Single Player Mode will deactivate AutoPlay. Continue?")) {
-                        choosePlayer();
-                        if (playerChosen === null) {
-                            alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to activate Single Player Mode.\nType 'noAuto' to deactivate AutoPlay.");
-                            autoPlay = true;
-                            singlePlayer = false;
-                        } else {
-                            alert("Single Player Mode activated!\nType 'multiPlayer' to deactivate it.\n\nAutoPlay deactivated.\nType 'autoPlay' to reactivate it.");
-                            autoPlay = false;
-                            singlePlayer = true;
-                        }
-                    } else {
-                        alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to activate Single Player Mode.\nType 'noAuto' to deactivate AutoPlay.");
-                        autoPlay = true;
-                        singlePlayer = false;
-                    }
-                } else if (singlePlayer) {
-                    if (confirm("Single Player Mode is already activated.\nWould you like to select a different player?")) {
-                        choosePlayer();
-                        if (playerChosen === null) {
-                            alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to choose a different player.\nType 'multiPlayer' to deactivate Single Player Mode.");
-                        } else {
-                            alert("Single Player Mode reactivated!\nType 'multiPlayer' to deactivate it.");
-                            singlePlayer = true;
-                        }
-                    } else {
-                        alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to choose a different player.\nType 'multiPlayer' to deactivate Single Player Mode.");
-                    }
-                } else {
-                    choosePlayer();
-                    if (playerChosen === null) {
-                        alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to activate Single Player Mode.");
-                        singlePlayer = false;
-                    } else {
-                        alert("Single Player Mode activated!\nType 'multiPlayer' to deactivate it.");
-                        singlePlayer = true;
-                    }
-                }
-            }
+            // else if (answer === "singlePlayer") {
+            //     if (cheatMode) {
+            //         alert("Cannot activate Single Player Mode because Cheat Mode is activated.\nType 'noCheat' to deactivate it.");
+            //         singlePlayer = false;
+            //     } else if (autoPlay) {
+            //         if (confirm("Activating Single Player Mode will deactivate AutoPlay. Continue?")) {
+            //             choosePlayer();
+            //             if (playerChosen === null) {
+            //                 alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to activate Single Player Mode.\nType 'noAuto' to deactivate AutoPlay.");
+            //                 autoPlay = true;
+            //                 singlePlayer = false;
+            //             } else {
+            //                 alert("Single Player Mode activated!\nType 'multiPlayer' to deactivate it.\n\nAutoPlay deactivated.\nType 'autoPlay' to reactivate it.");
+            //                 autoPlay = false;
+            //                 singlePlayer = true;
+            //             }
+            //         } else {
+            //             alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to activate Single Player Mode.\nType 'noAuto' to deactivate AutoPlay.");
+            //             autoPlay = true;
+            //             singlePlayer = false;
+            //         }
+            //     } else if (singlePlayer) {
+            //         if (confirm("Single Player Mode is already activated.\nWould you like to select a different player?")) {
+            //             choosePlayer();
+            //             if (playerChosen === null) {
+            //                 alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to choose a different player.\nType 'multiPlayer' to deactivate Single Player Mode.");
+            //             } else {
+            //                 alert("Single Player Mode reactivated!\nType 'multiPlayer' to deactivate it.");
+            //                 singlePlayer = true;
+            //             }
+            //         } else {
+            //             alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to choose a different player.\nType 'multiPlayer' to deactivate Single Player Mode.");
+            //         }
+            //     } else {
+            //         choosePlayer();
+            //         if (playerChosen === null) {
+            //             alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to activate Single Player Mode.");
+            //             singlePlayer = false;
+            //         } else {
+            //             alert("Single Player Mode activated!\nType 'multiPlayer' to deactivate it.");
+            //             singlePlayer = true;
+            //         }
+            //     }
+            // }
 
-            // PaddleControl Activation
-            else if (answer === "paddleControl") { // TODONE: add a PaddleControl mode
-                if (paddleControl) {
-                    alert("PaddleControl is already activated. Type 'noPaddle' to deactivate it.");
-                    paddleControl = true;
-                } else {
-                    alert("PaddleControl activated! Type 'noPaddle' to deactivate it.");
-                    paddleControl = true;
-                }
-            }
+            // // PaddleControl Activation
+            // else if (answer === "paddleControl") { // TODONE: add a PaddleControl mode
+            //     if (paddleControl) {
+            //         alert("PaddleControl is already activated. Type 'noPaddle' to deactivate it.");
+            //         paddleControl = true;
+            //     } else {
+            //         alert("PaddleControl activated! Type 'noPaddle' to deactivate it.");
+            //         paddleControl = true;
+            //     }
+            // }
 
             // Cheat Mode Deactivation
             else if (answer === "noCheat") {
@@ -851,29 +851,29 @@ function runProgram() {
                 }
             }
 
-            // SinglePlayer Deactivation
-            else if (answer === "multiPlayer") {
-                if (singlePlayer) {
-                    alert("Single Player Mode deactivated\nType 'singlePlayer to reactivate it.")
-                    // Snap paddles to a multiple of the pixels per frame speed to prevent
-                    // collision between the paddles and wall from being off
-                    paddleLeft.y -= paddleLeft.y % PPF;
-                    paddleRight.y -= paddleRight.y % PPF;
-                } else {
-                    alert("Single Player Mode is already deactivated.\nType 'singlePlayer' to activate it.");
-                }
-                singlePlayer = false;
-            }
+            // // SinglePlayer Deactivation
+            // else if (answer === "multiPlayer") {
+            //     if (singlePlayer) {
+            //         alert("Single Player Mode deactivated\nType 'singlePlayer to reactivate it.")
+            //         // Snap paddles to a multiple of the pixels per frame speed to prevent
+            //         // collision between the paddles and wall from being off
+            //         paddleLeft.y -= paddleLeft.y % PPF;
+            //         paddleRight.y -= paddleRight.y % PPF;
+            //     } else {
+            //         alert("Single Player Mode is already deactivated.\nType 'singlePlayer' to activate it.");
+            //     }
+            //     singlePlayer = false;
+            // }
 
             // PaddleControl Deactivation
-            else if (answer === "noPaddle") {
-                if (paddleControl) {
-                    alert("PaddleControl deactivated.\nType 'paddleControl' to reactivate it.");
-                } else {
-                    alert("PaddleControl is already deactivated.\nType 'paddleControl' to activate it.");
-                }
-                paddleControl = false;
-            }
+            // else if (answer === "noPaddle") {
+            //     if (paddleControl) {
+            //         alert("PaddleControl deactivated.\nType 'paddleControl' to reactivate it.");
+            //     } else {
+            //         alert("PaddleControl is already deactivated.\nType 'paddleControl' to activate it.");
+            //     }
+            //     paddleControl = false;
+            // }
 
             // Pressed Cancel
             else if (answer === null || answer === "") {
@@ -910,22 +910,19 @@ function runProgram() {
     }
 
     function targetBall() {
+        
+        if (targetedBallLeft.velocityX >= 0 ||
+            targetedBallLeft.x <= (paddleLeft.x)
+            ) {
+            targetedBallLeft = ballNullLeft;
+        }
+        if (targetedBallRight.velocityX <= 0 ||
+            targetedBallRight.x >= (paddleRight.x)
+            ) {
+            targetedBallRight = ballNullRight;
+        }
+
         for (let ball of ballPit) {
-
-            if (targetedBallLeft.velocityX >= 0 ||
-                targetedBallLeft.x <= (paddleLeft.x)
-                ) {
-                    targetedBallLeft = ballNullLeft;
-            }
-            if (targetedBallRight.velocityX <= 0 ||
-                targetedBallRight.x >= (paddleRight.x)
-                ) {
-                    targetedBallRight = ballNullRight;
-            }
-
-            if (targetedBallLeft.id == "#ballNull") {signLeft=-1;}
-            if (targetedBallRight.id == "#ballNull") {signRight=-1;}
-
             if (ball.velocityX < 0 && 
                 ball.x > (paddleLeft.x) && 
                 ball.x < targetedBallLeft.x
@@ -960,11 +957,10 @@ function runProgram() {
             // keep the balls in the borders
             enforceNoNoZone(ball);
             // handle ball/wall collisions
-            if (!cheatMode) {
-                bounceBall(ball);
-            }
+            if (!cheatMode) {bounceBall(ball);}
 
-            // BUG: Ball/paddle collisions are broken, somehow
+            // BUG: Ball/paddle collisions are broken. The ball phases through the paddle if another button is being held.
+            // FIXME: I may need to make this code a LOT more efficient.
             // handle ball/paddle collisions
             if (doCollide(ball, paddleLeft)) {
                 console.log("ping");
@@ -1057,15 +1053,24 @@ function runProgram() {
             // if it bounced off the paddle's left border...
             if (whichBorder(ball, paddle) === "left") {
                 // bounce the ball left
+                // FIXME: Ball direction isn't changing if a keydown event is being held.
+                console.log("ONE<<<<<<<<<<<<<<<<<<<<");
                 ball.x -= PPF;
+                console.log("TWO<<<<<<<<<<<<<<<<<<<<");
                 ball.speed.left = PPF;
+                console.log("THREE<<<<<<<<<<<<<<<<<<<<");
                 ball.speed.right = 0;
+                console.log("FOUR<<<<<<<<<<<<<<<<<<<<");
                 // increase the score
                 if (paddle === paddleRight) {
+                    console.log("FIVE<<<<<<<<<<<<<<<<<<<<");
                     score.bounced++;
+                    console.log("SIX<<<<<<<<<<<<<<<<<<<<");
                     if (!multiBall) {
+                        console.log("SEVEN<<<<<<<<<<<<<<<<<<<<");
                         increaseGameSpeed();
                     }
+                    console.log("EIGHT<<<<<<<<<<<<<<<<<<<<");
                 }
                 console.log(ball.id+" bounced " + tellPaddle(paddle) + " paddle's left border");
             }
@@ -1248,36 +1253,46 @@ function runProgram() {
         else {paddleObj.velocityY = predictedMovement / calculatedTime;}
     }
 
-    function moveToPredictedBallPositionSinglePlayer(paddleObj, ballObj) {
-        let predictedPosition = predictBallPosition(paddleObj, ballObj) + paddleObj.height/2 - ballObj.height/2;
-        // Snap position to a multiple of the pixels per frame speed to prevent
-        // collision between the paddles and wall from being off, and to prevent
-        // odd collision bugs with the paddle and ball
-        predictedPosition += PPF - (predictedPosition % PPF);
-        let predictedMovement = predictedPosition - paddleObj.y;
-        // if (predictedMovement > 0) {predictedMovement += paddleObj.height/2;}
-        // else if (predictedMovement < 0) {predictedMovement -= paddleObj.height/2;}
-        // else {/*Do Nothing*/}
-        // Negative predictedMovement: Up
-        // Positive predictedMovement: Down
-        updateObjectBorders(paddleObj);
-        updateObjectBorders(ballObj);
-        // BUG: The top border is being funky
-        if (predictedPosition < (paddleObj.borderTop + paddleObj.height/4) || predictedPosition > (paddleObj.borderBottom - paddleObj.height/4)) {
-        // if (predictedPosition <= (paddleObj.y /*+ paddleObj.height/4*/) || predictedPosition >= (paddleObj.y + $(paddleObj.id).height() /*- paddleObj.height/4*/)) {
-            if (predictedMovement > 0) {paddleObj.velocityY = PPF;}
-            else if (predictedMovement < 0) {paddleObj.velocityY = -PPF;}
-            else {paddleObj.velocityY = PPF_STOP;}
-        }
-        console.log("Border.Top: " + paddleObj.borderTop);
-        console.log("PredictedPosition: " + predictedPosition);
-        console.log("Border.Bottom: " + paddleObj.borderBottom);
-        console.log(ball0.y);
-        console.log("PredictedMovement: " + predictedMovement);
-        console.log("Paddle Height: " + $(paddleObj.id).height());
-        console.log("Paddle Velocity: " + paddleObj.velocityY);
+    // function moveToPredictedBallPositionSinglePlayer(paddleObj, ballObj) {
+    //     let predictedPosition = predictBallPosition(paddleObj, ballObj) + paddleObj.height/2 - ballObj.height/2;
+    //     // Snap position to a multiple of the pixels per frame speed to prevent
+    //     // collision between the paddles and wall from being off, and to prevent
+    //     // odd collision bugs with the paddle and ball
+    //     predictedPosition += PPF - (predictedPosition % PPF);
+    //     let predictedMovement = predictedPosition - paddleObj.y;
+    //     // if (predictedMovement > 0) {predictedMovement += paddleObj.height/2;}
+    //     // else if (predictedMovement < 0) {predictedMovement -= paddleObj.height/2;}
+    //     // else {/*Do Nothing*/}
+    //     // Negative predictedMovement: Up
+    //     // Positive predictedMovement: Down
+    //     updateObjectBorders(paddleObj);
+    //     updateObjectBorders(ballObj);
+    //     // BUG: The top border is being funky
+    //     console.log("------------------");
+    //     console.log("predictedPosition < (paddleObj.borderTop + paddleObj.height/4): " + (predictedPosition < (paddleObj.borderTop + paddleObj.height/4)));
+    //     console.log("paddleObj.borderTop: " + paddleObj.borderTop);
+    //     console.log("paddleObj.height/4: " + paddleObj.height/4);
+    //     console.log("------------------");
+    //     console.log("predictedPosition > (paddleObj.borderBottom - paddleObj.height/4): " + (predictedPosition > (paddleObj.borderBottom - ballObj.height - paddleObj.height/4)));
+    //     console.log("paddleObj.borderBottom: " + paddleObj.borderBottom);
+    //     console.log("paddleObj.height/4: " + paddleObj.height/4);
+    //     console.log("------------------");
+
+    //     // paddleY + 1/4 height, or paddleY + 3/4 height
+    //     if (predictedPosition < (paddleObj.borderTop + paddleObj.height/4) || predictedPosition > (paddleObj.borderTop + paddleObj.height/3 - ballObj.height)) {
+    //         if (predictedMovement > 0) {paddleObj.velocityY = PPF;}
+    //         else if (predictedMovement < 0) {paddleObj.velocityY = -PPF;}
+    //     }
+    //     else {paddleObj.velocityY = PPF_STOP;}
+    //     console.log("Border.Top: " + paddleObj.borderTop);
+    //     console.log("PredictedPosition: " + predictedPosition);
+    //     console.log("Border.Bottom: " + paddleObj.borderBottom);
+    //     console.log(ball0.y);
+    //     console.log("PredictedMovement: " + predictedMovement);
+    //     console.log("Paddle Height: " + $(paddleObj.id).height());
+    //     console.log("Paddle Velocity: " + paddleObj.velocityY);
         
-    }
+    // }
 
     function repositionGameItem(gameItem) {
         gameItem.x += gameItem.velocityX;
@@ -1291,12 +1306,12 @@ function runProgram() {
         if (autoPlay) {
             if (targetedBallLeft.id != "#ballNull") {moveToPredictedBallPositionMultiPlayer(paddleLeft, targetedBallLeft);}
             if (targetedBallRight.id != "#ballNull") {moveToPredictedBallPositionMultiPlayer(paddleRight, targetedBallRight);}
-        } else if (singlePlayer) {
-            if (playerChosen === "p2") {
-                if (targetedBallLeft.id != "#ballNull") {moveToPredictedBallPositionSinglePlayer(paddleLeft, targetedBallLeft);}
-            } else if (playerChosen === "p1") {
-                if (targetedBallRight.id != "#ballNull") {moveToPredictedBallPositionSinglePlayer(paddleRight, targetedBallRight);}
-            }
+        // } else if (singlePlayer) {
+        //     if (playerChosen === "p2") {
+        //         if (targetedBallLeft.id != "#ballNull") {moveToPredictedBallPositionSinglePlayer(paddleLeft, targetedBallLeft);}
+        //     } else if (playerChosen === "p1") {
+        //         if (targetedBallRight.id != "#ballNull") {moveToPredictedBallPositionSinglePlayer(paddleRight, targetedBallRight);}
+        //     }
         }
 
         repositionGameItem(paddleLeft);
@@ -1317,7 +1332,7 @@ function runProgram() {
     // [x] Update the ball colors for when the game is paused
     // [ ] Make a unique visual for when MultiBall is enabled
     // [ ] Make a better pause menu
-    function changeColors() {
+    function changeColors() { // FIXME: Make color changing more efficient. I don't need to constantly change colors; colors need to change the first time certain actions happen.
         // Ball colors
         if (showTelemetryBallBounce) {
             for (let ball of ballPit) {
@@ -1396,30 +1411,38 @@ function runProgram() {
     }
 
     function redrawScoreBoard() {
-        $(".p1TallyMark").css("background-color", "darkblue");
-        $(".p2TallyMark").css("background-color", "maroon");
-        $(".winTallyMark").css("background-color", "limegreen");
-        $(".p1TallyMark").css("box-shadow", "none");
-        $(".p2TallyMark").css("box-shadow", "none");
-        $(".winTallyMark").css("box-shadow", "none");
+        // $(".p1TallyMark").css("background-color", "darkblue");
+        // $(".p2TallyMark").css("background-color", "maroon");
+        // $(".winTallyMark").css("background-color", "limegreen");
+        // $(".p1TallyMark").css("box-shadow", "none");
+        // $(".p2TallyMark").css("box-shadow", "none");
+        // $(".winTallyMark").css("box-shadow", "none");
 
-        for (let i = 1; i <= score.p1; i++) {$("#p1Tally"+i).css("background-color", "blue");}
-        for (let i = 1; i <= score.p2; i++) {$("#p2Tally"+i).css("background-color", "red");}
+        // FIXME: Find a more efficient method of updating the scoreboard
+        $("#p1Tally"+score.p1).css("background-color", "blue");
+        $("#p2Tally"+score.p2).css("background-color", "red");
+        
+        // for (let i = 1; i <= score.p1; i++) {$("#p1Tally"+i).css("background-color", "blue");}
+        // for (let i = 1; i <= score.p2; i++) {$("#p2Tally"+i).css("background-color", "red");}
 
         if (score.p1 >= 10 || score.p2 >= 10) {
             $(".winTallyMark").css("background-color", "lime");
             if (score.p1 == score.p2) {
                 $(".tallyMark").css("box-shadow", "0px 0px 0px 3px violet inset");
                 $(".winTallyMark").css("box-shadow", "0px 0px 0px 3px violet inset");
+                if (score.p1 >= 10) {$(".p1TallyMark").css("background-color", "blue");}
+                if (score.p2 >= 10) {$(".p2TallyMark").css("background-color", "red");}
             } else if (score.p1 > score.p2) {
                 $(".tallyMark").css("box-shadow", "none");
                 $(".p1TallyMark").css("background-color", "lime");
                 $(".p1TallyMark").css("box-shadow", "0px 0px 0px 3px blue inset");
+                if (score.p2 >= 10) {$(".p2TallyMark").css("background-color", "red");}
                 $(".winTallyMark").css("box-shadow", "0px 0px 0px 3px blue inset");
             } else if (score.p2 > score.p1) {
                 $(".tallyMark").css("box-shadow", "none");
                 $(".p2TallyMark").css("background-color", "lime");
                 $(".p2TallyMark").css("box-shadow", "0px 0px 0px 3px red inset");
+                if (score.p1 >= 10) {$(".p1TallyMark").css("background-color", "blue");}
                 $(".winTallyMark").css("box-shadow", "0px 0px 0px 3px red inset");
             }
         }
@@ -1516,6 +1539,7 @@ function runProgram() {
         resetSpeeds(paddleLeft);
         resetSpeeds(paddleRight);
         resetScores();
+        resetScoreBoard();
     }
 
     function resetVariables() {
@@ -1533,6 +1557,15 @@ function runProgram() {
         score.bounced = 0;
         score.p1 = 0;
         score.p2 = 0;
+    }
+
+    function resetScoreBoard() {
+        $(".p1TallyMark").css("background-color", "darkblue");
+        $(".p2TallyMark").css("background-color", "maroon");
+        $(".winTallyMark").css("background-color", "limegreen");
+        $(".p1TallyMark").css("box-shadow", "none");
+        $(".p2TallyMark").css("box-shadow", "none");
+        $(".winTallyMark").css("box-shadow", "none");
     }
 
     function resetSpeeds(obj) {
