@@ -105,8 +105,8 @@ function runProgram() {
     // Mode Variables
     var cheatMode = false;
     var firstTimeCheat = true;
-    var freePlay = false;
-    var autoPlay = false;
+    var freePlay = true;
+    var autoPlay = true;
     var multiBall = false;
     // MultiBall Variables
     var ballCount = 2;
@@ -177,8 +177,7 @@ function runProgram() {
         // Handles colors
         changeColors();
 
-        handleCollisions();
-        redrawAllGameItems();
+        // handleCollisions();
         if (!gameWon) {
             if (!pause) {
                 handleVelocity();
@@ -186,6 +185,7 @@ function runProgram() {
                 handleCollisions();
             }
         }
+        redrawAllGameItems();
         //else {
         //     if (pageHasHadTimeToRedraw) {
         //         restartGame(p1.id);
