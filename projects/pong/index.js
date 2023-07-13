@@ -1061,13 +1061,14 @@ function runProgram() {
             if (whichBorder(ball, paddle) === "left") {
                 // bounce the ball left
                 // FIXME: Ball direction isn't changing if a keydown event is being held.
-                ball.x -= PPF;
+                ball.x -= PPF*2;
                 ball.speed.left = PPF;
                 ball.speed.right = 0;
                 // increase the score
                 if (paddle === paddleRight) {
                     score.bounced++;
-                    if (!multiBall) {
+                    // if (!multiBall) {
+                    if (false) {
                         increaseGameSpeed();
                     }
                 }
@@ -1080,7 +1081,7 @@ function runProgram() {
 
                 // bounce the ball right
                 console.log("ONE<<<<<<<<<<<<<<<<<<<<");
-                ball.x += PPF;
+                ball.x += PPF*2;
                 console.log("TWO<<<<<<<<<<<<<<<<<<<<");
                 console.log("ball.speed.right OLD: " + ball.speed.right);
                 ball.speed.right = PPF;
@@ -1095,7 +1096,8 @@ function runProgram() {
                     console.log("FIVE<<<<<<<<<<<<<<<<<<<<");
                     score.bounced++;
                     console.log("SIX<<<<<<<<<<<<<<<<<<<<");
-                    if (!multiBall) {
+                    // if (!multiBall) {
+                    if (false) {
                         console.log("SEVEN<<<<<<<<<<<<<<<<<<<<");
                         increaseGameSpeed();
                     }
