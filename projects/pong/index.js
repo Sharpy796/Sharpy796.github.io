@@ -131,7 +131,7 @@ function runProgram() {
     var showTelemetryBallBounce = true;    // Makes ball colors change according to the direction they're bouncing
     var showTelemetryBallNumbers = true;   // Shows each ball's number on the balls
     var showTelemetryMetaData = false;      // Shows the hidden miscellaneous telemetry below the scoreboard.
-    var showTelemetryTicks = false;         // Shows the tick count in the console 
+    var showTelemetryTicks = true;         // Shows the tick count in the console 
     var showTelemetryFPS = false;           // Shows FPS telemetry in the console
     var showTelemetryCollision = false;     // Shows collision telemetry
     var showTelemetryVelocity = false;      // Shows velocity telemetry
@@ -365,25 +365,20 @@ function runProgram() {
         if (velocityX < 0) {
             gameObject.speed.left = -velocityX;
             gameObject.speed.right = 0;
-            gameObject.bouncingLeft = true;
         } else {
             gameObject.speed.left = 0;
             gameObject.speed.right = velocityX;
-            gameObject.bouncingLeft = false;
         }
         if (velocityY < 0) {
             gameObject.speed.up = -velocityY;
             gameObject.speed.down = 0;
-            gameObject.bouncingDown = false;
         } else {
             gameObject.speed.up = 0;
             gameObject.speed.down = velocityY;
-            gameObject.bouncingDown = true;
         }
         gameObject.velocityX = gameObject.speed.right - gameObject.speed.left;
         gameObject.velocityY = gameObject.speed.down - gameObject.speed.up;
         if (gameObject.id.includes("#ball")) {
-            gameObject.bouncingDown = false;
             gameObject.firstTimeBouncedPaddle = true;
             gameObject.firstTimeBouncedWall = true;
             gameObject.temporaryVelocity = {}
@@ -391,9 +386,6 @@ function runProgram() {
             gameObject.temporaryVelocity.left = gameObject.speed.left;
             gameObject.temporaryVelocity.down = gameObject.speed.down;
             gameObject.temporaryVelocity.right = gameObject.speed.right;
-            gameObject.test1 = false;
-            gameObject.testing = {};
-            gameObject.testing.test2 = false;
         }
         gameObject.height = $(gameObject.id).height();
         gameObject.width = $(gameObject.id).width();
@@ -1005,34 +997,27 @@ function runProgram() {
         while (obj.borderLeft < BORDERS.LEFT) {
             obj.x -= obj.velocityX;
             updateObjectBorders(obj);
-            console.log(obj.id + " passed left border")
+            console.log(obj.id + " passed left border");
         }
         while (obj.borderTop < BORDERS.TOP) {
             obj.y -= obj.velocityY;
             updateObjectBorders(obj);
-            console.log(obj.id + " passed top border")
+            console.log(obj.id + " passed top border");
         }
         while (obj.borderRight > BORDERS.RIGHT) {
             obj.x -= obj.velocityX;
             updateObjectBorders(obj);
-            console.log(obj.id + " passed right border")
+            console.log(obj.id + " passed right border");
         }
         while (obj.borderBottom > BORDERS.BOTTOM) {
             obj.y -= obj.velocityY;
             updateObjectBorders(obj);
-            console.log(obj.id + " passed bottom border")
+            console.log(obj.id + " passed bottom border");
         }
     }
 
     function bounceBall(ballObj) { // TODO: Add sounds to bounces!!!
         while (ballObj.borderLeft < BORDERS.LEFT) {
-                    console.log("before actualy bouncing <<<<<<<<<<<<<<<<<<<<<<<<<<");
-                    console.log("ball0.speed.left: " + ball0.speed.left);
-                    console.log("ball0.speed.right: " + ball0.speed.right);
-                    console.log("ball0.velocityX: " + ball0.velocityX);
-                    console.log("ball0.test1: " + ball0.test1);
-                    console.log("ball0.testing.test2: " + ball0.testing.test2);
-                    console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
             if (freePlay) {
                 ballObj.speed.right = ballObj.speed.left;
                 ballObj.speed.left = 0;
@@ -1040,18 +1025,9 @@ function runProgram() {
                 ballObj.x += ballObj.velocityX*2;
                 updateObjectBorders(ballObj);
                 console.log(ballObj.id + " passed left border");
-                ballObj.test1 = true;
-                ballObj.testing.test2 = true;
             }
             playerLose(ballObj, p1.id);
-                    console.log(ballObj.id+" bounced left border");
-                    console.log("after actually bouncing <<<<<<<<<<<<<<<<<<<<<<<<<<");
-                    console.log("ball0.speed.left: " + ball0.speed.left);
-                    console.log("ball0.speed.right: " + ball0.speed.right);
-                    console.log("ball0.velocityX: " + ball0.velocityX);
-                    console.log("ball0.test1: " + ball0.test1);
-                    console.log("ball0.testing.test2: " + ball0.testing.test2);
-                    console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+            console.log(ballObj.id+" bounced left border");
         }
         while (ballObj.borderTop < BORDERS.TOP) {
             ballObj.speed.down = ballObj.speed.up;
@@ -1087,78 +1063,6 @@ function runProgram() {
         // }
     }
 
-    // function bounceBall(ballObj) { // TODO: Add sounds to bounces!!!
-    //     while (ballObj.borderLeft < BORDERS.LEFT) {
-    //                 console.log("before actualy bouncing <<<<<<<<<<<<<<<<<<<<<<<<<<");
-    //                 console.log("ball0.speed.left: " + ball0.speed.left);
-    //                 console.log("ball0.speed.right: " + ball0.speed.right);
-    //                 console.log("ball0.velocityX: " + ball0.velocityX);
-    //                 console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-    //         if (freePlay) {
-    //             ballObj.bouncingLeft = false;
-    //             handleBallVelocity(ballObj);
-    //             ballObj.x += ballObj.velocityX*2;
-    //             updateObjectBorders(ballObj);
-    //             console.log(ballObj.id + " passed left border")
-    //         }
-    //         playerLose(ballObj, p1.id);
-    //                 console.log(ballObj.id+" bounced left border");
-    //                 console.log("after actually bouncing <<<<<<<<<<<<<<<<<<<<<<<<<<");
-    //                 console.log("ball0.speed.left: " + ball0.speed.left);
-    //                 console.log("ball0.speed.right: " + ball0.speed.right);
-    //                 console.log("ball0.velocityX: " + ball0.velocityX);
-    //                 console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-    //     }
-    //     while (ballObj.borderTop < BORDERS.TOP) {
-    //         ballObj.bouncingDown = true;
-    //         handleBallVelocity(ballObj);
-    //         ballObj.y += ballObj.velocityY*2;
-    //         updateObjectBorders(ballObj);
-    //         console.log(ballObj.id+" bounced top border");
-    //     }
-    //     while (ballObj.borderRight > BORDERS.RIGHT) {
-    //         if (freePlay) {
-    //             ballObj.bouncingLeft = true;
-    //             handleBallVelocity(ballObj);
-    //             ballObj.x += ballObj.velocityX*2;
-    //             updateObjectBorders(ballObj);
-    //         }
-    //         playerLose(ballObj, p2.id);
-    //         console.log(ballObj.id+" bounced right border");
-    //     }
-    //     while (ballObj.borderBottom > BORDERS.BOTTOM) {
-    //         ballObj.bouncingDown = false;
-    //         handleBallVelocity(ballObj);
-    //         ballObj.y += ballObj.velocityY*2;
-    //         updateObjectBorders(ballObj);
-    //         console.log(ballObj.id+" bounced bottom border");
-    //     }
-
-    //     // else {
-    //         // tell us we still have yet to bounce
-    //         ballObj.firstTimeBouncedWall = true;
-    //     // }
-    // }
-
-    // function handleBallVelocity(ballObj) {
-    //     if (ballObj.bouncingLeft) {
-    //         ballObj.speed.left = PPF;
-    //         ballObj.speed.right = 0;
-    //     } else {
-    //         ballObj.speed.right = PPF;
-    //         ballObj.speed.left = 0;
-    //     }
-
-    //     if (ballObj.bouncingDown) {
-    //         ballObj.speed.down = ballObj.speed.up;
-    //         ballObj.speed.up = 0;
-    //     } else {
-    //         ballObj.speed.up = ballObj.speed.down;
-    //         ballObj.speed.down = 0;
-    //     }
-    //     updateVelocity(ballObj);
-    // }
-
     function handlePaddleCollisions(ball, paddle) {
         // if it is the first time bouncing on one
         if (ball.firstTimeBouncedPaddle) {
@@ -1185,6 +1089,7 @@ function runProgram() {
                 // bounce the ball right
                 ball.x += PPF*2;
                 ball.speed.right = PPF;
+                ball.speed.left = 0;
                 // increase the score
                 if (paddle === paddleLeft) {
                     score.bounced++;
