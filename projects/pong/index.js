@@ -131,7 +131,7 @@ function runProgram() {
     var showTelemetryBallBounce = true;    // Makes ball colors change according to the direction they're bouncing
     var showTelemetryBallNumbers = true;   // Shows each ball's number on the balls
     var showTelemetryMetaData = false;      // Shows the hidden miscellaneous telemetry below the scoreboard.
-    var showTelemetryTicks = true;         // Shows the tick count in the console 
+    var showTelemetryTicks = false;         // Shows the tick count in the console 
     var showTelemetryFPS = false;           // Shows FPS telemetry in the console
     var showTelemetryCollision = false;     // Shows collision telemetry
     var showTelemetryVelocity = false;      // Shows velocity telemetry
@@ -954,6 +954,7 @@ function runProgram() {
 
         // keep the objects in the borders
         // BUG: Infinite loop is caused when paddles get stuck in the wall in AutoPlay
+        // VelocityY is 0 when it gets in there. *That's* why it isn't working
         enforceNoNoZone(paddleLeft);
         enforceNoNoZone(paddleRight);
 
@@ -1010,8 +1011,11 @@ function runProgram() {
             console.log(obj.id + " passed right border");
         }
         while (obj.borderBottom > BORDERS.BOTTOM) {
+            console.log("old " + obj.id + ".y: " + obj.y);
+            console.log(obj.id + " velocityY: " + obj.velocityY);
             obj.y -= obj.velocityY;
             updateObjectBorders(obj);
+            console.log("new " + obj.id + ".y: " + obj.y);
             console.log(obj.id + " passed bottom border");
         }
     }
