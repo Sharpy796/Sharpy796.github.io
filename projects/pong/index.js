@@ -1001,7 +1001,11 @@ function runProgram() {
             console.log(obj.id + " passed left border");
         }
         while (obj.borderTop < BORDERS.TOP) {
-            obj.y -= obj.velocityY;
+            if (autoPlay) {
+                obj.x = BORDERS.TOP;
+            } else {
+                obj.y -= obj.velocityY;
+            }
             updateObjectBorders(obj);
             console.log(obj.id + " passed top border");
         }
@@ -1011,11 +1015,18 @@ function runProgram() {
             console.log(obj.id + " passed right border");
         }
         while (obj.borderBottom > BORDERS.BOTTOM) {
-            console.log("old " + obj.id + ".y: " + obj.y);
-            console.log(obj.id + " velocityY: " + obj.velocityY);
-            obj.y -= obj.velocityY;
-            updateObjectBorders(obj);
-            console.log("new " + obj.id + ".y: " + obj.y);
+            if (autoPlay) {
+                console.log("old " + obj.id + ".y: " + obj.y);
+                obj.x = BORDERS.BOTTOM - obj.height;
+                console.log("new " + obj.id + ".y: " + obj.y);
+                updateObjectBorders(obj);
+            } else {
+                console.log("old " + obj.id + ".y: " + obj.y);
+                console.log(obj.id + " velocityY: " + obj.velocityY);
+                obj.y -= obj.velocityY;
+                updateObjectBorders(obj);
+                console.log("new " + obj.id + ".y: " + obj.y);
+            }
             console.log(obj.id + " passed bottom border");
         }
     }
