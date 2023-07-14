@@ -8,7 +8,7 @@ function runProgram() {
     ////////////////////////////////////////////////////////////////////////////////
 
     // Constant Variables
-    var FRAMES = 10; // default is 60
+    var FRAMES = 60; // default is 60
     var framesPerSecondInterval = 1000 / FRAMES;
     var BORDERS = {
         TOP: 0,
@@ -99,9 +99,6 @@ function runProgram() {
     var pause = false;
     var spaceIsDown = false
     var firstTimePaused = true;
-    // Collision Variables
-    var firstTimeBouncedPaddle = true;
-    var firstTimeBouncedWall = true;
     // Mode Variables
     var cheatMode = false;
     var firstTimeCheat = true;
@@ -184,11 +181,6 @@ function runProgram() {
 
         if (!gameWon) {
             if (!pause) {
-                console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-                console.log("ball0.speed.left" + ball0.speed.left);
-                console.log("ball0.speed.right" + ball0.speed.right);
-                console.log("ball0.velocityX" + ball0.velocityX);
-                console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
                 repositionAllGameItems();
                 handleCollisions();
             }
@@ -229,13 +221,13 @@ function runProgram() {
                     paddleLeft.speed.up = PPF;
                     console.log("w pressed");
                 } if (keycode === KEY.A) {          // left
-                    // if (paddleControl) {paddleLeft.speed.left = PPF;}
+                    if (paddleControl) {paddleLeft.speed.left = PPF;}
                     console.log("a pressed");
                 } if (keycode === KEY.S) {          // down
                     paddleLeft.speed.down = PPF;
                     console.log("s pressed");
                 } if (keycode === KEY.D) {          // right
-                    // if (paddleControl) {paddleLeft.speed.right = PPF;}
+                    if (paddleControl) {paddleLeft.speed.right = PPF;}
                     console.log("d pressed");
                 }
             }
@@ -246,13 +238,13 @@ function runProgram() {
                     paddleRight.speed.up = PPF;
                     console.log("up pressed");
                 } if (keycode === KEY.LEFT) {       // left
-                    // if (paddleControl) {paddleRight.speed.left = PPF;}
+                    if (paddleControl) {paddleRight.speed.left = PPF;}
                     console.log("left pressed");
                 } if (keycode === KEY.DOWN) {       // down
                     paddleRight.speed.down = PPF;
                     console.log("down pressed");
                 } if (keycode === KEY.RIGHT) {      // right
-                    // if (paddleControl) {paddleRight.speed.right = PPF;}
+                    if (paddleControl) {paddleRight.speed.right = PPF;}
                     console.log("right pressed");
                 }
             }
@@ -265,8 +257,8 @@ function runProgram() {
                 ball0.speed.left = 0;
                 ball0.speed.down = 0;
                 ball0.speed.right = 0;
-            }
-            firstTimeCheat = false;
+                updateVelocity(ball0);
+            } firstTimeCheat = false;
             if (keycode === KEY.U) {        // up
                 ball0.speed.up = PPF;
                 console.log("u pressed");
@@ -281,11 +273,13 @@ function runProgram() {
                 console.log("k pressed");
             }
         } else {
-            ball0.speed.up = ball0.temporaryVelocity.up;
-            ball0.speed.left = ball0.temporaryVelocity.left;
-            ball0.speed.down = ball0.temporaryVelocity.down;
-            ball0.speed.right = ball0.temporaryVelocity.right;
-            firstTimeCheat = true;
+            if (!firstTimeCheat) {
+                ball0.speed.up = ball0.temporaryVelocity.up;
+                ball0.speed.left = ball0.temporaryVelocity.left;
+                ball0.speed.down = ball0.temporaryVelocity.down;
+                ball0.speed.right = ball0.temporaryVelocity.right;
+                updateVelocity(ball0);
+            } firstTimeCheat = true;
         }
 
     }
@@ -371,27 +365,35 @@ function runProgram() {
         if (velocityX < 0) {
             gameObject.speed.left = -velocityX;
             gameObject.speed.right = 0;
+            gameObject.bouncingLeft = true;
         } else {
             gameObject.speed.left = 0;
             gameObject.speed.right = velocityX;
+            gameObject.bouncingLeft = false;
         }
         if (velocityY < 0) {
             gameObject.speed.up = -velocityY;
             gameObject.speed.down = 0;
+            gameObject.bouncingDown = false;
         } else {
             gameObject.speed.up = 0;
             gameObject.speed.down = velocityY;
+            gameObject.bouncingDown = true;
         }
-        gameObject.velocityX = gameObject.speed.left + gameObject.speed.right;
-        gameObject.velocityY = gameObject.speed.up + gameObject.speed.down;
+        gameObject.velocityX = gameObject.speed.right - gameObject.speed.left;
+        gameObject.velocityY = gameObject.speed.down - gameObject.speed.up;
         if (gameObject.id.includes("#ball")) {
+            gameObject.bouncingDown = false;
+            gameObject.firstTimeBouncedPaddle = true;
+            gameObject.firstTimeBouncedWall = true;
             gameObject.temporaryVelocity = {}
             gameObject.temporaryVelocity.up = gameObject.speed.up;
             gameObject.temporaryVelocity.left = gameObject.speed.left;
             gameObject.temporaryVelocity.down = gameObject.speed.down;
             gameObject.temporaryVelocity.right = gameObject.speed.right;
-            gameObject.firstTimeBouncedPaddle = true;
-            gameObject.firstTimeBouncedWall = true;
+            gameObject.test1 = false;
+            gameObject.testing = {};
+            gameObject.testing.test2 = false;
         }
         gameObject.height = $(gameObject.id).height();
         gameObject.width = $(gameObject.id).width();
@@ -552,20 +554,22 @@ function runProgram() {
     ////////////////////////// VELOCITY FUNCTIONS //////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
 
-    function handleVelocity() {
+    function updateAllVelocities() {
         // p1 Velocity
-        paddleLeft.velocityX = paddleLeft.speed.right - paddleLeft.speed.left;
-        paddleLeft.velocityY = paddleLeft.speed.down - paddleLeft.speed.up;
+        updateVelocity(paddleLeft);
 
         // p2 Velocity
-        paddleRight.velocityX = paddleRight.speed.right - paddleRight.speed.left;
-        paddleRight.velocityY = paddleRight.speed.down - paddleRight.speed.up;
+        updateVelocity(paddleRight);
 
         // ballPit Velocity
         for (let ball of ballPit) {
-            ball.velocityX = ball.speed.right - ball.speed.left;
-            ball.velocityY = ball.speed.down - ball.speed.up;
+            updateVelocity(ball);
         }
+    }
+
+    function updateVelocity(obj) {
+        obj.velocityX = obj.speed.right - obj.speed.left;
+        obj.velocityY = obj.speed.down - obj.speed.up;
     }
 
     function updateTemporaryVelocity(ballObj) {
@@ -652,9 +656,9 @@ function runProgram() {
                 if (autoPlay) {
                     alert("Cannot activate Cheat Mode because AutoPlay is activated.\nType 'noAuto' to deactivate it.");
                     cheatMode = false;
-                // } else if (singlePlayer) {
-                //     alert("Cannot activate Cheat Mode because Single Player Mode is activated.\nType 'multiPlayer' to deactivate it.");
-                //     cheatMode = false;
+                } else if (singlePlayer) {
+                    alert("Cannot activate Cheat Mode because Single Player Mode is activated.\nType 'multiPlayer' to deactivate it.");
+                    cheatMode = false;
                 } else if (multiBall) {
                     alert("Cannot activate Cheat Mode because MultiBall is activated.\nType 'noMulti' to deactivate it.");
                     cheatMode = false;
@@ -685,16 +689,16 @@ function runProgram() {
                 if (cheatMode) {
                     alert("Cannot activate AutoPlay because Cheat Mode is activated.\nType 'noCheat' to deactivate it.");
                     autoPlay = false;
-                // } else if (singlePlayer) {
-                //     if (confirm("Activating AutoPlay will deactivate Single Player Mode. Continue?")) {
-                //         alert("AutoPlay activated!\nType 'noAuto' to deactivate it.\n\nSingle Player Mode deactivated.\nType 'singlePlayer' to reactivate it.");
-                //         singlePlayer = false;
-                //         autoPlay = true;
-                //     } else {
-                //         alert("AutoPlay activation cancelled.\nType 'autoPlay' to activate AutoPlay.\nType 'multiPlayer' to deactivate Single Player Mode.");
-                //         singlePlayer = true;
-                //         autoPlay = false;
-                //     }
+                } else if (singlePlayer) {
+                    if (confirm("Activating AutoPlay will deactivate Single Player Mode. Continue?")) {
+                        alert("AutoPlay activated!\nType 'noAuto' to deactivate it.\n\nSingle Player Mode deactivated.\nType 'singlePlayer' to reactivate it.");
+                        singlePlayer = false;
+                        autoPlay = true;
+                    } else {
+                        alert("AutoPlay activation cancelled.\nType 'autoPlay' to activate AutoPlay.\nType 'multiPlayer' to deactivate Single Player Mode.");
+                        singlePlayer = true;
+                        autoPlay = false;
+                    }
                 } else if (autoPlay) {
                     alert("AutoPlay is already activated.\nType 'noAuto' to deactivate it.");
                     autoPlay = true;
@@ -742,61 +746,61 @@ function runProgram() {
             }
 
             // SinglePlayer Activation
-            // else if (answer === "singlePlayer") {
-            //     if (cheatMode) {
-            //         alert("Cannot activate Single Player Mode because Cheat Mode is activated.\nType 'noCheat' to deactivate it.");
-            //         singlePlayer = false;
-            //     } else if (autoPlay) {
-            //         if (confirm("Activating Single Player Mode will deactivate AutoPlay. Continue?")) {
-            //             choosePlayer();
-            //             if (playerChosen === null) {
-            //                 alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to activate Single Player Mode.\nType 'noAuto' to deactivate AutoPlay.");
-            //                 autoPlay = true;
-            //                 singlePlayer = false;
-            //             } else {
-            //                 alert("Single Player Mode activated!\nType 'multiPlayer' to deactivate it.\n\nAutoPlay deactivated.\nType 'autoPlay' to reactivate it.");
-            //                 autoPlay = false;
-            //                 singlePlayer = true;
-            //             }
-            //         } else {
-            //             alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to activate Single Player Mode.\nType 'noAuto' to deactivate AutoPlay.");
-            //             autoPlay = true;
-            //             singlePlayer = false;
-            //         }
-            //     } else if (singlePlayer) {
-            //         if (confirm("Single Player Mode is already activated.\nWould you like to select a different player?")) {
-            //             choosePlayer();
-            //             if (playerChosen === null) {
-            //                 alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to choose a different player.\nType 'multiPlayer' to deactivate Single Player Mode.");
-            //             } else {
-            //                 alert("Single Player Mode reactivated!\nType 'multiPlayer' to deactivate it.");
-            //                 singlePlayer = true;
-            //             }
-            //         } else {
-            //             alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to choose a different player.\nType 'multiPlayer' to deactivate Single Player Mode.");
-            //         }
-            //     } else {
-            //         choosePlayer();
-            //         if (playerChosen === null) {
-            //             alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to activate Single Player Mode.");
-            //             singlePlayer = false;
-            //         } else {
-            //             alert("Single Player Mode activated!\nType 'multiPlayer' to deactivate it.");
-            //             singlePlayer = true;
-            //         }
-            //     }
-            // }
+            else if (answer === "singlePlayer") {
+                if (cheatMode) {
+                    alert("Cannot activate Single Player Mode because Cheat Mode is activated.\nType 'noCheat' to deactivate it.");
+                    singlePlayer = false;
+                } else if (autoPlay) {
+                    if (confirm("Activating Single Player Mode will deactivate AutoPlay. Continue?")) {
+                        choosePlayer();
+                        if (playerChosen === null) {
+                            alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to activate Single Player Mode.\nType 'noAuto' to deactivate AutoPlay.");
+                            autoPlay = true;
+                            singlePlayer = false;
+                        } else {
+                            alert("Single Player Mode activated!\nType 'multiPlayer' to deactivate it.\n\nAutoPlay deactivated.\nType 'autoPlay' to reactivate it.");
+                            autoPlay = false;
+                            singlePlayer = true;
+                        }
+                    } else {
+                        alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to activate Single Player Mode.\nType 'noAuto' to deactivate AutoPlay.");
+                        autoPlay = true;
+                        singlePlayer = false;
+                    }
+                } else if (singlePlayer) {
+                    if (confirm("Single Player Mode is already activated.\nWould you like to select a different player?")) {
+                        choosePlayer();
+                        if (playerChosen === null) {
+                            alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to choose a different player.\nType 'multiPlayer' to deactivate Single Player Mode.");
+                        } else {
+                            alert("Single Player Mode reactivated!\nType 'multiPlayer' to deactivate it.");
+                            singlePlayer = true;
+                        }
+                    } else {
+                        alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to choose a different player.\nType 'multiPlayer' to deactivate Single Player Mode.");
+                    }
+                } else {
+                    choosePlayer();
+                    if (playerChosen === null) {
+                        alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to activate Single Player Mode.");
+                        singlePlayer = false;
+                    } else {
+                        alert("Single Player Mode activated!\nType 'multiPlayer' to deactivate it.");
+                        singlePlayer = true;
+                    }
+                }
+            }
 
-            // // PaddleControl Activation
-            // else if (answer === "paddleControl") { // TODONE: add a PaddleControl mode
-            //     if (paddleControl) {
-            //         alert("PaddleControl is already activated. Type 'noPaddle' to deactivate it.");
-            //         paddleControl = true;
-            //     } else {
-            //         alert("PaddleControl activated! Type 'noPaddle' to deactivate it.");
-            //         paddleControl = true;
-            //     }
-            // }
+            // PaddleControl Activation
+            else if (answer === "paddleControl") { // TODONE: add a PaddleControl mode
+                if (paddleControl) {
+                    alert("PaddleControl is already activated. Type 'noPaddle' to deactivate it.");
+                    paddleControl = true;
+                } else {
+                    alert("PaddleControl activated! Type 'noPaddle' to deactivate it.");
+                    paddleControl = true;
+                }
+            }
 
             // Cheat Mode Deactivation
             else if (answer === "noCheat") {
@@ -829,8 +833,8 @@ function runProgram() {
             else if (answer === "noAuto") {
                 if (autoPlay) {
                     alert("AutoPlay deactivated.\nType 'autoPlay' to reactivate it.");
-                    // Snap paddles to a multiple of the pixels per frame speed to prevent
-                    // collision between the paddles and wall from being off
+                    // Snap paddles to a multiple of the pixels per frame speed to 
+                    // prevent collision between the paddles and wall from being off
                     paddleLeft.y -= paddleLeft.y % PPF;
                     paddleRight.y -= paddleRight.y % PPF;
                 } else {
@@ -855,29 +859,29 @@ function runProgram() {
                 }
             }
 
-            // // SinglePlayer Deactivation
-            // else if (answer === "multiPlayer") {
-            //     if (singlePlayer) {
-            //         alert("Single Player Mode deactivated\nType 'singlePlayer to reactivate it.")
-            //         // Snap paddles to a multiple of the pixels per frame speed to prevent
-            //         // collision between the paddles and wall from being off
-            //         paddleLeft.y -= paddleLeft.y % PPF;
-            //         paddleRight.y -= paddleRight.y % PPF;
-            //     } else {
-            //         alert("Single Player Mode is already deactivated.\nType 'singlePlayer' to activate it.");
-            //     }
-            //     singlePlayer = false;
-            // }
+            // SinglePlayer Deactivation
+            else if (answer === "multiPlayer") {
+                if (singlePlayer) {
+                    alert("Single Player Mode deactivated\nType 'singlePlayer to reactivate it.")
+                    // Snap paddles to a multiple of the pixels per frame speed to 
+                    // prevent collision between the paddles and wall from being off
+                    paddleLeft.y -= paddleLeft.y % PPF;
+                    paddleRight.y -= paddleRight.y % PPF;
+                } else {
+                    alert("Single Player Mode is already deactivated.\nType 'singlePlayer' to activate it.");
+                }
+                singlePlayer = false;
+            }
 
             // PaddleControl Deactivation
-            // else if (answer === "noPaddle") {
-            //     if (paddleControl) {
-            //         alert("PaddleControl deactivated.\nType 'paddleControl' to reactivate it.");
-            //     } else {
-            //         alert("PaddleControl is already deactivated.\nType 'paddleControl' to activate it.");
-            //     }
-            //     paddleControl = false;
-            // }
+            else if (answer === "noPaddle") {
+                if (paddleControl) {
+                    alert("PaddleControl deactivated.\nType 'paddleControl' to reactivate it.");
+                } else {
+                    alert("PaddleControl is already deactivated.\nType 'paddleControl' to activate it.");
+                }
+                paddleControl = false;
+            }
 
             // Pressed Cancel
             else if (answer === null || answer === "") {
@@ -951,23 +955,20 @@ function runProgram() {
 
     function handleCollisions() {
         // update all velocities
-        handleVelocity();
+        updateAllVelocities();
 
         // update object borders
         updateAllObjectBorders();
 
         // keep the objects in the borders
+        // BUG: Infinite loop is caused when paddles get stuck in the wall in AutoPlay
         enforceNoNoZone(paddleLeft);
         enforceNoNoZone(paddleRight);
 
         for (let ball of ballPit) {
-            // keep the balls in the borders
-            enforceNoNoZone(ball);
             // handle ball/wall collisions
             if (!cheatMode) {bounceBall(ball);}
 
-            // BUG: Ball/paddle collisions are broken. The ball phases through the paddle if another button is being held.
-            // FIXME: I may need to make this code a LOT more efficient.
             // handle ball/paddle collisions
             if (doCollide(ball, paddleLeft)) {
                 console.log("ping");
@@ -1001,56 +1002,162 @@ function runProgram() {
     }
 
     function enforceNoNoZone(obj) {
-        if (obj.borderLeft < BORDERS.LEFT) {
+        while (obj.borderLeft < BORDERS.LEFT) {
             obj.x -= obj.velocityX;
+            updateObjectBorders(obj);
             console.log(obj.id + " passed left border")
         }
-        if (obj.borderTop < BORDERS.TOP) {
+        while (obj.borderTop < BORDERS.TOP) {
             obj.y -= obj.velocityY;
+            updateObjectBorders(obj);
             console.log(obj.id + " passed top border")
         }
-        if (obj.borderRight > BORDERS.RIGHT) {
+        while (obj.borderRight > BORDERS.RIGHT) {
             obj.x -= obj.velocityX;
+            updateObjectBorders(obj);
             console.log(obj.id + " passed right border")
         }
-        if (obj.borderBottom > BORDERS.BOTTOM) {
+        while (obj.borderBottom > BORDERS.BOTTOM) {
             obj.y -= obj.velocityY;
+            updateObjectBorders(obj);
             console.log(obj.id + " passed bottom border")
         }
     }
 
     function bounceBall(ballObj) { // TODO: Add sounds to bounces!!!
-        if (ballObj.borderLeft < BORDERS.LEFT) {
+        while (ballObj.borderLeft < BORDERS.LEFT) {
+                    console.log("before actualy bouncing <<<<<<<<<<<<<<<<<<<<<<<<<<");
+                    console.log("ball0.speed.left: " + ball0.speed.left);
+                    console.log("ball0.speed.right: " + ball0.speed.right);
+                    console.log("ball0.velocityX: " + ball0.velocityX);
+                    console.log("ball0.test1: " + ball0.test1);
+                    console.log("ball0.testing.test2: " + ball0.testing.test2);
+                    console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
             if (freePlay) {
                 ballObj.speed.right = ballObj.speed.left;
                 ballObj.speed.left = 0;
+                updateVelocity(ballObj);
+                ballObj.x += ballObj.velocityX*2;
+                updateObjectBorders(ballObj);
+                console.log(ballObj.id + " passed left border");
+                ballObj.test1 = true;
+                ballObj.testing.test2 = true;
             }
             playerLose(ballObj, p1.id);
-            console.log(ballObj.id+" bounced left border");
+                    console.log(ballObj.id+" bounced left border");
+                    console.log("after actually bouncing <<<<<<<<<<<<<<<<<<<<<<<<<<");
+                    console.log("ball0.speed.left: " + ball0.speed.left);
+                    console.log("ball0.speed.right: " + ball0.speed.right);
+                    console.log("ball0.velocityX: " + ball0.velocityX);
+                    console.log("ball0.test1: " + ball0.test1);
+                    console.log("ball0.testing.test2: " + ball0.testing.test2);
+                    console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
         }
-        else if (ballObj.borderTop < BORDERS.TOP) {
+        while (ballObj.borderTop < BORDERS.TOP) {
             ballObj.speed.down = ballObj.speed.up;
             ballObj.speed.up = 0;
+            updateVelocity(ballObj);
+            ballObj.y += ballObj.velocityY*2;
+            updateObjectBorders(ballObj);
             console.log(ballObj.id+" bounced top border");
         }
-        else if (ballObj.borderRight > BORDERS.RIGHT) {
+        while (ballObj.borderRight > BORDERS.RIGHT) {
             if (freePlay) {
                 ballObj.speed.left = ballObj.speed.right;
                 ballObj.speed.right = 0;
+                updateVelocity(ballObj);
+                ballObj.x += ballObj.velocityX*2;
+                updateObjectBorders(ballObj);
             }
             playerLose(ballObj, p2.id);
             console.log(ballObj.id+" bounced right border");
         }
-        else if (ballObj.borderBottom > BORDERS.BOTTOM) {
+        while (ballObj.borderBottom > BORDERS.BOTTOM) {
             ballObj.speed.up = ballObj.speed.down;
             ballObj.speed.down = 0;
+            updateVelocity(ballObj);
+            ballObj.y += ballObj.velocityY*2;
+            updateObjectBorders(ballObj);
             console.log(ballObj.id+" bounced bottom border");
         }
-        else {
+
+        // else {
             // tell us we still have yet to bounce
             ballObj.firstTimeBouncedWall = true;
-        }
+        // }
     }
+
+    // function bounceBall(ballObj) { // TODO: Add sounds to bounces!!!
+    //     while (ballObj.borderLeft < BORDERS.LEFT) {
+    //                 console.log("before actualy bouncing <<<<<<<<<<<<<<<<<<<<<<<<<<");
+    //                 console.log("ball0.speed.left: " + ball0.speed.left);
+    //                 console.log("ball0.speed.right: " + ball0.speed.right);
+    //                 console.log("ball0.velocityX: " + ball0.velocityX);
+    //                 console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    //         if (freePlay) {
+    //             ballObj.bouncingLeft = false;
+    //             handleBallVelocity(ballObj);
+    //             ballObj.x += ballObj.velocityX*2;
+    //             updateObjectBorders(ballObj);
+    //             console.log(ballObj.id + " passed left border")
+    //         }
+    //         playerLose(ballObj, p1.id);
+    //                 console.log(ballObj.id+" bounced left border");
+    //                 console.log("after actually bouncing <<<<<<<<<<<<<<<<<<<<<<<<<<");
+    //                 console.log("ball0.speed.left: " + ball0.speed.left);
+    //                 console.log("ball0.speed.right: " + ball0.speed.right);
+    //                 console.log("ball0.velocityX: " + ball0.velocityX);
+    //                 console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    //     }
+    //     while (ballObj.borderTop < BORDERS.TOP) {
+    //         ballObj.bouncingDown = true;
+    //         handleBallVelocity(ballObj);
+    //         ballObj.y += ballObj.velocityY*2;
+    //         updateObjectBorders(ballObj);
+    //         console.log(ballObj.id+" bounced top border");
+    //     }
+    //     while (ballObj.borderRight > BORDERS.RIGHT) {
+    //         if (freePlay) {
+    //             ballObj.bouncingLeft = true;
+    //             handleBallVelocity(ballObj);
+    //             ballObj.x += ballObj.velocityX*2;
+    //             updateObjectBorders(ballObj);
+    //         }
+    //         playerLose(ballObj, p2.id);
+    //         console.log(ballObj.id+" bounced right border");
+    //     }
+    //     while (ballObj.borderBottom > BORDERS.BOTTOM) {
+    //         ballObj.bouncingDown = false;
+    //         handleBallVelocity(ballObj);
+    //         ballObj.y += ballObj.velocityY*2;
+    //         updateObjectBorders(ballObj);
+    //         console.log(ballObj.id+" bounced bottom border");
+    //     }
+
+    //     // else {
+    //         // tell us we still have yet to bounce
+    //         ballObj.firstTimeBouncedWall = true;
+    //     // }
+    // }
+
+    // function handleBallVelocity(ballObj) {
+    //     if (ballObj.bouncingLeft) {
+    //         ballObj.speed.left = PPF;
+    //         ballObj.speed.right = 0;
+    //     } else {
+    //         ballObj.speed.right = PPF;
+    //         ballObj.speed.left = 0;
+    //     }
+
+    //     if (ballObj.bouncingDown) {
+    //         ballObj.speed.down = ballObj.speed.up;
+    //         ballObj.speed.up = 0;
+    //     } else {
+    //         ballObj.speed.up = ballObj.speed.down;
+    //         ballObj.speed.down = 0;
+    //     }
+    //     updateVelocity(ballObj);
+    // }
 
     function handlePaddleCollisions(ball, paddle) {
         // if it is the first time bouncing on one
@@ -1060,14 +1167,13 @@ function runProgram() {
             // if it bounced off the paddle's left border...
             if (whichBorder(ball, paddle) === "left") {
                 // bounce the ball left
-                // FIXME: Ball direction isn't changing if a keydown event is being held.
                 ball.x -= PPF*2;
                 ball.speed.left = PPF;
                 ball.speed.right = 0;
                 // increase the score
                 if (paddle === paddleRight) {
                     score.bounced++;
-                    // if (!multiBall) {
+                    // if (!multiBall) { // FIXME: Put this back
                     if (false) {
                         increaseGameSpeed();
                     }
@@ -1076,32 +1182,16 @@ function runProgram() {
             }
             // if it bounced off the paddle's right border...
             else if (whichBorder(ball, paddle) === "right") {
-                // BUG: Found out where the collision issue lies. The speeds are updating inside this method, but aren't updating outside this method.
-                // FIXME: Test if this is a "values aren't updating across loops" issue by iterating.
-
                 // bounce the ball right
-                console.log("ONE<<<<<<<<<<<<<<<<<<<<");
                 ball.x += PPF*2;
-                console.log("TWO<<<<<<<<<<<<<<<<<<<<");
-                console.log("ball.speed.right OLD: " + ball.speed.right);
                 ball.speed.right = PPF;
-                console.log("ball.speed.right NEW: " + ball.speed.right);
-                console.log("THREE<<<<<<<<<<<<<<<<<<<<");
-                console.log("ball.speed.left OLD: " + ball.speed.left);
-                ball.speed.left = 0;
-                console.log("ball.speed.left NEW: " + ball.speed.left);
-                console.log("FOUR<<<<<<<<<<<<<<<<<<<<");
                 // increase the score
                 if (paddle === paddleLeft) {
-                    console.log("FIVE<<<<<<<<<<<<<<<<<<<<");
                     score.bounced++;
-                    console.log("SIX<<<<<<<<<<<<<<<<<<<<");
-                    // if (!multiBall) {
+                    // if (!multiBall) { // FIXME: Put this back
                     if (false) {
-                        console.log("SEVEN<<<<<<<<<<<<<<<<<<<<");
                         increaseGameSpeed();
                     }
-                    console.log("EIGHT<<<<<<<<<<<<<<<<<<<<");
                 }
                 console.log(ball.id+" bounced " + tellPaddle(paddle) + " paddle's right border");
             }
@@ -1264,9 +1354,20 @@ function runProgram() {
     function moveToPredictedBallPositionMultiPlayer(paddleObj, ballObj) {
         let predictedMovement = predictBallPosition(paddleObj, ballObj) - paddleObj.y;
         let calculatedTime = calculateTime(paddleObj, ballObj, ballObj);
+        let calculatedVelocity = predictedMovement / calculatedTime;
         
+        // if (calculatedTime <= 0) {paddleObj.speed.up, paddleObj.speed.down = 0, 0;} 
+        // else {
+        //     if (calculatedVelocity < 0) {
+        //         paddleObj.speed.up = 0;
+        //         paddleObj.speed.down = calculatedVelocity;
+        //     } else if (calculatedVelocity > 0) {
+        //         paddleObj.speed.up = calculatedVelocity;
+        //         paddleObj.speed.down = 0;
+        //     }
+        // }
         if (calculatedTime <= 0) {paddleObj.velocityY = 0;} 
-        else {paddleObj.velocityY = predictedMovement / calculatedTime;}
+        else {paddleObj.velocityY = calculatedVelocity;}
     }
 
     // function moveToPredictedBallPositionSinglePlayer(paddleObj, ballObj) {
@@ -1317,7 +1418,7 @@ function runProgram() {
 
     function repositionAllGameItems() {
         // update all velocities
-        handleVelocity();
+        updateAllVelocities();
 
         // update the object borders
         updateAllObjectBorders();
