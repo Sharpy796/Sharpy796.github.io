@@ -102,11 +102,11 @@ function runProgram() {
     // Mode Variables
     var cheatMode = false;
     var firstTimeCheat = true;
-    var freePlay = true;
+    var freePlay = false;
     var autoPlay = false;
     var multiBall = false;
     var singlePlayer = false;
-    var paddleControl = true;
+    var paddleControl = false;
     // MultiBall Variables
     var ballCount = 10;
     var ticksPerBall = 45;
@@ -128,12 +128,12 @@ function runProgram() {
     // Telemetry Variables
     var slowDown = false;                   // Slows down the game at some intervals
     var showTelemetryMultiBall = false;     // Shows MultiBall telemetry
-    var showTelemetryBallBounce = true;    // Makes ball colors change according to the direction they're bouncing
-    var showTelemetryBallNumbers = true;   // Shows each ball's number on the balls
+    var showTelemetryBallBounce = false;    // Makes ball colors change according to the direction they're bouncing
+    var showTelemetryBallNumbers = false;   // Shows each ball's number on the balls
     var showTelemetryMetaData = false;      // Shows the hidden miscellaneous telemetry below the scoreboard.
     var showTelemetryTicks = false;         // Shows the tick count in the console 
     var showTelemetryFPS = false;           // Shows FPS telemetry in the console
-    var showTelemetryCollision = true;     // Shows collision telemetry
+    var showTelemetryCollision = false;     // Shows collision telemetry
     var showTelemetryVelocity = false;      // Shows velocity telemetry
 
     alert(  "Welcome to Pong!\n" +
@@ -181,18 +181,16 @@ function runProgram() {
 
         if (!gameWon) {
             if (!pause) {
+                // Collision Telemetry
                 getTelemetryCollision(ball0, paddleRight);
+
+                // Moves all the game items
                 repositionAllGameItems();
                 handleCollisions();
             }
         }
+        // Updates everything on the big screen
         redrawAllGameItems();
-        //else {
-        //     if (pageHasHadTimeToRedraw) {
-        //         restartGame(p1.id);
-        //     }
-        //     pageHasHadTimeToRedraw = true;
-        // }
     }
 
     /* 
@@ -630,14 +628,6 @@ function runProgram() {
     // Grey: Unavailable
     // TODO: Create a constructor function that creates a button with new variables to toggle it with
 
-    // TODONE: CREATE A ONE-PLAYER MODE
-    // [x] One side is controlled
-    // [x] The other side is automated
-    // [x] The computer side needs to be consistent with player speed
-    // [x] Can still use position-predicting code, but make paddle speed static until it has reached +-X of a specific point
-    // [x] Perhaps remove the wall-bounce predicting feature for added inconsistency
-    // [x] and include the random y mod for even more inconsistency (make it slightly wider than the paddle)
-
     // TODO: Create a startup menu for choosing initial game modes
 
     function activateCheatMode() {
@@ -785,7 +775,7 @@ function runProgram() {
             }
 
             // PaddleControl Activation
-            else if (answer === "paddleControl") { // TODONE: add a PaddleControl mode
+            else if (answer === "paddleControl") { 
                 if (paddleControl) {
                     alert("PaddleControl is already activated. Type 'noPaddle' to deactivate it.");
                     paddleControl = true;
@@ -995,27 +985,21 @@ function runProgram() {
 
     function enforceNoNoZone(obj) {
         while (obj.borderLeft < BORDERS.LEFT) {
-            // obj.x -= obj.velocityX;
             obj.x = BORDERS.LEFT;
             updateObjectBorders(obj);
             console.log(obj.id + " passed left border");
         }
         while (obj.borderTop < BORDERS.TOP) {
-            // if (autoPlay || singlePlayer) {obj.y = BORDERS.TOP;} // FIXME: Could this be the norm for border collisions?
-            // else {obj.y -= obj.velocityY;}
             obj.y = BORDERS.TOP;
             updateObjectBorders(obj);
             console.log(obj.id + " passed top border");
         }
         while (obj.borderRight > BORDERS.RIGHT) {
-            // obj.x -= obj.velocityX;
             obj.x = BORDERS.RIGHT - obj.width;
             updateObjectBorders(obj);
             console.log(obj.id + " passed right border");
         }
         while (obj.borderBottom > BORDERS.BOTTOM) {
-            // if (autoPlay || singlePlayer) {obj.y = BORDERS.BOTTOM - obj.height;}
-            // else {obj.y -= obj.velocityY;}
             obj.y = BORDERS.BOTTOM - obj.height;
             updateObjectBorders(obj);
             console.log(obj.id + " passed bottom border");
@@ -1082,10 +1066,7 @@ function runProgram() {
             console.log(ballObj.id + " passed bottom border");
         }
 
-        // else {
-            // tell us we still have yet to bounce
-            ballObj.firstTimeBouncedWall = true;
-        // }
+        ballObj.firstTimeBouncedWall = true;
     }
 
     function handlePaddleCollisions(ball, paddle) {
@@ -1102,10 +1083,7 @@ function runProgram() {
                 // increase the score
                 if (paddle === paddleRight) {
                     score.bounced++;
-                    // if (!multiBall) { // FIXME: Put this back
-                    if (false) {
-                        increaseGameSpeed();
-                    }
+                    if (!multiBall) {increaseGameSpeed();}
                 }
                 console.log(ball.id+" bounced " + tellPaddle(paddle) + " paddle's left border");
             }
@@ -1118,10 +1096,7 @@ function runProgram() {
                 // increase the score
                 if (paddle === paddleLeft) {
                     score.bounced++;
-                    // if (!multiBall) { // FIXME: Put this back
-                    if (false) {
-                        increaseGameSpeed();
-                    }
+                    if (!multiBall) {increaseGameSpeed();}
                 }
                 console.log(ball.id+" bounced " + tellPaddle(paddle) + " paddle's right border");
             }
@@ -1153,10 +1128,9 @@ function runProgram() {
     function doCollide(obj1, obj2) {
         // return true if colliding, else, return false
         if ((obj1.borderLeft < obj2.borderRight &&
-            obj1.borderTop < obj2.borderBottom) &&
+             obj1.borderTop < obj2.borderBottom) &&
             (obj1.borderRight > obj2.borderLeft &&
-                obj1.borderBottom > obj2.borderTop)) {
-
+             obj1.borderBottom > obj2.borderTop)) {
             return true;
         } else {
             return false;
@@ -1186,7 +1160,6 @@ function runProgram() {
         if (!freePlay) {
             $(".balls").css("background-color", "red");
             whoWon();
-            // if (pageHasHadTimeToRedraw) {
             if (!gameWon) {
                 restartingRound = true;
                 clearInterval(interval);
@@ -1196,7 +1169,6 @@ function runProgram() {
                 if (playAgain()){restartGame(player);}
                 else {endGame();}
             }
-            // }
         }
         // tell us it isn't the first time bouncing anymore
         ballObj.firstTimeBouncedWall = false;
