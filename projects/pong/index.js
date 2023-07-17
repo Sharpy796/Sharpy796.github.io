@@ -120,7 +120,6 @@ function runProgram() {
     var xDirection = -1;
     var varVelocityY = 5;
     var varPredictedPositionY = 0;
-    // var pageHasHadTimeToRedraw = false;
     // Game Variables
     var ticks = 0;
     var gameWon = false;
@@ -1297,6 +1296,7 @@ function runProgram() {
         else {paddleObj.velocityY = calculatedVelocity;}
     }
 
+    // FIXME: SinglePlayer movement still jumps when multiple balls are in play.
     function moveToPredictedBallPositionSinglePlayer(paddleObj, ballObj) {
         let predictedPosition = predictBallPosition(paddleObj, ballObj) + varPredictedPositionY;
 
