@@ -105,8 +105,8 @@ function runProgram() {
     var freePlay = true;
     var autoPlay = false;
     var multiBall = false;
-    var singlePlayer = true;
-    var paddleControl = false;
+    var singlePlayer = false;
+    var paddleControl = true;
     // MultiBall Variables
     var ballCount = 10;
     var ticksPerBall = 45;
@@ -133,7 +133,7 @@ function runProgram() {
     var showTelemetryMetaData = false;      // Shows the hidden miscellaneous telemetry below the scoreboard.
     var showTelemetryTicks = false;         // Shows the tick count in the console 
     var showTelemetryFPS = false;           // Shows FPS telemetry in the console
-    var showTelemetryCollision = false;     // Shows collision telemetry
+    var showTelemetryCollision = true;     // Shows collision telemetry
     var showTelemetryVelocity = false;      // Shows velocity telemetry
 
     alert(  "Welcome to Pong!\n" +
@@ -181,6 +181,7 @@ function runProgram() {
 
         if (!gameWon) {
             if (!pause) {
+                getTelemetryCollision(ball0, paddleRight);
                 repositionAllGameItems();
                 handleCollisions();
             }
@@ -629,13 +630,13 @@ function runProgram() {
     // Grey: Unavailable
     // TODO: Create a constructor function that creates a button with new variables to toggle it with
 
-    // TODOING: CREATE A ONE-PLAYER MODE
+    // TODONE: CREATE A ONE-PLAYER MODE
     // [x] One side is controlled
     // [x] The other side is automated
     // [x] The computer side needs to be consistent with player speed
-    // [ ] Can still use position-predicting code, but make paddle speed static until it has reached +-X of a specific point
-    // [ ] Perhaps remove the wall-bounce predicting feature for added inconsistency
-    // [ ] and include the random y mod for even more inconsistency (make it slightly wider than the paddle)
+    // [x] Can still use position-predicting code, but make paddle speed static until it has reached +-X of a specific point
+    // [x] Perhaps remove the wall-bounce predicting feature for added inconsistency
+    // [x] and include the random y mod for even more inconsistency (make it slightly wider than the paddle)
 
     // TODO: Create a startup menu for choosing initial game modes
 
@@ -994,68 +995,91 @@ function runProgram() {
 
     function enforceNoNoZone(obj) {
         while (obj.borderLeft < BORDERS.LEFT) {
-            obj.x -= obj.velocityX;
+            // obj.x -= obj.velocityX;
+            obj.x = BORDERS.LEFT;
             updateObjectBorders(obj);
             console.log(obj.id + " passed left border");
         }
         while (obj.borderTop < BORDERS.TOP) {
-            if (autoPlay || singlePlayer) {obj.y = BORDERS.TOP;} // FIXME: Could this be the norm for border collisions?
-            else {obj.y -= obj.velocityY;}
+            // if (autoPlay || singlePlayer) {obj.y = BORDERS.TOP;} // FIXME: Could this be the norm for border collisions?
+            // else {obj.y -= obj.velocityY;}
+            obj.y = BORDERS.TOP;
             updateObjectBorders(obj);
             console.log(obj.id + " passed top border");
         }
         while (obj.borderRight > BORDERS.RIGHT) {
-            obj.x -= obj.velocityX;
+            // obj.x -= obj.velocityX;
+            obj.x = BORDERS.RIGHT - obj.width;
             updateObjectBorders(obj);
             console.log(obj.id + " passed right border");
         }
         while (obj.borderBottom > BORDERS.BOTTOM) {
-            if (autoPlay || singlePlayer) {obj.y = BORDERS.BOTTOM - obj.height;}
-            else {obj.y -= obj.velocityY;}
+            // if (autoPlay || singlePlayer) {obj.y = BORDERS.BOTTOM - obj.height;}
+            // else {obj.y -= obj.velocityY;}
+            obj.y = BORDERS.BOTTOM - obj.height;
             updateObjectBorders(obj);
             console.log(obj.id + " passed bottom border");
         }
     }
 
     function bounceBall(ballObj) { // TODO: Add sounds to bounces!!!
-        while (ballObj.borderLeft < BORDERS.LEFT) {
+        while (ballObj.borderLeft < BORDERS.LEFT && !restartingRound) {
             if (freePlay) {
+                // Bounce the ball
                 ballObj.speed.right = ballObj.speed.left;
                 ballObj.speed.left = 0;
                 updateVelocity(ballObj);
+                console.log(ballObj.id + " bounced left border");
+                // Push the ball out of the wall
                 ballObj.x += ballObj.velocityX*2;
-                updateObjectBorders(ballObj);
-                console.log(ballObj.id + " passed left border");
+            } else {
+                ballObj.x = BORDERS.LEFT;
+                ballObj.y -= ballObj.velocityY;
             }
+            updateObjectBorders(ballObj);
+            console.log(ballObj.id + " passed left border");
+
             playerLose(ballObj, p1.id);
-            console.log(ballObj.id+" bounced left border");
         }
-        while (ballObj.borderTop < BORDERS.TOP) {
+        while (ballObj.borderTop < BORDERS.TOP && !restartingRound) {
+            // Bounce the ball
             ballObj.speed.down = ballObj.speed.up;
             ballObj.speed.up = 0;
             updateVelocity(ballObj);
+            console.log(ballObj.id + " bounced top border");
+            // Push the ball out of the wall
             ballObj.y += ballObj.velocityY*2;
             updateObjectBorders(ballObj);
-            console.log(ballObj.id+" bounced top border");
+            console.log(ballObj.id + " passed top border");
         }
-        while (ballObj.borderRight > BORDERS.RIGHT) {
+        while (ballObj.borderRight > BORDERS.RIGHT && !restartingRound) {
             if (freePlay) {
+                // Bounce the ball
                 ballObj.speed.left = ballObj.speed.right;
                 ballObj.speed.right = 0;
                 updateVelocity(ballObj);
+                console.log(ballObj.id+" bounced right border");
+                // Push the ball out of the wall
                 ballObj.x += ballObj.velocityX*2;
-                updateObjectBorders(ballObj);
+            } else {
+                ballObj.x = BORDERS.RIGHT - ballObj.width;
+                ballObj.y -= ballObj.velocityY;
             }
+            updateObjectBorders(ballObj);
+            console.log(ballObj.id + " passed right border");
+
             playerLose(ballObj, p2.id);
-            console.log(ballObj.id+" bounced right border");
         }
-        while (ballObj.borderBottom > BORDERS.BOTTOM) {
+        while (ballObj.borderBottom > BORDERS.BOTTOM && !restartingRound) {
+            // Bounce the ball
             ballObj.speed.up = ballObj.speed.down;
             ballObj.speed.down = 0;
             updateVelocity(ballObj);
+            console.log(ballObj.id + " bounced bottom border");
+            // Push the ball out of the wall
             ballObj.y += ballObj.velocityY*2;
             updateObjectBorders(ballObj);
-            console.log(ballObj.id+" bounced bottom border");
+            console.log(ballObj.id + " passed bottom border");
         }
 
         // else {
@@ -1239,10 +1263,12 @@ function runProgram() {
      */
     function predictBallPosition(paddleObj, ballObj) {
         let predictedPosition = ballObj.y + (calculateTime(paddleObj, ballObj, ballObj)*(ballObj.velocityY));
-        do {
-            if (predictedPosition < BORDERS.TOP) {predictedPosition = -predictedPosition;}
-            else if (predictedPosition > BORDERS.BOTTOM) {predictedPosition = Math.floor(BORDERS.BOTTOM) + ((Math.floor(BORDERS.BOTTOM) - ballObj.height*2) - predictedPosition);}
-        } while (predictedPosition < BORDERS.TOP || predictedPosition > BORDERS.BOTTOM);
+        if (!singlePlayer) {
+            do {
+                if (predictedPosition < BORDERS.TOP) {predictedPosition = -predictedPosition;}
+                else if (predictedPosition > BORDERS.BOTTOM) {predictedPosition = Math.floor(BORDERS.BOTTOM) + ((Math.floor(BORDERS.BOTTOM) - ballObj.height*2) - predictedPosition);}
+            } while (predictedPosition < BORDERS.TOP || predictedPosition > BORDERS.BOTTOM);
+        }
         // The below line centers the predicted position on the paddle and the ball
         return predictedPosition - paddleObj.height/2 + ballObj.height/2;// + varPredictedPositionY;
     }
@@ -1268,32 +1294,20 @@ function runProgram() {
      * @returns {double} The Y velocity required to reach the ball before it passes the object up.
      */
     function moveToPredictedBallPositionMultiPlayer(paddleObj, ballObj) {
-        let predictedMovement = predictBallPosition(paddleObj, ballObj) - paddleObj.y;
+        let predictedMovement = predictBallPosition(paddleObj, ballObj) - paddleObj.y + varPredictedPositionY;
         let calculatedTime = calculateTime(paddleObj, ballObj, ballObj);
         let calculatedVelocity = predictedMovement / calculatedTime;
-        
-        // if (calculatedTime <= 0) {paddleObj.speed.up, paddleObj.speed.down = 0, 0;} 
-        // else {
-        //     if (calculatedVelocity < 0) {
-        //         paddleObj.speed.up = 0;
-        //         paddleObj.speed.down = calculatedVelocity;
-        //     } else if (calculatedVelocity > 0) {
-        //         paddleObj.speed.up = calculatedVelocity;
-        //         paddleObj.speed.down = 0;
-        //     }
-        // }
         if (calculatedTime <= 0) {paddleObj.velocityY = 0;} 
         else {paddleObj.velocityY = calculatedVelocity;}
     }
 
     function moveToPredictedBallPositionSinglePlayer(paddleObj, ballObj) {
-        let predictedPosition = predictBallPosition(paddleObj, ballObj);
-
+        let predictedPosition = predictBallPosition(paddleObj, ballObj) + varPredictedPositionY;
 
         // Snap position to a multiple of the pixels per frame speed to prevent
         // collision between the paddles and wall from being off, and to prevent
         // odd collision bugs with the paddle and ball
-        predictedPosition += PPF - (predictedPosition % PPF);
+        if (predictedPosition % PPF != 0) {predictedPosition += PPF - (predictedPosition % PPF);}
         let predictedMovement = predictedPosition - paddleObj.y;
         
         // Negative predictedMovement: Up
@@ -1301,11 +1315,11 @@ function runProgram() {
         updateObjectBorders(paddleObj);
         updateObjectBorders(ballObj);
 
-        // paddleY + 1/4 height, or paddleY + 3/4 height
-        if (predictedPosition < (paddleObj.borderTop - (paddleObj.height/4)*1) ||
-            predictedPosition > (paddleObj.borderTop + (paddleObj.height/4)*1)) {
+        if (predictedPosition < (paddleObj.borderTop - (paddleObj.height/4)*1.5) ||
+            predictedPosition > (paddleObj.borderTop + (paddleObj.height/4)*1.5)) {
             if (predictedMovement > 0) {paddleObj.velocityY = PPF;}
             else if (predictedMovement < 0) {paddleObj.velocityY = -PPF;}
+            else {paddleObj.velocityY = PPF_STOP;}
         }
         else {paddleObj.velocityY = PPF_STOP;}
     }
@@ -1322,7 +1336,7 @@ function runProgram() {
         // update the object borders
         updateAllObjectBorders();
 
-        // Paddle Repositioning // FIXME: Make singlePlayer mode beatable
+        // Paddle Repositioning
         if (autoPlay) {
             if (targetedBallLeft.id != "#ballNull") {moveToPredictedBallPositionMultiPlayer(paddleLeft, targetedBallLeft);}
             if (targetedBallRight.id != "#ballNull") {moveToPredictedBallPositionMultiPlayer(paddleRight, targetedBallRight);}
