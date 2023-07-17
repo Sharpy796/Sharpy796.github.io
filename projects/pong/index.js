@@ -744,6 +744,7 @@ function runProgram() {
                             alert("Single Player Mode activated!\nType 'multiPlayer' to deactivate it.\n\nAutoPlay deactivated.\nType 'autoPlay' to reactivate it.");
                             autoPlay = false;
                             singlePlayer = true;
+                            snapPaddles();
                         }
                     } else {
                         alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to activate Single Player Mode.\nType 'noAuto' to deactivate AutoPlay.");
@@ -758,6 +759,7 @@ function runProgram() {
                         } else {
                             alert("Single Player Mode reactivated!\nType 'multiPlayer' to deactivate it.");
                             singlePlayer = true;
+                            snapPaddles();
                         }
                     } else {
                         alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to choose a different player.\nType 'multiPlayer' to deactivate Single Player Mode.");
@@ -770,6 +772,7 @@ function runProgram() {
                     } else {
                         alert("Single Player Mode activated!\nType 'multiPlayer' to deactivate it.");
                         singlePlayer = true;
+                        snapPaddles();
                     }
                 }
             }
@@ -816,10 +819,7 @@ function runProgram() {
             else if (answer === "noAuto") {
                 if (autoPlay) {
                     alert("AutoPlay deactivated.\nType 'autoPlay' to reactivate it.");
-                    // Snap paddles to a multiple of the pixels per frame speed to 
-                    // prevent collision between the paddles and wall from being off
-                    paddleLeft.y -= paddleLeft.y % PPF;
-                    paddleRight.y -= paddleRight.y % PPF;
+                    snapPaddles();
                 } else {
                     alert("AutoPlay is already deactivated.\nType 'autoPlay' to activate it.");
                 }
@@ -845,11 +845,8 @@ function runProgram() {
             // SinglePlayer Deactivation
             else if (answer === "multiPlayer") {
                 if (singlePlayer) {
-                    alert("Single Player Mode deactivated\nType 'singlePlayer to reactivate it.")
-                    // Snap paddles to a multiple of the pixels per frame speed to 
-                    // prevent collision between the paddles and wall from being off
-                    paddleLeft.y -= paddleLeft.y % PPF;
-                    paddleRight.y -= paddleRight.y % PPF;
+                    alert("Single Player Mode deactivated\nType 'singlePlayer to reactivate it.");
+                    snapPaddles();
                 } else {
                     alert("Single Player Mode is already deactivated.\nType 'singlePlayer' to activate it.");
                 }
@@ -1192,6 +1189,33 @@ function runProgram() {
     ////////////////////////// REPOSITIONING FUNCTIONS /////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
 
+    
+    /**
+     * Snap position to a multiple of the pixels per frame speed to prevent
+     * collision between the paddles and wall from being off, and to prevent
+     * odd collision bugs with the paddle and ball.
+     * @param {double} position - The position to be snapped.
+     */
+    function snapUp(position) {position -= position % PPF;}
+    
+    /**
+     * Snap position to a multiple of the pixels per frame speed to prevent
+     * collision between the paddles and wall from being off, and to prevent
+     * odd collision bugs with the paddle and ball.
+     * @param {double} position - The position to be snapped.
+     */
+    function snapDown(position) {position += PPF - (position % PPF);}
+
+    /**
+     * Snap position to a multiple of the pixels per frame speed to prevent
+     * collision between the paddles and wall from being off, and to prevent
+     * odd collision bugs with the paddle and ball.
+     */
+    function snapPaddles() {
+        snapUp(paddleLeft.y);
+        snapUp(paddleRight.y);
+    }
+
     function randPredictedPositionYMod() {
         varPredictedPositionY = Math.floor(Math.random() * 60) - 30;
         console.log("predicted ball position modified by " + varPredictedPositionY);
@@ -1276,10 +1300,7 @@ function runProgram() {
     function moveToPredictedBallPositionSinglePlayer(paddleObj, ballObj) {
         let predictedPosition = predictBallPosition(paddleObj, ballObj) + varPredictedPositionY;
 
-        // Snap position to a multiple of the pixels per frame speed to prevent
-        // collision between the paddles and wall from being off, and to prevent
-        // odd collision bugs with the paddle and ball
-        if (predictedPosition % PPF != 0) {predictedPosition += PPF - (predictedPosition % PPF);}
+        if (predictedPosition % PPF != 0) {snapDown(predictedPosition);}
         let predictedMovement = predictedPosition - paddleObj.y;
         
         // Negative predictedMovement: Up
