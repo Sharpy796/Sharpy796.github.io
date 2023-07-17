@@ -103,9 +103,9 @@ function runProgram() {
     var cheatMode = false;
     var firstTimeCheat = true;
     var freePlay = true;
-    var autoPlay = true;
+    var autoPlay = false;
     var multiBall = false;
-    var singlePlayer = false;
+    var singlePlayer = true;
     var paddleControl = false;
     // MultiBall Variables
     var ballCount = 10;
@@ -999,7 +999,7 @@ function runProgram() {
             console.log(obj.id + " passed left border");
         }
         while (obj.borderTop < BORDERS.TOP) {
-            if (autoPlay) {obj.y = BORDERS.TOP;}
+            if (autoPlay || singlePlayer) {obj.y = BORDERS.TOP;} // FIXME: Could this be the norm for border collisions?
             else {obj.y -= obj.velocityY;}
             updateObjectBorders(obj);
             console.log(obj.id + " passed top border");
@@ -1010,7 +1010,7 @@ function runProgram() {
             console.log(obj.id + " passed right border");
         }
         while (obj.borderBottom > BORDERS.BOTTOM) {
-            if (autoPlay) {obj.y = BORDERS.BOTTOM - obj.height;}
+            if (autoPlay || singlePlayer) {obj.y = BORDERS.BOTTOM - obj.height;}
             else {obj.y -= obj.velocityY;}
             updateObjectBorders(obj);
             console.log(obj.id + " passed bottom border");
@@ -1234,7 +1234,8 @@ function runProgram() {
      *   object on the ball.
      * @param {object} paddleObj - The object to use as a second point of reference.
      * @param {object} ballObj - The ball whose position is being predicted.
-     * @returns {double} The Y position of the ball where it meets the object's X position.
+     * @returns {double} The Y position of the ball where it meets the object's X position, 
+     * **modified to the point above the ball that would center the paddle with the ball.**
      */
     function predictBallPosition(paddleObj, ballObj) {
         let predictedPosition = ballObj.y + (calculateTime(paddleObj, ballObj, ballObj)*(ballObj.velocityY));
@@ -1242,7 +1243,16 @@ function runProgram() {
             if (predictedPosition < BORDERS.TOP) {predictedPosition = -predictedPosition;}
             else if (predictedPosition > BORDERS.BOTTOM) {predictedPosition = Math.floor(BORDERS.BOTTOM) + ((Math.floor(BORDERS.BOTTOM) - ballObj.height*2) - predictedPosition);}
         } while (predictedPosition < BORDERS.TOP || predictedPosition > BORDERS.BOTTOM);
+        // The below line centers the predicted position on the paddle and the ball
         return predictedPosition - paddleObj.height/2 + ballObj.height/2;// + varPredictedPositionY;
+    }
+
+    function centerPredictedPosition(position, paddleObj, ballObj) {
+        return position - paddleObj.height/2 + ballObj.height/2;
+    }
+
+    function unCenterPredictedPosition(position, paddleObj, ballObj) {
+        return position + paddleObj.height/2 - ballObj.height/2;
     }
 
     /**
@@ -1276,46 +1286,29 @@ function runProgram() {
         else {paddleObj.velocityY = calculatedVelocity;}
     }
 
-    // function moveToPredictedBallPositionSinglePlayer(paddleObj, ballObj) {
-    //     let predictedPosition = predictBallPosition(paddleObj, ballObj) + paddleObj.height/2 - ballObj.height/2;
-    //     // Snap position to a multiple of the pixels per frame speed to prevent
-    //     // collision between the paddles and wall from being off, and to prevent
-    //     // odd collision bugs with the paddle and ball
-    //     predictedPosition += PPF - (predictedPosition % PPF);
-    //     let predictedMovement = predictedPosition - paddleObj.y;
-    //     // if (predictedMovement > 0) {predictedMovement += paddleObj.height/2;}
-    //     // else if (predictedMovement < 0) {predictedMovement -= paddleObj.height/2;}
-    //     // else {/*Do Nothing*/}
-    //     // Negative predictedMovement: Up
-    //     // Positive predictedMovement: Down
-    //     updateObjectBorders(paddleObj);
-    //     updateObjectBorders(ballObj);
-    //     // BUG: The top border is being funky
-    //     console.log("------------------");
-    //     console.log("predictedPosition < (paddleObj.borderTop + paddleObj.height/4): " + (predictedPosition < (paddleObj.borderTop + paddleObj.height/4)));
-    //     console.log("paddleObj.borderTop: " + paddleObj.borderTop);
-    //     console.log("paddleObj.height/4: " + paddleObj.height/4);
-    //     console.log("------------------");
-    //     console.log("predictedPosition > (paddleObj.borderBottom - paddleObj.height/4): " + (predictedPosition > (paddleObj.borderBottom - ballObj.height - paddleObj.height/4)));
-    //     console.log("paddleObj.borderBottom: " + paddleObj.borderBottom);
-    //     console.log("paddleObj.height/4: " + paddleObj.height/4);
-    //     console.log("------------------");
+    function moveToPredictedBallPositionSinglePlayer(paddleObj, ballObj) {
+        let predictedPosition = predictBallPosition(paddleObj, ballObj);
 
-    //     // paddleY + 1/4 height, or paddleY + 3/4 height
-    //     if (predictedPosition < (paddleObj.borderTop + paddleObj.height/4) || predictedPosition > (paddleObj.borderTop + paddleObj.height/3 - ballObj.height)) {
-    //         if (predictedMovement > 0) {paddleObj.velocityY = PPF;}
-    //         else if (predictedMovement < 0) {paddleObj.velocityY = -PPF;}
-    //     }
-    //     else {paddleObj.velocityY = PPF_STOP;}
-    //     console.log("Border.Top: " + paddleObj.borderTop);
-    //     console.log("PredictedPosition: " + predictedPosition);
-    //     console.log("Border.Bottom: " + paddleObj.borderBottom);
-    //     console.log(ball0.y);
-    //     console.log("PredictedMovement: " + predictedMovement);
-    //     console.log("Paddle Height: " + $(paddleObj.id).height());
-    //     console.log("Paddle Velocity: " + paddleObj.velocityY);
+
+        // Snap position to a multiple of the pixels per frame speed to prevent
+        // collision between the paddles and wall from being off, and to prevent
+        // odd collision bugs with the paddle and ball
+        predictedPosition += PPF - (predictedPosition % PPF);
+        let predictedMovement = predictedPosition - paddleObj.y;
         
-    // }
+        // Negative predictedMovement: Up
+        // Positive predictedMovement: Down
+        updateObjectBorders(paddleObj);
+        updateObjectBorders(ballObj);
+
+        // paddleY + 1/4 height, or paddleY + 3/4 height
+        if (predictedPosition < (paddleObj.borderTop - (paddleObj.height/4)*1) ||
+            predictedPosition > (paddleObj.borderTop + (paddleObj.height/4)*1)) {
+            if (predictedMovement > 0) {paddleObj.velocityY = PPF;}
+            else if (predictedMovement < 0) {paddleObj.velocityY = -PPF;}
+        }
+        else {paddleObj.velocityY = PPF_STOP;}
+    }
 
     function repositionGameItem(gameItem) {
         gameItem.x += gameItem.velocityX;
@@ -1333,12 +1326,12 @@ function runProgram() {
         if (autoPlay) {
             if (targetedBallLeft.id != "#ballNull") {moveToPredictedBallPositionMultiPlayer(paddleLeft, targetedBallLeft);}
             if (targetedBallRight.id != "#ballNull") {moveToPredictedBallPositionMultiPlayer(paddleRight, targetedBallRight);}
-        // } else if (singlePlayer) {
-        //     if (playerChosen === "p2") {
-        //         if (targetedBallLeft.id != "#ballNull") {moveToPredictedBallPositionSinglePlayer(paddleLeft, targetedBallLeft);}
-        //     } else if (playerChosen === "p1") {
-        //         if (targetedBallRight.id != "#ballNull") {moveToPredictedBallPositionSinglePlayer(paddleRight, targetedBallRight);}
-        //     }
+        } else if (singlePlayer) {
+            if (playerChosen === "p2") {
+                if (targetedBallLeft.id != "#ballNull") {moveToPredictedBallPositionSinglePlayer(paddleLeft, targetedBallLeft);}
+            } else if (playerChosen === "p1") {
+                if (targetedBallRight.id != "#ballNull") {moveToPredictedBallPositionSinglePlayer(paddleRight, targetedBallRight);}
+            }
         }
 
         repositionGameItem(paddleLeft);
