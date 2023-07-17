@@ -621,11 +621,11 @@ function runProgram() {
     }
 
     // TODO: Create a better cheat mode interface. Probably a sidebar
-    // Include buttons!! Steal code from the StopLight program
+    // [ ]Include buttons!! Steal code from the StopLight program
     // Green: Active
     // Red: Inactive
     // Grey: Unavailable
-    // TODO: Create a constructor function that creates a button with new variables to toggle it with
+    // [ ] Create a constructor function that creates a button with new variables to toggle it with
 
     // TODO: Create a startup menu for choosing initial game modes
 
