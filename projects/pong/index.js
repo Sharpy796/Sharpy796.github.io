@@ -953,8 +953,6 @@ function runProgram() {
         updateAllObjectBorders();
 
         // keep the objects in the borders
-        // BUG: Infinite loop is caused when paddles get stuck in the wall in AutoPlay
-        // VelocityY is 0 when it gets in there. *That's* why it isn't working
         enforceNoNoZone(paddleLeft);
         enforceNoNoZone(paddleRight);
 
@@ -1001,11 +999,8 @@ function runProgram() {
             console.log(obj.id + " passed left border");
         }
         while (obj.borderTop < BORDERS.TOP) {
-            if (autoPlay) {
-                obj.x = BORDERS.TOP;
-            } else {
-                obj.y -= obj.velocityY;
-            }
+            if (autoPlay) {obj.y = BORDERS.TOP;}
+            else {obj.y -= obj.velocityY;}
             updateObjectBorders(obj);
             console.log(obj.id + " passed top border");
         }
@@ -1015,18 +1010,9 @@ function runProgram() {
             console.log(obj.id + " passed right border");
         }
         while (obj.borderBottom > BORDERS.BOTTOM) {
-            if (autoPlay) {
-                console.log("old " + obj.id + ".y: " + obj.y);
-                obj.x = BORDERS.BOTTOM - obj.height;
-                console.log("new " + obj.id + ".y: " + obj.y);
-                updateObjectBorders(obj);
-            } else {
-                console.log("old " + obj.id + ".y: " + obj.y);
-                console.log(obj.id + " velocityY: " + obj.velocityY);
-                obj.y -= obj.velocityY;
-                updateObjectBorders(obj);
-                console.log("new " + obj.id + ".y: " + obj.y);
-            }
+            if (autoPlay) {obj.y = BORDERS.BOTTOM - obj.height;}
+            else {obj.y -= obj.velocityY;}
+            updateObjectBorders(obj);
             console.log(obj.id + " passed bottom border");
         }
     }
