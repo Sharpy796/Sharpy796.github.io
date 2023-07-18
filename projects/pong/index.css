@@ -180,3 +180,87 @@ body {
   padding: 0;
   display: block;
 }
+            
+/* Cheat Mode Interface */
+.content {
+    flex: 1;
+    padding: 15px;
+}
+
+.dashboard {
+    background-color: #333;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    width: 50%;
+    height: 750px;
+    position: relative;
+    border-radius: 10px;
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+}
+
+/* .center {
+    margin: 0;
+    position: absolute;
+    top: 47.5%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+} */
+
+button {
+    padding: 30px;
+    margin: 15px;
+    /* margin-top: 15px;
+    margin-bottom: 17px; */
+    border-radius: 100%;
+    border-width: 2px;
+    border-color: black;
+    border-style: solid;  
+    cursor: pointer;
+    outline: none;
+
+    background-color: rgb(150, 0, 150);
+    /* box-shadow: 0px 12px rgb(90, 0, 90), 0px 6px darkmagenta; */
+    box-shadow: 0px 10px;
+}
+
+button:active {
+    background-color: fuchsia;
+    /* box-shadow: 0px 4px rgb(190, 0, 190); */
+    box-shadow: 0px 4px;
+    transform: translateY(6px);
+}
+
+.activated {
+    color: rgb(0, 61, 0);
+    background-color: green;
+}
+
+.activated:active {
+    color: #080;
+    background-color: lime;
+}
+
+.deactivated {
+    background-color: darkred;
+    box-shadow: 0px 12px #3b0000, 0px 6px #3b0000;
+}
+
+.deactivated:active {
+    background-color: red;
+    box-shadow: 0px 4px darkred;
+}
+
+.disabled {
+    background-color: grey;
+    box-shadow: 0px 12px rgb(83, 83, 83), 0px 6px #a15900;
+}
+
+.disabled:active {
+    background-color: grey;
+    box-shadow: 0px 4px rgb(83, 83, 83);
+}
