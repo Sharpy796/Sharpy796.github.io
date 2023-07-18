@@ -621,10 +621,22 @@ function runProgram() {
     }
 
     // TODO: Create a better cheat mode interface. Probably a sidebar
-    // [ ]Include buttons!! Steal code from the StopLight program
-    // Green: Active
-    // Red: Inactive
-    // Grey: Unavailable
+    // [ ] Include buttons!! Steal code from the StopLight program
+    // [ ] Create a DIV to hold the buttons
+    // [ ] Position the DIV next to the board
+    // [ ] Create two buttons
+    // [ ] Create a class that defines the size and spacing of the buttons
+    // .buttons - Includes the basic size for buttons (some weird color like fuchsia)
+    // [ ] Create three unique classes, each with individual CSS properties
+    // .activated: Green
+    // .deactivated: Red
+    // .disabled: Grey
+    // [ ] Include a unique ID for each of the buttons
+    // #cheatMode #autoPlay #freePlay #paddleControl #singlePlayer #multiBall #pause
+    // [ ] Create a way to swap between activation classes - DO NOT USE A FOR LOOP
+    // [ ] Create some basic logic between swapping between classes
+    // [ ] Create the rest of the buttons
+    // [ ] Copy all of the logic over
     // [ ] Create a constructor function that creates a button with new variables to toggle it with
 
     // TODO: Create a startup menu for choosing initial game modes
