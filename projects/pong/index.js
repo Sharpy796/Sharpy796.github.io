@@ -159,7 +159,10 @@ function runProgram() {
             if (multiBall && ticks%ticksPerBall == 0 && ticks <= ticksPerBall*(ballCount-1)) {
                 createNewBall();
             }
+
+            // Decide which ball to automatically target
             if (autoPlay || singlePlayer) {targetBall();}
+
             // Telemetry on the game
             getTelemetryTicks();
             getTelemetryFPS();
@@ -168,25 +171,19 @@ function runProgram() {
 
         // Slow the game down if we need to
         debugSlowDown();
-
-        // Update the temporary velocity for if we decide to pause the game
+        // Update the temporary velocity for if we decide to pause the game            
         updateTemporaryVelocity(ball0);
-
         // Detect whether we want to pause the game
         pauseGame();
-
         // Handles colors
         changeColors();
 
-        if (!gameWon) {
-            if (!pause) {
-                // Collision Telemetry
-                getTelemetryCollision(ball0, paddleRight);
-
-                // Moves all the game items
-                repositionAllGameItems();
-                handleCollisions();
-            }
+        if (!gameWon && !pause) {
+            // Collision Telemetry
+            getTelemetryCollision(ball0, paddleRight);
+            // Moves all the game items
+            repositionAllGameItems();
+            handleCollisions();
         }
         // Updates everything on the big screen
         redrawAllGameItems();
@@ -958,7 +955,8 @@ function runProgram() {
 
         for (let ball of ballPit) {
             // handle ball/wall collisions
-            if (!cheatMode) {bounceBall(ball);}
+            if (cheatMode) {enforceNoNoZone(ball);}
+            else {bounceBall(ball);}
 
             // handle ball/paddle collisions
             if (doCollide(ball, paddleLeft)) {
