@@ -719,11 +719,40 @@ function runProgram() {
     // }
 
     // TODOING: Situate the logic for the cheatmodes into this method
+    // BUG: Add bits to prevent anything from happening if things are disabled
     function toggleCheatModes(element) {
         let cheatId = getElementId(element);
         let cheatClass = getElementClass(element);
 
-        if (cheatId === "freePlay") {
+        if (cheatId === "cheatMode") {
+            if (autoPlay) {
+                disableCheatMode(cheatId);
+                activateCheatMode("autoPlay");
+            } else if (singlePlayer) {
+                disableCheatMode(cheatId);
+                activateCheatMode("singlePlayer");
+            } else if (multiBall) {
+                disableCheatMode(cheatId);
+                activateCheatMode("multiBall");
+            } else if (!pause) {
+                disableCheatMode(cheatId);
+                deactivateCheatMode("pause");
+            } else if (cheatMode) {
+                deactivateCheatMode(cheatId);
+                deactivateCheatMode("autoPlay");
+                deactivateCheatMode("singlePlayer");
+                deactivateCheatMode("multiBall");
+                activateCheatMode("pause");
+            } else {
+                activateCheatMode(cheatId);
+                disableCheatMode("autoPlay");
+                disableCheatMode("singlePlayer");
+                disableCheatMode("multiBall");
+                activateCheatMode("pause");
+            }
+        }
+
+        else if (cheatId === "freePlay") {
             if (freePlay) {
                 deactivateCheatMode(cheatId);
             } else {
