@@ -92,7 +92,10 @@ function runProgram() {
     var interval = setInterval(newFrame, framesPerSecondInterval);   // execute newFrame every 0.0166 seconds (60 frames per second)
     $(document).on("keydown", handleKeyDown);       // listen for keydown events
     $(document).on("keyup", handleKeyUp);           // listen for keyup events
-    $("#cheatIcon").on("click", activateCheatMode); // listen for click events
+    $("#cheatIcon").on("click", chooseCheatMode); // listen for click events
+    $("#freePlay").on("click", toggleCheatButton);
+    $("#autoPlay").on("click", toggleCheatButton);
+    $("#paddleControl").on("click", toggleCheatButton);
     $("#cheatIcon").hide();
 
     // Pause Variables
@@ -293,7 +296,7 @@ function runProgram() {
             console.log("r released");
         } if (keycode === KEY.C) {
             console.log("c released");
-            activateCheatMode();
+            chooseCheatMode();
         }
 
         if (!autoPlay) {
@@ -631,15 +634,126 @@ function runProgram() {
     // .disabled: Grey
     // [x] Include a unique ID for each of the buttons
     // #cheatMode #autoPlay #freePlay #paddleControl #singlePlayer #multiBall #pause
-    // [ ] Create a way to swap between activation classes - DO NOT USE A FOR LOOP
-    // [ ] Create some basic logic between swapping between classes
+    // [x] Create a way to swap between activation classes - DO NOT USE A FOR LOOP
+    // [x] Create some basic logic between swapping between classes
     // [ ] Create the rest of the buttons
     // [ ] Copy all of the logic over
     // [ ] Create a constructor function that creates a button with new variables to toggle it with
 
     // TODO: Create a startup menu for choosing initial game modes
 
-    function activateCheatMode() {
+    function getElementId(element) {return $(element).attr("id");}
+    function getElementClass(element) {return $(element).attr("class");}
+
+    function toggleCheatButton() {
+        toggleCheatModes(this);
+    }
+
+    function handleCheatModes(element, boolean) {
+        if (element === "freePlay") {freePlay = boolean;}
+        else if (element === "autoPlay") {autoPlay = boolean;}
+        else if (element === "paddleControl") {paddleControl = boolean;}
+        getTelemetryCheatModes();
+    }
+
+    function getTelemetryCheatModes() {
+        console.log("freePlay: " + freePlay);
+        console.log("autoPlay: " + autoPlay);
+        console.log("paddleControl: " + paddleControl);
+    }
+
+    function activateCheatMode(element) {
+        handleCheatModes(element, true);
+        element = "#" + element;
+        $(element).removeClass("deactivated");
+        $(element).removeClass("disabled");
+        $(element).addClass("activated");
+    }
+
+    function deactivateCheatMode(element) {
+        handleCheatModes(element, false);
+        element = "#" + element;
+        $(element).removeClass("activated");
+        $(element).removeClass("disabled");
+        $(element).addClass("deactivated");
+    }
+
+    function disableCheatMode(element) {
+        handleCheatModes(element, false);
+        element = "#" + element;
+        $(element).removeClass("activated");
+        $(element).removeClass("deactivated");
+        $(element).addClass("disabled");
+    }
+
+    // function toggleCheatModesFUNKY(element) {
+    //     if (getElementId(element) === "freePlay") {
+    //         if (getElementClass(element) === "activated") {freePlay = true;}
+    //         else {freePlay = false;}
+    //     }
+    //     if (getElementId(element) === "autoPlay") {
+    //         if (getElementClass(element) === "activated") {autoPlay = true;}
+    //         else {autoPlay = false;}
+    //     }
+    // }
+    // 
+    // function toggleDeactivation() {
+    //     if (paddleControl) {
+    //         disableCheatMode("#autoPlay");
+    //         activateCheatMode("#paddleControl");
+    //     } else if (autoPlay) {
+    //         disableCheatMode("#paddleControl");
+    //         activateCheatMode("#autoPlay");
+    //     } else {
+    //         deactivateCheatMode("#paddleControl");
+    //         deactivateCheatMode("#autoPlay");
+    //     }
+    // }
+
+    function toggleCheatModes(element) {
+        let cheatId = getElementId(element);
+        let cheatClass = getElementClass(element);
+
+        if (cheatId === "freePlay") {
+            if (freePlay) {
+                deactivateCheatMode(cheatId);
+            } else {
+                activateCheatMode(cheatId);
+            }
+        }
+
+        else if (cheatId === "autoPlay") {
+            if (paddleControl) {
+                disableCheatMode(cheatId);
+                activateCheatMode("paddleControl");
+            } else if (autoPlay) {
+                deactivateCheatMode(cheatId);
+                deactivateCheatMode("paddleControl");
+            } else {
+                activateCheatMode(cheatId);
+                disableCheatMode("paddleControl");
+            }
+        }
+
+        else if (cheatId === "paddleControl") {
+            if (autoPlay) {
+                disableCheatMode(cheatId);
+                activateCheatMode("autoPlay");
+            } else if (paddleControl) {
+                deactivateCheatMode(cheatId);
+                deactivateCheatMode("autoPlay");
+            } else {
+                activateCheatMode(cheatId);
+                disableCheatMode("autoPlay");
+            }
+        }
+    }
+
+    function toggleAllCheatButtons() {
+
+    }
+
+    function chooseCheatMode() {
         if (!restartingRound) {
             let answer = prompt("Password:");
 
