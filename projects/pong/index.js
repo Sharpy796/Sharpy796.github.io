@@ -636,8 +636,8 @@ function runProgram() {
     // #cheatMode #autoPlay #freePlay #paddleControl #singlePlayer #multiBall #pause
     // [x] Create a way to swap between activation classes - DO NOT USE A FOR LOOP
     // [x] Create some basic logic between swapping between classes
-    // [ ] Create the rest of the buttons
-    // [ ] Copy all of the logic over
+    // [x] Create the rest of the buttons
+    // [-] Copy all of the logic over
     // [ ] Create a constructor function that creates a button with new variables to toggle it with
 
     // TODO: Create a startup menu for choosing initial game modes
@@ -650,15 +650,23 @@ function runProgram() {
     }
 
     function handleCheatModes(element, boolean) {
-        if (element === "freePlay") {freePlay = boolean;}
+        if (element === "pause") {pause = boolean;}
+        else if (element === "cheatMode") {cheatMode = boolean;}
+        else if (element === "freePlay") {freePlay = boolean;}
         else if (element === "autoPlay") {autoPlay = boolean;}
+        else if (element === "multiBall") {multiBall = boolean;}
+        else if (element === "singlePlayer") {singlePlayer = boolean;}
         else if (element === "paddleControl") {paddleControl = boolean;}
-        getTelemetryCheatModes();
+        // getTelemetryCheatModes();
     }
 
     function getTelemetryCheatModes() {
+        console.log("pause: " + pause);
+        console.log("cheatMode: " + cheatMode);
         console.log("freePlay: " + freePlay);
         console.log("autoPlay: " + autoPlay);
+        console.log("multiBall: " + multiBall);
+        console.log("singlePlayer: " + singlePlayer);
         console.log("paddleControl: " + paddleControl);
     }
 
@@ -710,6 +718,7 @@ function runProgram() {
     //     }
     // }
 
+    // TODOING: Situate the logic for the cheatmodes into this method
     function toggleCheatModes(element) {
         let cheatId = getElementId(element);
         let cheatClass = getElementClass(element);
@@ -723,9 +732,9 @@ function runProgram() {
         }
 
         else if (cheatId === "autoPlay") {
-            if (paddleControl) {
+            if (cheatMode) {
                 disableCheatMode(cheatId);
-                activateCheatMode("paddleControl");
+                activateCheatMode("cheatMode");
             } else if (autoPlay) {
                 deactivateCheatMode(cheatId);
                 deactivateCheatMode("paddleControl");
@@ -753,6 +762,7 @@ function runProgram() {
 
     }
 
+    // FIXME: When a side movement key is held when FreePlay is turned off, the paddle doesn't stop moving until the key is released
     function chooseCheatMode() {
         if (!restartingRound) {
             let answer = prompt("Password:");
