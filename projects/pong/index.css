@@ -5,9 +5,10 @@
 
 body {
   background-color: darkgreen;
+  display: flex;
 }
 
-#board {
+.board {
   width: 750px;
   height: 480px;
   border: 1px solid white;
@@ -189,17 +190,13 @@ body {
 
 .dashboard {
   background-color: #333;
-  margin: auto;
-  margin-top: 20px;
-  margin-bottom: 30px;
-  width: 50%;
-  height: 750px;
+  /* margin: auto; */
+  margin-left: 40px;
+  width: 500px;
+  height: 480px;
   position: relative;
+  border: 1px solid white;
   border-radius: 10px;
-  -webkit-user-select: none; /* Safari */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* IE10+/Edge */
-  user-select: none; /* Standard */
 }
 
 /* .center {
@@ -211,11 +208,24 @@ body {
     transform: translate(-50%, -50%);
 } */
 
+.relay {
+  position: block;
+  display: flex;
+}
+
+.relay p {
+  position: inline;
+  color: white;
+  font-size: 15pt;
+  margin-top: auto;
+  margin-bottom: auto;
+  /* font-family: "Comic Sans MS"; */
+}
+
 button {
-  padding: 30px;
+  height: 60px;
+  width: 60px;
   margin: 15px;
-  /* margin-top: 15px;
-  margin-bottom: 17px; */
   border-radius: 100%;
   /* border-width: 2px;
   border-color: black;
@@ -224,14 +234,17 @@ button {
   cursor: pointer;
   outline: none;
 
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
+
   background-color: rgb(150, 0, 150);
-  /* box-shadow: 0px 12px rgb(90, 0, 90), 0px 6px darkmagenta; */
   box-shadow: 0px 10px;
 }
 
 button:active {
   background-color: fuchsia;
-  /* box-shadow: 0px 4px rgb(190, 0, 190); */
   box-shadow: 0px 4px;
   transform: translateY(6px);
 }

@@ -13,13 +13,13 @@ function runProgram() {
     var BORDERS = {
         TOP: 0,
         LEFT: 0,
-        BOTTOM: $("#board").height(),
-        RIGHT: $("#board").width(),
+        BOTTOM: $(".board").height(),
+        RIGHT: $(".board").width(),
     }
     var CENTERS = {
         BORDER: {
-            HORIZONTAL: $("#board").width()/2,
-            VERTICAL: $("#board").height()/2,
+            HORIZONTAL: $(".board").width()/2,
+            VERTICAL: $(".board").height()/2,
         },
         BALL: $(".balls").width()/2,
         PADDLE: {
@@ -619,8 +619,8 @@ function runProgram() {
 
     // TODO: Create a better cheat mode interface. Probably a sidebar
     // [x] Include buttons!! Steal code from the StopLight program
-    // [-] Create a DIV to hold the buttons
-    // [-] Position the DIV next to the board
+    // [x] Create a DIV to hold the buttons
+    // [x] Position the DIV next to the board
     // [x] Create three buttons
     // [x] Create a class that defines the size and spacing of the buttons
     // button - Includes the basic size for buttons (some weird color like fuchsia)
@@ -629,7 +629,7 @@ function runProgram() {
     // .activated: Green
     // .deactivated: Red
     // .disabled: Grey
-    // [-] Include a unique ID for each of the buttons
+    // [x] Include a unique ID for each of the buttons
     // #cheatMode #autoPlay #freePlay #paddleControl #singlePlayer #multiBall #pause
     // [ ] Create a way to swap between activation classes - DO NOT USE A FOR LOOP
     // [ ] Create some basic logic between swapping between classes
@@ -1408,11 +1408,11 @@ function runProgram() {
 
         // Border colors
         if (pause) {
-            $("#board").css("border-color", "lime");
+            $(".board").css("border-color", "lime");
         } else if (freePlay) {
-            $("#board").css("border-color", "orange");
+            $(".board").css("border-color", "orange");
         } else {
-            $("#board").css("border-color", "white");
+            $(".board").css("border-color", "white");
         }
 
         // paddle colors
