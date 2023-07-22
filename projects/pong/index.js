@@ -92,10 +92,15 @@ function runProgram() {
     var interval = setInterval(newFrame, framesPerSecondInterval);   // execute newFrame every 0.0166 seconds (60 frames per second)
     $(document).on("keydown", handleKeyDown);       // listen for keydown events
     $(document).on("keyup", handleKeyUp);           // listen for keyup events
-    $("#cheatIcon").on("click", chooseCheatMode); // listen for click events
+    $("#pause").on("click", toggleCheatButton);
+    $("#cheatMode").on("click", toggleCheatButton);
     $("#freePlay").on("click", toggleCheatButton);
     $("#autoPlay").on("click", toggleCheatButton);
+    $("#multiBall").on("click", toggleCheatButton);
+    $("#singlePlayer").on("click", toggleCheatButton);
     $("#paddleControl").on("click", toggleCheatButton);
+
+    $("#cheatIcon").on("click", chooseCheatMode); // listen for click events
     $("#cheatIcon").hide();
 
     // Pause Variables
@@ -719,12 +724,42 @@ function runProgram() {
     // }
 
     // TODOING: Situate the logic for the cheatmodes into this method
-    // BUG: Add bits to prevent anything from happening if things are disabled
+    // [-] pause
+    // [-] cheatMode
+    // [x] freePlay
+    // [-] autoPlay
+    // [ ] multiBall
+    // [ ] singlePlayer
+    // [x] paddleControl
+    
     function toggleCheatModes(element) {
         let cheatId = getElementId(element);
         let cheatClass = getElementClass(element);
+        console.log(cheatId);
+        console.log(cheatClass);
 
-        if (cheatId === "cheatMode") {
+        if (cheatId === "pause") {
+            if (pause) {
+                deactivateCheatMode("pause");
+                if (cheatMode) {
+                    disableCheatMode("cheatMode");
+                    cheatMode = true;
+                } else {
+                    disableCheatMode("cheatMode");
+                }
+            } else {
+                activateCheatMode("pause");
+                if (autoPlay || singlePlayer || multiBall) {
+                    disableCheatMode("cheatMode");
+                } else if (cheatMode) {
+                    activateCheatMode("cheatMode");
+                } else {
+                    deactivateCheatMode("cheatMode");
+                }
+            }
+        }
+        
+        else if (cheatId === "cheatMode") {
             if (autoPlay) {
                 disableCheatMode(cheatId);
                 activateCheatMode("autoPlay");
@@ -735,7 +770,12 @@ function runProgram() {
                 disableCheatMode(cheatId);
                 activateCheatMode("multiBall");
             } else if (!pause) {
-                disableCheatMode(cheatId);
+                if (cheatMode) {
+                    disableCheatMode(cheatId);
+                    cheatMode = true;
+                } else {
+                    disableCheatMode(cheatId);
+                }
                 deactivateCheatMode("pause");
             } else if (cheatMode) {
                 deactivateCheatMode(cheatId);
@@ -763,26 +803,30 @@ function runProgram() {
         else if (cheatId === "autoPlay") {
             if (cheatMode) {
                 disableCheatMode(cheatId);
-                activateCheatMode("cheatMode");
+                if (pause) {
+                    activateCheatMode("cheatMode");
+                } else {
+                    disableCheatMode("cheatMode");
+                    cheatMode = true;
+                }
             } else if (autoPlay) {
                 deactivateCheatMode(cheatId);
-                deactivateCheatMode("paddleControl");
+                if (pause) {
+                    deactivateCheatMode("cheatMode");
+                } else {
+                    disableCheatMode("cheatMode");
+                }
             } else {
                 activateCheatMode(cheatId);
-                disableCheatMode("paddleControl");
+                disableCheatMode("cheatMode");
             }
         }
 
         else if (cheatId === "paddleControl") {
-            if (autoPlay) {
-                disableCheatMode(cheatId);
-                activateCheatMode("autoPlay");
-            } else if (paddleControl) {
+            if (paddleControl) {
                 deactivateCheatMode(cheatId);
-                deactivateCheatMode("autoPlay");
             } else {
                 activateCheatMode(cheatId);
-                disableCheatMode("autoPlay");
             }
         }
     }
