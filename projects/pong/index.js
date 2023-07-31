@@ -665,6 +665,28 @@ function runProgram() {
         // getTelemetryCheatModes();
     }
 
+    // BUG: figure out a way to target items with multiple classes 
+    function handleCheatModesColors() {
+        if (pause) {
+            $(".relay pause").removeClass("off");
+            $(".relay pause").addClass("on");
+        } else {
+            $(".relay pause").removeClass("on");
+            $(".relay pause").addClass("off");
+        }
+
+
+
+        // if (element === "pause") {pause = boolean;}
+        // else if (element === "cheatMode") {cheatMode = boolean;}
+        // else if (element === "freePlay") {freePlay = boolean;}
+        // else if (element === "autoPlay") {autoPlay = boolean;}
+        // else if (element === "multiBall") {multiBall = boolean;}
+        // else if (element === "singlePlayer") {singlePlayer = boolean;}
+        // else if (element === "paddleControl") {paddleControl = boolean;}
+        // getTelemetryCheatModes();
+    }
+
     function getTelemetryCheatModes() {
         console.log("pause: " + pause);
         console.log("cheatMode: " + cheatMode);
@@ -806,6 +828,40 @@ function runProgram() {
             console.log(autoPlay);
         }
 
+        else if (cheatId === "multiBall") {
+            if (cheatMode) {
+                disableCheatMode(cheatId);
+            } else if (autoPlay) {
+                deactivateCheatMode(cheatId);
+                if (pause) {
+                    deactivateCheatMode("cheatMode");
+                } else {
+                    disableCheatMode("cheatMode");
+                }
+            } else {
+                activateCheatMode(cheatId);
+                disableCheatMode("cheatMode");
+            }
+            console.log(multiBall);
+        }
+
+        else if (cheatId === "singlePlayer") {
+            if (cheatMode) {
+                disableCheatMode(cheatId);
+            } else if (autoPlay) {
+                deactivateCheatMode(cheatId);
+                if (pause) {
+                    deactivateCheatMode("cheatMode");
+                } else {
+                    disableCheatMode("cheatMode");
+                }
+            } else {
+                activateCheatMode(cheatId);
+                disableCheatMode("cheatMode");
+            }
+            console.log(singlePlayer);
+        }
+
         else if (cheatId === "paddleControl") {
             if (paddleControl) {
                 deactivateCheatMode(cheatId);
@@ -816,6 +872,7 @@ function runProgram() {
         }
 
         console.log(cheatClass);
+        handleCheatModesColors()
     }
 
     function toggleAllCheatButtons() {
