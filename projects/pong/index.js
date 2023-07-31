@@ -677,6 +677,7 @@ function runProgram() {
 
     function activateCheatMode(element) {
         handleCheatModes(element, true);
+        // change the color
         element = "#" + element;
         $(element).removeClass("deactivated");
         $(element).removeClass("disabled");
@@ -685,6 +686,7 @@ function runProgram() {
 
     function deactivateCheatMode(element) {
         handleCheatModes(element, false);
+        // change the color
         element = "#" + element;
         $(element).removeClass("activated");
         $(element).removeClass("disabled");
@@ -692,7 +694,8 @@ function runProgram() {
     }
 
     function disableCheatMode(element) {
-        handleCheatModes(element, false);
+        // handleCheatModes(element, false);
+        // change the color
         element = "#" + element;
         $(element).removeClass("activated");
         $(element).removeClass("deactivated");
@@ -736,19 +739,17 @@ function runProgram() {
         let cheatId = getElementId(element);
         let cheatClass = getElementClass(element);
         console.log(cheatId);
-        console.log(cheatClass);
 
-        if (cheatId === "pause") {
+        if (cheatClass === "disabled") {
+            disableCheatMode(cheatId);
+        }
+        
+        else if (cheatId === "pause") {
             if (pause) {
-                deactivateCheatMode("pause");
-                if (cheatMode) {
-                    disableCheatMode("cheatMode");
-                    cheatMode = true;
-                } else {
-                    disableCheatMode("cheatMode");
-                }
+                deactivateCheatMode(cheatId);
+                disableCheatMode("cheatMode");
             } else {
-                activateCheatMode("pause");
+                activateCheatMode(cheatId);
                 if (autoPlay || singlePlayer || multiBall) {
                     disableCheatMode("cheatMode");
                 } else if (cheatMode) {
@@ -757,26 +758,12 @@ function runProgram() {
                     deactivateCheatMode("cheatMode");
                 }
             }
+            console.log(pause);
         }
         
         else if (cheatId === "cheatMode") {
-            if (autoPlay) {
+            if (cheatClass === "disabled" || autoPlay || singlePlayer || multiBall || !pause) {
                 disableCheatMode(cheatId);
-                activateCheatMode("autoPlay");
-            } else if (singlePlayer) {
-                disableCheatMode(cheatId);
-                activateCheatMode("singlePlayer");
-            } else if (multiBall) {
-                disableCheatMode(cheatId);
-                activateCheatMode("multiBall");
-            } else if (!pause) {
-                if (cheatMode) {
-                    disableCheatMode(cheatId);
-                    cheatMode = true;
-                } else {
-                    disableCheatMode(cheatId);
-                }
-                deactivateCheatMode("pause");
             } else if (cheatMode) {
                 deactivateCheatMode(cheatId);
                 deactivateCheatMode("autoPlay");
@@ -790,6 +777,7 @@ function runProgram() {
                 disableCheatMode("multiBall");
                 activateCheatMode("pause");
             }
+            console.log(cheatMode);
         }
 
         else if (cheatId === "freePlay") {
@@ -798,17 +786,12 @@ function runProgram() {
             } else {
                 activateCheatMode(cheatId);
             }
+            console.log(freePlay);
         }
 
         else if (cheatId === "autoPlay") {
             if (cheatMode) {
                 disableCheatMode(cheatId);
-                if (pause) {
-                    activateCheatMode("cheatMode");
-                } else {
-                    disableCheatMode("cheatMode");
-                    cheatMode = true;
-                }
             } else if (autoPlay) {
                 deactivateCheatMode(cheatId);
                 if (pause) {
@@ -820,6 +803,7 @@ function runProgram() {
                 activateCheatMode(cheatId);
                 disableCheatMode("cheatMode");
             }
+            console.log(autoPlay);
         }
 
         else if (cheatId === "paddleControl") {
@@ -828,7 +812,10 @@ function runProgram() {
             } else {
                 activateCheatMode(cheatId);
             }
+            console.log(paddleControl);
         }
+
+        console.log(cheatClass);
     }
 
     function toggleAllCheatButtons() {
