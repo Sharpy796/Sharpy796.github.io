@@ -612,7 +612,7 @@ function runProgram() {
     function pauseGame() {
         if (spaceIsDown) {
             if (firstTimePaused) {
-                pause = !pause;
+                toggleCheatModePause();
                 console.log("Pause: " + pause);
             }
             firstTimePaused = false;
@@ -674,7 +674,7 @@ function runProgram() {
     function getElementClass(element) {return $(element).attr("class");}
 
     function toggleCheatButton() {
-        toggleCheatModes(this);
+        toggleCheatModesAll(this);
         handleCheatModesColors();
     }
 
@@ -798,8 +798,8 @@ function runProgram() {
     // [x] paddleControl
 
     // TODOING: Make the buttons do what they need to do correctly
-    // [ ] pause
-    // - [ ] Make this work with the spacebar as well
+    // [x] pause
+    // - [x] Make this work with the spacebar as well
     // [x] cheatMode
     // - [x] Make the ball direction work properly
     // [x] freePlay
@@ -815,122 +815,127 @@ function runProgram() {
     // - [ ] Warn the player of a restart before activating/deactivating
     // - [ ] Restart the game upon activating/deactivating
     // [x] paddleControl
+
+    function toggleCheatModePause() {
+        if (pause) { // Unpause
+            deactivateCheatMode("pause");
+            disableCheatMode("cheatMode");
+        } else { // Pause
+            activateCheatMode("pause");
+            if (autoPlay || singlePlayer || multiBall) {
+                disableCheatMode("cheatMode");
+            } else if (cheatMode) {
+                activateCheatMode("cheatMode");
+            } else {
+                deactivateCheatMode("cheatMode");
+            }
+        }
+        console.log(pause);
+    }
+
+    function toggleCheatModeCheat() {
+        if (autoPlay || singlePlayer || multiBall || !pause) {
+            disableCheatMode("cheatMode");
+        } else if (cheatMode) { // Deactivate CheatMode
+            deactivateCheatMode("cheatMode");
+            deactivateCheatMode("autoPlay");
+            deactivateCheatMode("singlePlayer");
+            deactivateCheatMode("multiBall");
+            activateCheatMode("pause");
+        } else { // Activate CheatMode
+            activateCheatMode("cheatMode");
+            disableCheatMode("autoPlay");
+            disableCheatMode("singlePlayer");
+            disableCheatMode("multiBall");
+            activateCheatMode("pause");
+        }
+        console.log(cheatMode);
+    }
+
+    function toggleCheatModeFree() {
+        if (freePlay) { // Deactivate FreePlay
+            deactivateCheatMode("freePlay");
+        } else { // Activate FreePlay
+            activateCheatMode("freePlay");
+        }
+        console.log(freePlay);
+    }
+
+    function toggleCheatModeAuto() {
+        if (cheatMode) {
+            disableCheatMode("autoPlay");
+        } else if (autoPlay) { // Deactivate AutoPlay
+            deactivateCheatMode("autoPlay");
+            if (multiBall || singlePlayer || !pause) {
+                disableCheatMode("cheatMode");
+            } else {
+                deactivateCheatMode("cheatMode");
+            }
+        } else { // Activate AutoPlay
+            activateCheatMode("autoPlay");
+            deactivateCheatMode("singlePlayer");
+            disableCheatMode("cheatMode");
+        }
+        console.log(autoPlay);
+    }
+
+    function toggleCheatModeSingle() {
+        if (cheatMode) {
+            disableCheatMode("singlePlayer");
+        } else if (singlePlayer) { // Deactivate SinglePlayer
+            deactivateCheatMode("singlePlayer");
+            if (autoPlay || multiBall || !pause) {
+                disableCheatMode("cheatMode");
+            } else {
+                deactivateCheatMode("cheatMode");
+            }
+        } else { // Activate SinglePlayer
+            activateCheatMode("singlePlayer");
+            deactivateCheatMode("autoPlay");
+            disableCheatMode("cheatMode");
+        }
+        console.log(singlePlayer);
+    }
+
+    function toggleCheatModeMulti() {
+        if (cheatMode) {
+            disableCheatMode("multiBall");
+        } else if (multiBall) { // Deactivate MultiBall 
+            deactivateCheatMode("multiBall");
+            if (autoPlay || singlePlayer || !pause) {
+                disableCheatMode("cheatMode");
+            } else {
+                deactivateCheatMode("cheatMode");
+            }
+        } else { // Activate MultiBall
+            activateCheatMode("multiBall");
+            disableCheatMode("cheatMode");
+        }
+        console.log(multiBall);
+    }
+
+    function toggleCheatModeSingle() {
+        if (paddleControl) { // Deactivate PaddleControl
+            deactivateCheatMode("paddleControl");
+        } else { // Activate PaddleControl
+            activateCheatMode("paddleControl");
+        }
+        console.log(paddleControl);
+    }
     
-    function toggleCheatModes(element) {
+    function toggleCheatModesAll(element) {
         let cheatId = getElementId(element);
         let cheatClass = getElementClass(element);
         console.log(cheatId);
 
-        if (cheatClass === "disabled") {
-            disableCheatMode(cheatId);
-        }
-        
-        else if (cheatId === "pause") {
-            if (pause) { // Unpause
-                deactivateCheatMode(cheatId);
-                disableCheatMode("cheatMode");
-            } else { // Pause
-                activateCheatMode(cheatId);
-                if (autoPlay || singlePlayer || multiBall) {
-                    disableCheatMode("cheatMode");
-                } else if (cheatMode) {
-                    activateCheatMode("cheatMode");
-                } else {
-                    deactivateCheatMode("cheatMode");
-                }
-            }
-            console.log(pause);
-        }
-        
-        else if (cheatId === "cheatMode") {
-            if (cheatClass === "disabled" || autoPlay || singlePlayer || multiBall || !pause) {
-                disableCheatMode(cheatId);
-            } else if (cheatMode) { // Deactivate CheatMode
-                deactivateCheatMode(cheatId);
-                deactivateCheatMode("autoPlay");
-                deactivateCheatMode("singlePlayer");
-                deactivateCheatMode("multiBall");
-                activateCheatMode("pause");
-            } else { // Activate CheatMode
-                activateCheatMode(cheatId);
-                disableCheatMode("autoPlay");
-                disableCheatMode("singlePlayer");
-                disableCheatMode("multiBall");
-                activateCheatMode("pause");
-            }
-            console.log(cheatMode);
-        }
-
-        else if (cheatId === "freePlay") {
-            if (freePlay) { // Deactivate FreePlay
-                deactivateCheatMode(cheatId);
-            } else { // Activate FreePlay
-                activateCheatMode(cheatId);
-            }
-            console.log(freePlay);
-        }
-
-        else if (cheatId === "autoPlay") {
-            if (cheatClass === "disabled" || cheatMode) {
-                disableCheatMode(cheatId);
-            } else if (autoPlay) { // Deactivate AutoPlay
-                deactivateCheatMode(cheatId);
-                if (multiBall || singlePlayer || !pause) {
-                    disableCheatMode("cheatMode");
-                } else {
-                    deactivateCheatMode("cheatMode");
-                }
-            } else { // Activate AutoPlay
-                activateCheatMode(cheatId);
-                deactivateCheatMode("singlePlayer");
-                disableCheatMode("cheatMode");
-            }
-            console.log(autoPlay);
-        }
-
-        else if (cheatId === "singlePlayer") {
-            if (cheatClass === "disabled" || cheatMode) {
-                disableCheatMode(cheatId);
-            } else if (singlePlayer) { // Deactivate SinglePlayer
-                deactivateCheatMode(cheatId);
-                if (autoPlay || multiBall || !pause) {
-                    disableCheatMode("cheatMode");
-                } else {
-                    deactivateCheatMode("cheatMode");
-                }
-            } else { // Activate SinglePlayer
-                activateCheatMode(cheatId);
-                deactivateCheatMode("autoPlay");
-                disableCheatMode("cheatMode");
-            }
-            console.log(singlePlayer);
-        }
-
-        else if (cheatId === "multiBall") {
-            if (cheatClass === "disabled" || cheatMode) {
-                disableCheatMode(cheatId);
-            } else if (multiBall) { // Deactivate MultiBall 
-                deactivateCheatMode(cheatId);
-                if (autoPlay || singlePlayer || !pause) {
-                    disableCheatMode("cheatMode");
-                } else {
-                    deactivateCheatMode("cheatMode");
-                }
-            } else { // Activate MultiBall
-                activateCheatMode(cheatId);
-                disableCheatMode("cheatMode");
-            }
-            console.log(multiBall);
-        }
-
-        else if (cheatId === "paddleControl") {
-            if (paddleControl) { // Deactivate PaddleControl
-                deactivateCheatMode(cheatId);
-            } else { // Activate PaddleControl
-                activateCheatMode(cheatId);
-            }
-            console.log(paddleControl);
-        }
+        if (cheatClass === "disabled") {disableCheatMode(cheatId);}
+        else if (cheatId === "pause") {toggleCheatModePause();}
+        else if (cheatId === "cheatMode") {toggleCheatModeCheat();}
+        else if (cheatId === "freePlay") {toggleCheatModeFree();}
+        else if (cheatId === "autoPlay") {toggleCheatModeAuto();}
+        else if (cheatId === "singlePlayer") {toggleCheatModeSingle();}
+        else if (cheatId === "multiBall") {toggleCheatModeMulti();}
+        else if (cheatId === "paddleControl") {toggleCheatModePaddle();}
 
         console.log(cheatClass);
         updateCheatModeVelocities();
