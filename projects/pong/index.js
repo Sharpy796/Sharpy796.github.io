@@ -99,6 +99,7 @@ function runProgram() {
     $("#multiBall").on("click", toggleCheatButton);
     $("#singlePlayer").on("click", toggleCheatButton);
     $("#paddleControl").on("click", toggleCheatButton);
+    $("#choosePlayer").on("click", togglePlayer);
 
     $("#cheatIcon").on("click", chooseCheatMode); // listen for click events
     $("#cheatIcon").hide();
@@ -805,9 +806,10 @@ function runProgram() {
     // [x] freePlay
     // [ ] autoPlay
     // - [ ] Notify the player that this and singlePlayer can't coexist
-    // [ ] singlePlayer
+    // [-] singlePlayer
     // - [ ] Notify the player that this and autoPlay can't coexist
-    // - [ ] Slider to choose which player to play as
+    // - [x] Slider to choose which player to play as
+    // - [x] Make the slider greyish if singlePlayer isn't activated, and make it grey if it is disabled
     // [ ] multiBall
     // - [ ] Choose how many balls
     // - [ ] Disable if the number is not a valid one
@@ -840,12 +842,14 @@ function runProgram() {
             deactivateCheatMode("cheatMode");
             deactivateCheatMode("autoPlay");
             deactivateCheatMode("singlePlayer");
+            deactivateCheatMode("playerSlider");
             deactivateCheatMode("multiBall");
             activateCheatMode("pause");
         } else { // Activate CheatMode
             activateCheatMode("cheatMode");
             disableCheatMode("autoPlay");
             disableCheatMode("singlePlayer");
+            disableCheatMode("playerSlider");
             disableCheatMode("multiBall");
             activateCheatMode("pause");
         }
@@ -874,6 +878,7 @@ function runProgram() {
         } else { // Activate AutoPlay
             activateCheatMode("autoPlay");
             deactivateCheatMode("singlePlayer");
+            deactivateCheatMode("playerSlider");
             disableCheatMode("cheatMode");
         }
         console.log(autoPlay);
@@ -882,8 +887,11 @@ function runProgram() {
     function toggleCheatModeSingle() {
         if (cheatMode) {
             disableCheatMode("singlePlayer");
+            disableCheatMode("playerSlider");
         } else if (singlePlayer) { // Deactivate SinglePlayer
             deactivateCheatMode("singlePlayer");
+            deactivateCheatMode("playerSlider");
+            deactivateCheatMode("playerSlider");
             if (autoPlay || multiBall || !pause) {
                 disableCheatMode("cheatMode");
             } else {
@@ -891,10 +899,17 @@ function runProgram() {
             }
         } else { // Activate SinglePlayer
             activateCheatMode("singlePlayer");
+            activateCheatMode("playerSlider");
             deactivateCheatMode("autoPlay");
             disableCheatMode("cheatMode");
         }
         console.log(singlePlayer);
+    }
+
+    function togglePlayer() {
+        if ($(this).prop("checked") === false) {playerChosen = "p1";}
+        else if ($(this).prop("checked") === true) {playerChosen = "p2";}
+        console.log(playerChosen + " joins the battle!");
     }
 
     function toggleCheatModeMulti() {
