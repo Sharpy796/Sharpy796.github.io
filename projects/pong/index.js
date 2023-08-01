@@ -143,13 +143,13 @@ function runProgram() {
     var showTelemetryCollision = false;     // Shows collision telemetry
     var showTelemetryVelocity = false;      // Shows velocity telemetry
     var showTelemetryCheatModes = false;    // Shows cheat mode telemetry
-    var showTelemetryCheatColors = false;   // Shows cheat mode values
+    var showTelemetryCheatColors = true;   // Shows cheat mode values
 
-    alert(  "Welcome to Pong!\n" +
-            "P1 Controls: W S\n" +
-            "P2 Controls: Up Down\n" +
-            "Pause: Space\n" + 
-            "Restart: R");
+    // alert(  "Welcome to Pong!\n" +
+    //         "P1 Controls: W S\n" +
+    //         "P2 Controls: Up Down\n" +
+    //         "Pause: Space\n" + 
+    //         "Restart: R");
 
     ////////////////////////////////////////////////////////////////////////////////
     ///////////////////////// CORE LOGIC ///////////////////////////////////////////
@@ -214,7 +214,7 @@ function runProgram() {
             console.log("space pressed");
         } if (keycode === KEY.R) {          // restart
             console.log("r pressed");
-            if (confirm("Reset Game?")) {restartGame(p2.id);}
+            // if (confirm("Reset Game?")) {restartGame(p2.id);}
         } if (keycode === KEY.C) {          // cheat
             console.log("c pressed");
         }
@@ -649,9 +649,6 @@ function runProgram() {
 
     // TODO: Create a startup menu for choosing initial game modes
 
-    function getElementId(element) {return $(element).attr("id");}
-    function getElementClass(element) {return $(element).attr("class");}
-
     function updateCheatModeVelocities() {
         if (cheatMode) {
             if (firstTimeCheat) {
@@ -671,6 +668,9 @@ function runProgram() {
             } firstTimeCheat = true;
         }
     }
+
+    function getElementId(element) {return $(element).attr("id");}
+    function getElementClass(element) {return $(element).attr("class");}
 
     function toggleCheatButton() {
         toggleCheatModes(this);
@@ -874,10 +874,10 @@ function runProgram() {
                 disableCheatMode(cheatId);
             } else if (autoPlay) { // Deactivate AutoPlay
                 deactivateCheatMode(cheatId);
-                if (pause) {
-                    deactivateCheatMode("cheatMode");
-                } else {
+                if (multiBall || singlePlayer || !pause) {
                     disableCheatMode("cheatMode");
+                } else {
+                    deactivateCheatMode("cheatMode");
                 }
             } else { // Activate AutoPlay
                 activateCheatMode(cheatId);
@@ -892,10 +892,10 @@ function runProgram() {
                 disableCheatMode(cheatId);
             } else if (multiBall) { // Deactivate MultiBall 
                 deactivateCheatMode(cheatId);
-                if (pause) {
-                    deactivateCheatMode("cheatMode");
-                } else {
+                if (autoPlay || singlePlayer || !pause) {
                     disableCheatMode("cheatMode");
+                } else {
+                    deactivateCheatMode("cheatMode");
                 }
             } else { // Activate MultiBall
                 activateCheatMode(cheatId);
@@ -909,10 +909,10 @@ function runProgram() {
                 disableCheatMode(cheatId);
             } else if (singlePlayer) { // Deactivate SinglePlayer
                 deactivateCheatMode(cheatId);
-                if (pause) {
-                    deactivateCheatMode("cheatMode");
-                } else {
+                if (autoPlay || multiBall || !pause) {
                     disableCheatMode("cheatMode");
+                } else {
+                    deactivateCheatMode("cheatMode");
                 }
             } else { // Activate SinglePlayer
                 activateCheatMode(cheatId);
