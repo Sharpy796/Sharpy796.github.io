@@ -142,6 +142,8 @@ function runProgram() {
     var showTelemetryFPS = false;           // Shows FPS telemetry in the console
     var showTelemetryCollision = false;     // Shows collision telemetry
     var showTelemetryVelocity = false;      // Shows velocity telemetry
+    var showTelemetryCheatModes = false;    // Shows cheat mode telemetry
+    var showTelemetryCheatColors = false;   // Shows cheat mode values
 
     alert(  "Welcome to Pong!\n" +
             "P1 Controls: W S\n" +
@@ -284,7 +286,6 @@ function runProgram() {
                 updateVelocity(ball0);
             } firstTimeCheat = true;
         }
-
     }
 
     function handleKeyUp(event) {
@@ -642,7 +643,8 @@ function runProgram() {
     // [x] Create a way to swap between activation classes - DO NOT USE A FOR LOOP
     // [x] Create some basic logic between swapping between classes
     // [x] Create the rest of the buttons
-    // [-] Copy all of the logic over
+    // [x] Copy all of the logic over
+    // [-] Make the buttons actually do their jobs
     // [ ] Create a constructor function that creates a button with new variables to toggle it with
 
     // TODO: Create a startup menu for choosing initial game modes
@@ -650,8 +652,29 @@ function runProgram() {
     function getElementId(element) {return $(element).attr("id");}
     function getElementClass(element) {return $(element).attr("class");}
 
+    function updateCheatModeVelocities() {
+        if (cheatMode) {
+            if (firstTimeCheat) {
+                ball0.speed.up = 0;
+                ball0.speed.left = 0;
+                ball0.speed.down = 0;
+                ball0.speed.right = 0;
+                updateVelocity(ball0);
+            } firstTimeCheat = false;
+        } else {
+            if (!firstTimeCheat) {
+                ball0.speed.up = ball0.temporaryVelocity.up;
+                ball0.speed.left = ball0.temporaryVelocity.left;
+                ball0.speed.down = ball0.temporaryVelocity.down;
+                ball0.speed.right = ball0.temporaryVelocity.right;
+                updateVelocity(ball0);
+            } firstTimeCheat = true;
+        }
+    }
+
     function toggleCheatButton() {
         toggleCheatModes(this);
+        handleCheatModesColors();
     }
 
     function handleCheatModes(element, boolean) {
@@ -662,39 +685,79 @@ function runProgram() {
         else if (element === "multiBall") {multiBall = boolean;}
         else if (element === "singlePlayer") {singlePlayer = boolean;}
         else if (element === "paddleControl") {paddleControl = boolean;}
-        // getTelemetryCheatModes();
+        getTelemetryCheatModes();
     }
 
-    // BUG: figure out a way to target items with multiple classes 
     function handleCheatModesColors() {
-        if (pause) {
-            $(".relay pause").removeClass("off");
-            $(".relay pause").addClass("on");
-        } else {
-            $(".relay pause").removeClass("on");
-            $(".relay pause").addClass("off");
+        if (showTelemetryCheatColors) {
+            if (pause) {
+                $(".pause").removeClass("off");
+                $(".pause").addClass("on");
+            } else {
+                $(".pause").removeClass("on");
+                $(".pause").addClass("off");
+            }
+
+            if (cheatMode) {
+                $(".cheatMode").removeClass("off");
+                $(".cheatMode").addClass("on");
+            } else {
+                $(".cheatMode").removeClass("on");
+                $(".cheatMode").addClass("off");
+            }
+
+            if (freePlay) {
+                $(".freePlay").removeClass("off");
+                $(".freePlay").addClass("on");
+            } else {
+                $(".freePlay").removeClass("on");
+                $(".freePlay").addClass("off");
+            }
+
+            if (autoPlay) {
+                $(".autoPlay").removeClass("off");
+                $(".autoPlay").addClass("on");
+            } else {
+                $(".autoPlay").removeClass("on");
+                $(".autoPlay").addClass("off");
+            }
+
+            if (multiBall) {
+                $(".multiBall").removeClass("off");
+                $(".multiBall").addClass("on");
+            } else {
+                $(".multiBall").removeClass("on");
+                $(".multiBall").addClass("off");
+            }
+
+            if (singlePlayer) {
+                $(".singlePlayer").removeClass("off");
+                $(".singlePlayer").addClass("on");
+            } else {
+                $(".singlePlayer").removeClass("on");
+                $(".singlePlayer").addClass("off");
+            }
+
+            if (paddleControl) {
+                $(".paddleControl").removeClass("off");
+                $(".paddleControl").addClass("on");
+            } else {
+                $(".paddleControl").removeClass("on");
+                $(".paddleControl").addClass("off");
+            }
         }
-
-
-
-        // if (element === "pause") {pause = boolean;}
-        // else if (element === "cheatMode") {cheatMode = boolean;}
-        // else if (element === "freePlay") {freePlay = boolean;}
-        // else if (element === "autoPlay") {autoPlay = boolean;}
-        // else if (element === "multiBall") {multiBall = boolean;}
-        // else if (element === "singlePlayer") {singlePlayer = boolean;}
-        // else if (element === "paddleControl") {paddleControl = boolean;}
-        // getTelemetryCheatModes();
     }
 
     function getTelemetryCheatModes() {
-        console.log("pause: " + pause);
-        console.log("cheatMode: " + cheatMode);
-        console.log("freePlay: " + freePlay);
-        console.log("autoPlay: " + autoPlay);
-        console.log("multiBall: " + multiBall);
-        console.log("singlePlayer: " + singlePlayer);
-        console.log("paddleControl: " + paddleControl);
+        if (showTelemetryCheatModes) {
+            console.log("pause: " + pause);
+            console.log("cheatMode: " + cheatMode);
+            console.log("freePlay: " + freePlay);
+            console.log("autoPlay: " + autoPlay);
+            console.log("multiBall: " + multiBall);
+            console.log("singlePlayer: " + singlePlayer);
+            console.log("paddleControl: " + paddleControl);
+        }
     }
 
     function activateCheatMode(element) {
@@ -724,37 +787,32 @@ function runProgram() {
         $(element).addClass("disabled");
     }
 
-    // function toggleCheatModesFUNKY(element) {
-    //     if (getElementId(element) === "freePlay") {
-    //         if (getElementClass(element) === "activated") {freePlay = true;}
-    //         else {freePlay = false;}
-    //     }
-    //     if (getElementId(element) === "autoPlay") {
-    //         if (getElementClass(element) === "activated") {autoPlay = true;}
-    //         else {autoPlay = false;}
-    //     }
-    // }
-    // 
-    // function toggleDeactivation() {
-    //     if (paddleControl) {
-    //         disableCheatMode("#autoPlay");
-    //         activateCheatMode("#paddleControl");
-    //     } else if (autoPlay) {
-    //         disableCheatMode("#paddleControl");
-    //         activateCheatMode("#autoPlay");
-    //     } else {
-    //         deactivateCheatMode("#paddleControl");
-    //         deactivateCheatMode("#autoPlay");
-    //     }
-    // }
-
-    // TODOING: Situate the logic for the cheatmodes into this method
-    // [-] pause
-    // [-] cheatMode
+    // TODONE: Situate the logic for the cheatmodes into this method
+    // [x] pause
+    // [x] cheatMode
     // [x] freePlay
-    // [-] autoPlay
+    // [x] autoPlay
+    // [x] multiBall
+    // [x] singlePlayer
+    // [x] paddleControl
+
+    // TODOING: Make the buttons do what they need to do correctly
+    // [ ] pause
+    // - [ ] Make this work with the spacebar as well
+    // [ ] cheatMode
+    // - [ ] Make the ball direction work properly
+    // [x] freePlay
+    // [ ] autoPlay
+    // - [ ] Notify the player that this and singlePlayer can't coexist
     // [ ] multiBall
+    // - [ ] Choose how many balls
+    // - [ ] Disable if the number is not a valid one
+    // - [ ] Arrow buttons to increment the number
+    // - [ ] Warn the player of a restart before activating/deactivating
+    // - [ ] Restart the game upon activating/deactivating
     // [ ] singlePlayer
+    // - [ ] Notify the player that this and autoPlay can't coexist
+    // - [ ] Slider to choose which player to play as
     // [x] paddleControl
     
     function toggleCheatModes(element) {
@@ -767,10 +825,10 @@ function runProgram() {
         }
         
         else if (cheatId === "pause") {
-            if (pause) {
+            if (pause) { // Unpause
                 deactivateCheatMode(cheatId);
                 disableCheatMode("cheatMode");
-            } else {
+            } else { // Pause
                 activateCheatMode(cheatId);
                 if (autoPlay || singlePlayer || multiBall) {
                     disableCheatMode("cheatMode");
@@ -786,13 +844,13 @@ function runProgram() {
         else if (cheatId === "cheatMode") {
             if (cheatClass === "disabled" || autoPlay || singlePlayer || multiBall || !pause) {
                 disableCheatMode(cheatId);
-            } else if (cheatMode) {
+            } else if (cheatMode) { // Deactivate CheatMode
                 deactivateCheatMode(cheatId);
                 deactivateCheatMode("autoPlay");
                 deactivateCheatMode("singlePlayer");
                 deactivateCheatMode("multiBall");
                 activateCheatMode("pause");
-            } else {
+            } else { // Activate CheatMode
                 activateCheatMode(cheatId);
                 disableCheatMode("autoPlay");
                 disableCheatMode("singlePlayer");
@@ -803,42 +861,43 @@ function runProgram() {
         }
 
         else if (cheatId === "freePlay") {
-            if (freePlay) {
+            if (freePlay) { // Deactivate FreePlay
                 deactivateCheatMode(cheatId);
-            } else {
+            } else { // Activate FreePlay
                 activateCheatMode(cheatId);
             }
             console.log(freePlay);
         }
 
         else if (cheatId === "autoPlay") {
-            if (cheatMode) {
+            if (cheatClass === "disabled" || cheatMode) {
                 disableCheatMode(cheatId);
-            } else if (autoPlay) {
+            } else if (autoPlay) { // Deactivate AutoPlay
                 deactivateCheatMode(cheatId);
                 if (pause) {
                     deactivateCheatMode("cheatMode");
                 } else {
                     disableCheatMode("cheatMode");
                 }
-            } else {
+            } else { // Activate AutoPlay
                 activateCheatMode(cheatId);
+                deactivateCheatMode("singlePlayer");
                 disableCheatMode("cheatMode");
             }
             console.log(autoPlay);
         }
 
         else if (cheatId === "multiBall") {
-            if (cheatMode) {
+            if (cheatClass === "disabled" || cheatMode) {
                 disableCheatMode(cheatId);
-            } else if (autoPlay) {
+            } else if (multiBall) { // Deactivate MultiBall 
                 deactivateCheatMode(cheatId);
                 if (pause) {
                     deactivateCheatMode("cheatMode");
                 } else {
                     disableCheatMode("cheatMode");
                 }
-            } else {
+            } else { // Activate MultiBall
                 activateCheatMode(cheatId);
                 disableCheatMode("cheatMode");
             }
@@ -846,37 +905,34 @@ function runProgram() {
         }
 
         else if (cheatId === "singlePlayer") {
-            if (cheatMode) {
+            if (cheatClass === "disabled" || cheatMode) {
                 disableCheatMode(cheatId);
-            } else if (autoPlay) {
+            } else if (singlePlayer) { // Deactivate SinglePlayer
                 deactivateCheatMode(cheatId);
                 if (pause) {
                     deactivateCheatMode("cheatMode");
                 } else {
                     disableCheatMode("cheatMode");
                 }
-            } else {
+            } else { // Activate SinglePlayer
                 activateCheatMode(cheatId);
+                deactivateCheatMode("autoPlay");
                 disableCheatMode("cheatMode");
             }
             console.log(singlePlayer);
         }
 
         else if (cheatId === "paddleControl") {
-            if (paddleControl) {
+            if (paddleControl) { // Deactivate PaddleControl
                 deactivateCheatMode(cheatId);
-            } else {
+            } else { // Activate PaddleControl
                 activateCheatMode(cheatId);
             }
             console.log(paddleControl);
         }
 
         console.log(cheatClass);
-        handleCheatModesColors()
-    }
-
-    function toggleAllCheatButtons() {
-
+        updateCheatModeVelocities();
     }
 
     // FIXME: When a side movement key is held when FreePlay is turned off, the paddle doesn't stop moving until the key is released
@@ -1079,7 +1135,7 @@ function runProgram() {
             // MultiBall Deactivation
             else if (answer === "noMulti") {
                 if (multiBall) {
-                    if (confirm("Disabling MultiBall will restart the current game. Do you still want to continue?")) {
+                    if (confirm("Deactivating MultiBall will restart the current game. Do you still want to continue?")) {
                         alert("MultiBall deactivated.\nType 'multiBall' to reactivate it.");
                         multiBall = false;
                         restartGame(p2.id);
