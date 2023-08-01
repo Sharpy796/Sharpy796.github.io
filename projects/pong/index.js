@@ -144,7 +144,7 @@ function runProgram() {
     var showTelemetryCollision = false;     // Shows collision telemetry
     var showTelemetryVelocity = false;      // Shows velocity telemetry
     var showTelemetryCheatModes = false;    // Shows cheat mode telemetry
-    var showTelemetryCheatColors = true;   // Shows cheat mode values
+    var showTelemetryCheatColors = false;   // Shows cheat mode values
 
     // FIXME: Put this back when needed
     // alert(  "Welcome to Pong!\n" +
@@ -1872,7 +1872,7 @@ function runProgram() {
         targetedBallLeft = ballNullLeft;
         targetedBallRight = ballNullRight;
         // Unpause the game
-        pause = false;
+        deactivateCheatMode("pause");
 
         // Tell that we have finished restarting the round
         restartingRound = false;
@@ -1894,7 +1894,7 @@ function runProgram() {
     }
 
     function resetVariables() {
-        pause = false;
+        deactivateCheatMode("pause");
         spaceIsDown = false
         firstTimeCheat = true;
         ball0.firstTimeBouncedPaddle = true;
