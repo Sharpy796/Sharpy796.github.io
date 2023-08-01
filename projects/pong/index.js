@@ -143,7 +143,7 @@ function runProgram() {
     var showTelemetryCollision = false;     // Shows collision telemetry
     var showTelemetryVelocity = false;      // Shows velocity telemetry
     var showTelemetryCheatModes = false;    // Shows cheat mode telemetry
-    var showTelemetryCheatColors = false;   // Shows cheat mode values
+    var showTelemetryCheatColors = true;   // Shows cheat mode values
 
     // FIXME: Put this back when needed
     // alert(  "Welcome to Pong!\n" +
@@ -914,7 +914,7 @@ function runProgram() {
         console.log(multiBall);
     }
 
-    function toggleCheatModeSingle() {
+    function toggleCheatModePaddle() {
         if (paddleControl) { // Deactivate PaddleControl
             deactivateCheatMode("paddleControl");
         } else { // Activate PaddleControl
