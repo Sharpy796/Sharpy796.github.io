@@ -811,9 +811,11 @@ function runProgram() {
     // - [x] Slider to choose which player to play as
     // - [x] Make the slider greyish if singlePlayer isn't activated, and make it grey if it is disabled
     // [ ] multiBall
-    // - [ ] Choose how many balls
-    // - [ ] Disable if the number is not a valid one
-    // - [ ] Arrow buttons to increment the number
+    // - [ ] Make a field to tell how many balls ("Balls" underneath it)
+    // - [ ] Disable the button if the number is not a valid one
+    // - [ ] Put a warning message if the number is not a valid one
+    // - [ ] Arrow buttons next to the field to increment the number
+    // - [ ] "Confirm" button (this could just be the MultiBall button)
     // - [ ] Warn the player of a restart before activating/deactivating
     // - [ ] Restart the game upon activating/deactivating
     // [x] paddleControl
