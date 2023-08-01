@@ -192,8 +192,8 @@ body {
   background-color: #333;
   /* margin: auto; */
   margin-left: 40px;
-  /* width: 500px;
-  height: auto; */
+  width: 400px;
+  /* height: auto; */
   position: relative;
   border: 1px solid white;
   border-radius: 10px;
@@ -212,17 +212,18 @@ body {
   position: block;
   display: flex;
   margin: 15px;
-  margin-bottom: 25px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  /* background-color: aqua; */
 }
 
 .relay p {
   position: inline;
   color: white;
   font-size: 15pt;
-  top: 7.5px;
-  margin-top: auto;
-  margin-bottom: auto;
-  /* font-family: "Comic Sans MS"; */
+  margin-top: 25px;
+  margin-bottom: 25px;
+  font-family:'Courier New', Courier, monospace;
 }
 
 button {

@@ -112,8 +112,8 @@ function runProgram() {
     var firstTimeCheat = true;
     var freePlay = false;
     var autoPlay = false;
-    var multiBall = false;
     var singlePlayer = false;
+    var multiBall = false;
     var paddleControl = false;
     // MultiBall Variables
     var ballCount = 10;
@@ -143,7 +143,7 @@ function runProgram() {
     var showTelemetryCollision = false;     // Shows collision telemetry
     var showTelemetryVelocity = false;      // Shows velocity telemetry
     var showTelemetryCheatModes = false;    // Shows cheat mode telemetry
-    var showTelemetryCheatColors = true;   // Shows cheat mode values
+    var showTelemetryCheatColors = false;   // Shows cheat mode values
 
     // alert(  "Welcome to Pong!\n" +
     //         "P1 Controls: W S\n" +
@@ -792,27 +792,27 @@ function runProgram() {
     // [x] cheatMode
     // [x] freePlay
     // [x] autoPlay
-    // [x] multiBall
     // [x] singlePlayer
+    // [x] multiBall
     // [x] paddleControl
 
     // TODOING: Make the buttons do what they need to do correctly
     // [ ] pause
     // - [ ] Make this work with the spacebar as well
-    // [ ] cheatMode
-    // - [ ] Make the ball direction work properly
+    // [x]] cheatMode
+    // - [x] Make the ball direction work properly
     // [x] freePlay
     // [ ] autoPlay
     // - [ ] Notify the player that this and singlePlayer can't coexist
+    // [ ] singlePlayer
+    // - [ ] Notify the player that this and autoPlay can't coexist
+    // - [ ] Slider to choose which player to play as
     // [ ] multiBall
     // - [ ] Choose how many balls
     // - [ ] Disable if the number is not a valid one
     // - [ ] Arrow buttons to increment the number
     // - [ ] Warn the player of a restart before activating/deactivating
     // - [ ] Restart the game upon activating/deactivating
-    // [ ] singlePlayer
-    // - [ ] Notify the player that this and autoPlay can't coexist
-    // - [ ] Slider to choose which player to play as
     // [x] paddleControl
     
     function toggleCheatModes(element) {
@@ -887,23 +887,6 @@ function runProgram() {
             console.log(autoPlay);
         }
 
-        else if (cheatId === "multiBall") {
-            if (cheatClass === "disabled" || cheatMode) {
-                disableCheatMode(cheatId);
-            } else if (multiBall) { // Deactivate MultiBall 
-                deactivateCheatMode(cheatId);
-                if (autoPlay || singlePlayer || !pause) {
-                    disableCheatMode("cheatMode");
-                } else {
-                    deactivateCheatMode("cheatMode");
-                }
-            } else { // Activate MultiBall
-                activateCheatMode(cheatId);
-                disableCheatMode("cheatMode");
-            }
-            console.log(multiBall);
-        }
-
         else if (cheatId === "singlePlayer") {
             if (cheatClass === "disabled" || cheatMode) {
                 disableCheatMode(cheatId);
@@ -920,6 +903,23 @@ function runProgram() {
                 disableCheatMode("cheatMode");
             }
             console.log(singlePlayer);
+        }
+
+        else if (cheatId === "multiBall") {
+            if (cheatClass === "disabled" || cheatMode) {
+                disableCheatMode(cheatId);
+            } else if (multiBall) { // Deactivate MultiBall 
+                deactivateCheatMode(cheatId);
+                if (autoPlay || singlePlayer || !pause) {
+                    disableCheatMode("cheatMode");
+                } else {
+                    deactivateCheatMode("cheatMode");
+                }
+            } else { // Activate MultiBall
+                activateCheatMode(cheatId);
+                disableCheatMode("cheatMode");
+            }
+            console.log(multiBall);
         }
 
         else if (cheatId === "paddleControl") {
@@ -997,43 +997,6 @@ function runProgram() {
                 }
             }
 
-            // MultiBall Activation
-            else if (answer === "multiBall") {
-                if (cheatMode) {
-                    alert("Cannot activate MultiBall because Cheat Mode is activated.\nType 'noCheat' to deactivate it.");
-                    multiBall = false;
-                } else {
-                    if (confirm(((multiBall) ? "Rea" : "A") + "ctivating MultiBall will restart the current game. Do you still want to continue?")) {
-                        let ballCountOld = ballCount;
-                        do {
-                            ballCount = prompt("How many balls?");
-                            if (showTelemetryMultiBall) {
-                                console.log("ballCountOld: " + ballCountOld);
-                                console.log("ballCount: " + ballCount);
-                            }
-                            // Was Cancel pressed?
-                            if (ballCount == null) {break;}
-                            else {ballCount = Number(ballCount);}
-                            // Make sure the correct amount is entered
-                            if (ballCount < 2) {alert("Please enter more than 1 ball.");}
-                            else if (ballCount > 50) {alert("Please enter 50 or less balls.");}
-                            // Make sure a number is entered.
-                            else if (isNaN(ballCount)) {alert("Please enter a valid number.");}
-                        } while (isNaN(ballCount) || ballCount < 2 || ballCount > 50);
-                        if (ballCount == null) {
-                            alert("MultiBall activation cancelled." + ((multiBall) ? "\nType 'noMulti' to deactivate MultiBall." : "")); 
-                            ballCount = ballCountOld;
-                        } else {
-                            alert("MultiBall activated with " + ballCount + " balls!\nType 'noMulti' to deactivate it.");
-                            multiBall = true;
-                            restartGame(p2.id);
-                        }
-                    } else {
-                        alert("MultiBall activation cancelled." + ((multiBall) ? "\nType 'noMulti' to deactivate MultiBall." : ""));
-                    }
-                }
-            }
-
             // SinglePlayer Activation
             else if (answer === "singlePlayer") {
                 if (cheatMode) {
@@ -1079,6 +1042,43 @@ function runProgram() {
                         alert("Single Player Mode activated!\nType 'multiPlayer' to deactivate it.");
                         singlePlayer = true;
                         snapPaddles();
+                    }
+                }
+            }
+
+            // MultiBall Activation
+            else if (answer === "multiBall") {
+                if (cheatMode) {
+                    alert("Cannot activate MultiBall because Cheat Mode is activated.\nType 'noCheat' to deactivate it.");
+                    multiBall = false;
+                } else {
+                    if (confirm(((multiBall) ? "Rea" : "A") + "ctivating MultiBall will restart the current game. Do you still want to continue?")) {
+                        let ballCountOld = ballCount;
+                        do {
+                            ballCount = prompt("How many balls?");
+                            if (showTelemetryMultiBall) {
+                                console.log("ballCountOld: " + ballCountOld);
+                                console.log("ballCount: " + ballCount);
+                            }
+                            // Was Cancel pressed?
+                            if (ballCount == null) {break;}
+                            else {ballCount = Number(ballCount);}
+                            // Make sure the correct amount is entered
+                            if (ballCount < 2) {alert("Please enter more than 1 ball.");}
+                            else if (ballCount > 50) {alert("Please enter 50 or less balls.");}
+                            // Make sure a number is entered.
+                            else if (isNaN(ballCount)) {alert("Please enter a valid number.");}
+                        } while (isNaN(ballCount) || ballCount < 2 || ballCount > 50);
+                        if (ballCount == null) {
+                            alert("MultiBall activation cancelled." + ((multiBall) ? "\nType 'noMulti' to deactivate MultiBall." : "")); 
+                            ballCount = ballCountOld;
+                        } else {
+                            alert("MultiBall activated with " + ballCount + " balls!\nType 'noMulti' to deactivate it.");
+                            multiBall = true;
+                            restartGame(p2.id);
+                        }
+                    } else {
+                        alert("MultiBall activation cancelled." + ((multiBall) ? "\nType 'noMulti' to deactivate MultiBall." : ""));
                     }
                 }
             }
