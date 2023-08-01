@@ -145,6 +145,7 @@ function runProgram() {
     var showTelemetryCheatModes = false;    // Shows cheat mode telemetry
     var showTelemetryCheatColors = false;   // Shows cheat mode values
 
+    // FIXME: Put this back when needed
     // alert(  "Welcome to Pong!\n" +
     //         "P1 Controls: W S\n" +
     //         "P2 Controls: Up Down\n" +
@@ -626,7 +627,7 @@ function runProgram() {
         }
     }
 
-    // TODO: Create a better cheat mode interface. Probably a sidebar
+    // TODOING: Create a better cheat mode interface. Probably a sidebar
     // [x] Include buttons!! Steal code from the StopLight program
     // [x] Create a DIV to hold the buttons
     // [x] Position the DIV next to the board
@@ -799,7 +800,7 @@ function runProgram() {
     // TODOING: Make the buttons do what they need to do correctly
     // [ ] pause
     // - [ ] Make this work with the spacebar as well
-    // [x]] cheatMode
+    // [x] cheatMode
     // - [x] Make the ball direction work properly
     // [x] freePlay
     // [ ] autoPlay
@@ -1662,11 +1663,6 @@ function runProgram() {
     ////////////////////////// REDRAWING FUNCTIONS /////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
 
-    // TODOING: Need to do a color overhaul.
-    // [x] Make each ball more colorful? Idk, I kinda like the way the colors are now
-    // [x] Update the ball colors for when the game is paused
-    // [ ] Make a unique visual for when MultiBall is enabled
-    // [ ] Make a better pause menu
     function changeColors() { // FIXME: Make color changing more efficient. I don't need to constantly change colors; colors need to change the first time certain actions happen.
         // Ball colors
         if (showTelemetryBallBounce) {

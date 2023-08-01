@@ -97,7 +97,6 @@ body {
   background-color: black;
   width: 650px;
   height: 40px;
-  /* display: table; */
   border-radius: 5px;
   border: 2px solid black;
 
@@ -117,12 +116,8 @@ body {
   font-size: 15px;
   padding-left: 10px;
   padding-right: 10px;
-  /* margin: 0px; */
   position: static;
   column-span: 7;
-  /* display: inline-block; */
-  /* display: table-row-group; */
-  /* list-style-type: none; */
 }
 
 .scores span {
@@ -132,23 +127,16 @@ body {
 #p1 {
   /* positioning */
   text-align: left;
-  /* display: table-cell; */
-  /* left: 50px; */
 }
 
 #bounces {
   /* positioning */
-  /* padding-left: 0px; */
   text-align: center;
-  /* display: table-cell; */
-  /* left: 300px; */
 }
 
 #p2 {
   /* positioning */
   text-align: right;
-  /* display: table-cell; */
-  /* left: 630px; */
 }
 
 .tallyMark {
@@ -156,19 +144,15 @@ body {
 }
 
 .p1TallyMark {
-  /* background-color: cyan; */
   background-color: darkblue;
 }
 
 .p2TallyMark {
-  /* background-color: red; */
   background-color: maroon;
 }
 
 .winTallyMark {
-  /* background-color: #03C03C; */
   background-color: limegreen;
-  /* box-shadow: 0px 0px 0px 3px lime inset; */
 }
 
 .speeds {
@@ -190,23 +174,12 @@ body {
 
 .dashboard {
   background-color: #333;
-  /* margin: auto; */
   margin-left: 40px;
   width: 400px;
-  /* height: auto; */
   position: relative;
   border: 1px solid white;
   border-radius: 10px;
 }
-
-/* .center {
-    margin: 0;
-    position: absolute;
-    top: 47.5%;
-    left: 50%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-} */
 
 .relay {
   position: block;
@@ -214,7 +187,6 @@ body {
   margin: 15px;
   margin-top: 10px;
   margin-bottom: 10px;
-  /* background-color: aqua; */
 }
 
 .relay p {
@@ -224,6 +196,14 @@ body {
   margin-top: 25px;
   margin-bottom: 25px;
   font-family:'Courier New', Courier, monospace;
+}
+
+.on {
+  background-color: rgb(0, 100, 0);
+}
+
+.off {
+  background-color: rgb(100, 0, 0);
 }
 
 button {
@@ -291,12 +271,4 @@ button:active {
 .disabled:active {
   color: rgb(83, 83, 83);
   background-color: grey;
-}
-
-.on {
-  background-color: rgb(0, 100, 0);
-}
-
-.off {
-  background-color: rgb(100, 0, 0);
 }
