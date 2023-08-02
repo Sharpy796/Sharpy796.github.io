@@ -147,7 +147,7 @@ function runProgram() {
     var showTelemetryCollision = false;     // Shows collision telemetry
     var showTelemetryVelocity = false;      // Shows velocity telemetry
     var showTelemetryCheatModes = false;    // Shows cheat mode telemetry
-    var showTelemetryCheatColors = true;   // Shows cheat mode values
+    var showTelemetryCheatColors = false;   // Shows cheat mode values
 
     // FIXME: Put this back when needed
     // alert(  "Welcome to Pong!\n" +
@@ -1360,13 +1360,32 @@ function runProgram() {
         }
     }
 
-    // TODOING: Add sounds to bounces!!!
-    function playSound() {
-
+    // TODONE: Add sounds to bounces!!!
+    // [x] Get the audio to play
+    // [x] Add the audio to any bounces
+    // [x] Add separate sounds for each type of bounce
+    // - [x] p1
+    // - [x] p2
+    // - [x] top/bottom wall
+    // - [x] left/right wall
+    // [x] Allow specifying for each bounce sound in the method
+    // [x] Make the mute button work
+    // [ ] Credit the person who the sounds came from somehow
+    function playSound(source) {
+        if (!mute) {
+            if (source === "p1") {$("audio#p1")[0].play();}
+            else if (source === "p2") {$("audio#p2")[0].play();}
+            else if (source === "side") {$("audio#side")[0].play();}
+            else if (source === "top") {$("audio#top")[0].play();}
+            console.log("playing " + source);
+        } else {
+            console.log(source + " is currently muted");
+        }
     }
 
     function bounceBall(ballObj) { 
         while (ballObj.borderLeft < BORDERS.LEFT && !restartingRound) {
+            playSound("side");
             if (freePlay) {
                 // Bounce the ball
                 ballObj.speed.right = ballObj.speed.left;
@@ -1386,6 +1405,7 @@ function runProgram() {
         }
         while (ballObj.borderTop < BORDERS.TOP && !restartingRound) {
             // Bounce the ball
+            playSound("top");
             ballObj.speed.down = ballObj.speed.up;
             ballObj.speed.up = 0;
             updateVelocity(ballObj);
@@ -1396,6 +1416,7 @@ function runProgram() {
             console.log(ballObj.id + " passed top border");
         }
         while (ballObj.borderRight > BORDERS.RIGHT && !restartingRound) {
+            playSound("side");
             if (freePlay) {
                 // Bounce the ball
                 ballObj.speed.left = ballObj.speed.right;
@@ -1415,6 +1436,7 @@ function runProgram() {
         }
         while (ballObj.borderBottom > BORDERS.BOTTOM && !restartingRound) {
             // Bounce the ball
+            playSound("top");
             ballObj.speed.up = ballObj.speed.down;
             ballObj.speed.down = 0;
             updateVelocity(ballObj);
@@ -1441,8 +1463,11 @@ function runProgram() {
                 ball.speed.right = 0;
                 // increase the score
                 if (paddle === paddleRight) {
+                    playSound("p2");
                     score.bounced++;
                     if (!multiBall) {increaseGameSpeed();}
+                } else {
+                    playSound("p1");
                 }
                 console.log(ball.id+" bounced " + tellPaddle(paddle) + " paddle's left border");
             }
@@ -1454,8 +1479,11 @@ function runProgram() {
                 ball.speed.left = 0;
                 // increase the score
                 if (paddle === paddleLeft) {
+                    playSound("p1");
                     score.bounced++;
                     if (!multiBall) {increaseGameSpeed();}
+                } else {
+                    playSound("p2");
                 }
                 console.log(ball.id+" bounced " + tellPaddle(paddle) + " paddle's right border");
             }

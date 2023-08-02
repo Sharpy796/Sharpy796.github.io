@@ -12,19 +12,30 @@
 </head>
 
 <body>
+    <!-- https://freesound.org/people/NoiseCollector/packs/254/ -->
+    <audio id="p1">
+        <source src="assets/sounds/245_noisecollector_pong-softsynth/4372__noisecollector__pongblipc5.wav" type="audio/wav">
+        Your browser does not support the audio tag.
+    </audio>
+    <audio id="p2">
+        <source src="assets/sounds/245_noisecollector_pong-softsynth/4359__noisecollector__pongblipf4.wav" type="audio/wav">
+        Your browser does not support the audio tag.
+    </audio>
+    <audio id="top">
+        <source src="assets/sounds/245_noisecollector_pong-softsynth/4360__noisecollector__ponblipg5.wav" type="audio/wav">
+        Your browser does not support the audio tag.
+    </audio>
+    <audio id="side">
+        <source src="assets/sounds/245_noisecollector_pong-softsynth/4381__noisecollector__pongblipd4.wav" type="audio/wav">
+        Your browser does not support the audio tag.
+    </audio>
+
     <div class="game">
         <div class="board">
             <div class="gameItem paddles" id="paddleLeft"></div>
             <div class="gameItem paddles" id="paddleRight"></div>
             <div id="ballPit">
-                <div class="gameItem balls" id="ball0">
-                    <span>0</span>
-                    <audio controls loop autoplay> <!-- https://freesound.org/people/NoiseCollector/packs/254/ -->
-                        <!-- <source src="horse.ogg" type="audio/ogg">  -->
-                        <source src="assets/sounds/button.mp3" type="audio/mpeg">
-                        Your browser does not support the audio tag.
-                    </audio>
-                </div>
+                <div class="gameItem balls" id="ball0"><span>0</span></div>
             </div>
             <div class="gameItem" id="cheatIcon"></div>
         </div>
