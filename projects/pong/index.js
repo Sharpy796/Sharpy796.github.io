@@ -655,6 +655,8 @@ function runProgram() {
     // [x] Create the rest of the buttons
     // [x] Copy all of the logic over
     // [-] Make the buttons actually do their jobs
+    // [ ] Prevent the keyboard from pressing the buttons
+    // [ ] Prevent buttons from being pressed after the game ends
     // [ ] Create a constructor function that creates a button with new variables to toggle it with
 
     // TODO: Create a startup menu for choosing initial game modes
@@ -1360,7 +1362,7 @@ function runProgram() {
         }
     }
 
-    // TODONE: Add sounds to bounces!!!
+    // TODOING: Add sounds to bounces!!!
     // [x] Get the audio to play
     // [x] Add the audio to any bounces
     // [x] Add separate sounds for each type of bounce
