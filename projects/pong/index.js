@@ -33,6 +33,7 @@ function runProgram() {
         SPACE: 32,  // pause
         R: 82,      // restart
         C: 67,      // cheat
+        M: 77,      // mute
 
         /* P1 controls */
         W: 87,      // up
@@ -92,6 +93,7 @@ function runProgram() {
     var interval = setInterval(newFrame, framesPerSecondInterval);   // execute newFrame every 0.0166 seconds (60 frames per second)
     $(document).on("keydown", handleKeyDown);       // listen for keydown events
     $(document).on("keyup", handleKeyUp);           // listen for keyup events
+    $("#mute").on("click", toggleCheatButton);
     $("#pause").on("click", toggleCheatButton);
     $("#cheatMode").on("click", toggleCheatButton);
     $("#freePlay").on("click", toggleCheatButton);
@@ -105,6 +107,7 @@ function runProgram() {
     $("#cheatIcon").hide();
 
     // Pause Variables
+    var mute = false;
     var pause = false;
     var spaceIsDown = false
     var firstTimePaused = true;
@@ -144,7 +147,7 @@ function runProgram() {
     var showTelemetryCollision = false;     // Shows collision telemetry
     var showTelemetryVelocity = false;      // Shows velocity telemetry
     var showTelemetryCheatModes = false;    // Shows cheat mode telemetry
-    var showTelemetryCheatColors = false;   // Shows cheat mode values
+    var showTelemetryCheatColors = true;   // Shows cheat mode values
 
     // FIXME: Put this back when needed
     // alert(  "Welcome to Pong!\n" +
@@ -219,6 +222,8 @@ function runProgram() {
             // if (confirm("Reset Game?")) {restartGame(p2.id);}
         } if (keycode === KEY.C) {          // cheat
             console.log("c pressed");
+        } if (keycode === KEY.M) {          // mute
+            console.log("m pressed");
         }
 
         if (!autoPlay) {
@@ -305,6 +310,9 @@ function runProgram() {
         } if (keycode === KEY.C) {
             console.log("c released");
             chooseCheatMode();
+        } if (keycode === KEY.M) {
+            console.log("m released");
+            toggleCheatModeMute();
         }
 
         if (!autoPlay) {
@@ -680,7 +688,8 @@ function runProgram() {
     }
 
     function handleCheatModes(element, boolean) {
-        if (element === "pause") {pause = boolean;}
+        if (element === "mute") {mute = boolean;}
+        else if (element === "pause") {pause = boolean;}
         else if (element === "cheatMode") {cheatMode = boolean;}
         else if (element === "freePlay") {freePlay = boolean;}
         else if (element === "autoPlay") {autoPlay = boolean;}
@@ -692,6 +701,14 @@ function runProgram() {
 
     function handleCheatModesColors() {
         if (showTelemetryCheatColors) {
+            if (mute) {
+                $(".mute").removeClass("off");
+                $(".mute").addClass("on");
+            } else {
+                $(".mute").removeClass("on");
+                $(".mute").addClass("off");
+            }
+
             if (pause) {
                 $(".pause").removeClass("off");
                 $(".pause").addClass("on");
@@ -820,6 +837,15 @@ function runProgram() {
     // - [ ] Restart the game upon activating/deactivating
     // [x] paddleControl
 
+    function toggleCheatModeMute() {
+        if (mute) { // Unmute
+            deactivateCheatMode("mute");
+        } else { // Mute
+            activateCheatMode("mute");
+        }
+        console.log(mute);
+    }
+
     function toggleCheatModePause() {
         if (pause) { // Unpause
             deactivateCheatMode("pause");
@@ -946,6 +972,7 @@ function runProgram() {
         console.log(cheatId);
 
         if (cheatClass === "disabled") {disableCheatMode(cheatId);}
+        else if (cheatId === "mute") {toggleCheatModeMute();}
         else if (cheatId === "pause") {toggleCheatModePause();}
         else if (cheatId === "cheatMode") {toggleCheatModeCheat();}
         else if (cheatId === "freePlay") {toggleCheatModeFree();}
@@ -1333,7 +1360,12 @@ function runProgram() {
         }
     }
 
-    function bounceBall(ballObj) { // TODO: Add sounds to bounces!!!
+    // TODOING: Add sounds to bounces!!!
+    function playSound() {
+
+    }
+
+    function bounceBall(ballObj) { 
         while (ballObj.borderLeft < BORDERS.LEFT && !restartingRound) {
             if (freePlay) {
                 // Bounce the ball

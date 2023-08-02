@@ -17,7 +17,14 @@
             <div class="gameItem paddles" id="paddleLeft"></div>
             <div class="gameItem paddles" id="paddleRight"></div>
             <div id="ballPit">
-                <div class="gameItem balls" id="ball0"><span>0</span></div>
+                <div class="gameItem balls" id="ball0">
+                    <span>0</span>
+                    <audio controls loop autoplay> <!-- https://freesound.org/people/NoiseCollector/packs/254/ -->
+                        <!-- <source src="horse.ogg" type="audio/ogg">  -->
+                        <source src="assets/sounds/button.mp3" type="audio/mpeg">
+                        Your browser does not support the audio tag.
+                    </audio>
+                </div>
             </div>
             <div class="gameItem" id="cheatIcon"></div>
         </div>
@@ -84,6 +91,10 @@
         </div>
     </div>
     <div class="dashboard">
+        <div class="relay mute">
+            <button class="deactivated" id="mute"></button>
+            <p><b>Mute</b></p>
+        </div>
         <div class="relay pause">
             <button class="deactivated" id="pause"></button>
             <p><b>Pause</b></p>
