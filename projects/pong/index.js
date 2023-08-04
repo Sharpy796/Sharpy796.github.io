@@ -830,7 +830,7 @@ function runProgram() {
     // - [x] Slider to choose which player to play as
     // - [x] Make the slider greyish if singlePlayer isn't activated, and make it grey if it is disabled
     // [ ] multiBall
-    // - [ ] Make a field to tell how many balls ("Balls" underneath it)
+    // - [-] Make a field to tell how many balls ("Balls" underneath it)
     // - [ ] Disable the button if the number is not a valid one
     // - [ ] Put a warning message if the number is not a valid one
     // - [ ] Arrow buttons next to the field to increment the number
@@ -900,6 +900,7 @@ function runProgram() {
             disableCheatMode("autoPlay");
         } else if (autoPlay) { // Deactivate AutoPlay
             deactivateCheatMode("autoPlay");
+            snapPaddles();
             if (multiBall || singlePlayer || !pause) {
                 disableCheatMode("cheatMode");
             } else {
@@ -908,6 +909,7 @@ function runProgram() {
         } else { // Activate AutoPlay
             activateCheatMode("autoPlay");
             deactivateCheatMode("singlePlayer");
+            snapPaddles();
             deactivateCheatMode("playerSlider");
             disableCheatMode("cheatMode");
         }
@@ -920,6 +922,7 @@ function runProgram() {
             disableCheatMode("playerSlider");
         } else if (singlePlayer) { // Deactivate SinglePlayer
             deactivateCheatMode("singlePlayer");
+            snapPaddles();
             deactivateCheatMode("playerSlider");
             deactivateCheatMode("playerSlider");
             if (autoPlay || multiBall || !pause) {
@@ -929,6 +932,7 @@ function runProgram() {
             }
         } else { // Activate SinglePlayer
             activateCheatMode("singlePlayer");
+            snapPaddles();
             activateCheatMode("playerSlider");
             deactivateCheatMode("autoPlay");
             disableCheatMode("cheatMode");
