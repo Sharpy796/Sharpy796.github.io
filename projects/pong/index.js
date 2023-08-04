@@ -963,6 +963,44 @@ function runProgram() {
         console.log(multiBall);
     }
 
+    // FIXME: Working on getting ballCount logic streamlined
+    function checkBallCountValidity() {
+        let ballCountOld = ballCount;
+        ballCount = $("#ballCount").val();
+        if (ballCount != null && ballCount != "") {
+            ballCount = Number(ballCount);
+            if (ballCount < 2 || ballCount > 50) {
+                disableCheatMode("multiBall");
+                ballCount = ballCountOld;
+            } else {
+                if (multiBall) {
+                    activateCheatMode("multiBall");
+                    disableCheatMode("cheatMode");
+                } else {
+                    deactivateCheatMode("multiBall");
+                    if (autoPlay || singlePlayer || !pause) {
+                        disableCheatMode("cheatMode");
+                    } else {
+                        deactivateCheatMode("cheatMode");
+                    }
+                }
+            }
+        } else {
+            disableCheatMode("multiBall");
+            ballCount = ballCountOld;
+        }
+    }
+
+    function multiBallLogic() {
+        if (confirm("Activating MultiBall will restart the current game. Do you still want to continue?")) {
+            checkBallCountValidity(ballCount);
+            if (showTelemetryMultiBall) {
+                console.log("ballCountOld: " + ballCountOld);
+                console.log("ballCount: " + ballCount);
+            }
+        }
+    }
+
     function toggleCheatModePaddle() {
         if (paddleControl) { // Deactivate PaddleControl
             deactivateCheatMode("paddleControl");
