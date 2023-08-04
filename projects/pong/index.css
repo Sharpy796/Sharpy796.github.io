@@ -379,3 +379,17 @@ input:checked + .slider.disabled:before {
 .slider.round:before {
   border-radius: 50%;
 }
+
+#attribution {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  border: 3px solid #91d335;
+  background-color: rgb(3, 175, 3);
+}
+
+#attribution p {
+  margin: 10px;
+  color: black;
+  font-family: "Comic Sans MS";
+}

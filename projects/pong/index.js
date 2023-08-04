@@ -107,7 +107,7 @@ function runProgram() {
     $("#cheatIcon").hide();
 
     // Pause Variables
-    var mute = false;
+    var mute = true;
     var pause = false;
     var spaceIsDown = false
     var firstTimePaused = true;
@@ -824,9 +824,9 @@ function runProgram() {
     // - [x] Make the ball direction work properly
     // [x] freePlay
     // [ ] autoPlay
-    // - [ ] Notify the player that this and singlePlayer can't coexist
+    // - [?] Notify the player that this and singlePlayer can't coexist
     // [-] singlePlayer
-    // - [ ] Notify the player that this and autoPlay can't coexist
+    // - [?] Notify the player that this and autoPlay can't coexist
     // - [x] Slider to choose which player to play as
     // - [x] Make the slider greyish if singlePlayer isn't activated, and make it grey if it is disabled
     // [ ] multiBall
@@ -1362,7 +1362,7 @@ function runProgram() {
         }
     }
 
-    // TODOING: Add sounds to bounces!!!
+    // TODONE: Add sounds to bounces!!!
     // [x] Get the audio to play
     // [x] Add the audio to any bounces
     // [x] Add separate sounds for each type of bounce
@@ -1372,7 +1372,7 @@ function runProgram() {
     // - [x] left/right wall
     // [x] Allow specifying for each bounce sound in the method
     // [x] Make the mute button work
-    // [ ] Credit the person who the sounds came from somehow
+    // [x] Credit the person who the sounds came from somehow
     function playSound(source) {
         if (!mute) {
             if (source === "p1") {$("audio#p1")[0].play();}
