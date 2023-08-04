@@ -389,7 +389,7 @@ input:checked + .slider.disabled:before {
 }
 
 #attribution p {
-  margin: 10px;
+  margin: 7px;
   color: black;
   font-family: "Comic Sans MS";
 }
