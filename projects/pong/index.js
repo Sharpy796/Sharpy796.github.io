@@ -972,8 +972,10 @@ function runProgram() {
         console.log(multiBall);
     }
 
+    // FIXME: Make this more efficient by cleaning up the if statements (YOU ONLY NEED ONE)
+    // FIXME: Also make sure to be able to disable the button at all times
     // This will ONLY check if the button is alright to press
-    function checkBallCountValidity() { // FIXME: Make this more efficient by cleaning up the if statements (YOU ONLY NEED ONE)
+    function checkBallCountValidity() {
         let ballCountValue = $("#ballCount").val();
         if (!cheatMode && ballCountValue != null && ballCountValue != "" && ballCountValue != "e") {
             ballCountValue = Math.floor(Number(ballCountValue));
