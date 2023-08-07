@@ -831,11 +831,11 @@ function runProgram() {
     // - [x] Slider to choose which player to play as
     // - [x] Make the slider greyish if singlePlayer isn't activated, and make it grey if it is disabled
     // [-] multiBall
-    // - [-] Make a field to tell how many balls ("Balls" underneath it)
+    // - [x] Make a field to tell how many balls ("Balls" underneath it)
     // - [x] Disable the button if the number is not a valid one
-    // - [ ] Put a warning message if the number is not a valid one
+    // - [?] Put a warning message if the number is not a valid one
     // - [x] Arrow buttons next to the field to increment the number
-    // - [ ] "Confirm" button (this could just be the MultiBall button)
+    // - [?] "Confirm" button to reactivate MultiBall if it is already active
     // - [x] Warn the player of a restart before activating/deactivating
     // - [x] Restart the game upon activating/deactivating
     // [x] paddleControl
@@ -972,9 +972,8 @@ function runProgram() {
         console.log(multiBall);
     }
 
-    // FIXME: Working on getting ballCount logic streamlined
     // This will ONLY check if the button is alright to press
-    function checkBallCountValidity() {
+    function checkBallCountValidity() { // FIXME: Make this more efficient by cleaning up the if statements (YOU ONLY NEED ONE)
         let ballCountValue = $("#ballCount").val();
         if (!cheatMode && ballCountValue != null && ballCountValue != "" && ballCountValue != "e") {
             ballCountValue = Math.floor(Number(ballCountValue));
