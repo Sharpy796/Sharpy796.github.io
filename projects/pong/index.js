@@ -147,7 +147,7 @@ function runProgram() {
     var showTelemetryCollision = false;     // Shows collision telemetry
     var showTelemetryVelocity = false;      // Shows velocity telemetry
     var showTelemetryCheatModes = false;    // Shows cheat mode telemetry
-    var showTelemetryCheatColors = false;   // Shows cheat mode values
+    var showTelemetryCheatColors = true;   // Shows cheat mode values
 
     // FIXME: Put this back when needed
     // alert(  "Welcome to Pong!\n" +
@@ -166,6 +166,7 @@ function runProgram() {
     */
     function newFrame() {
         // Notify how MultiBall will be played
+        checkBallCountValidity(ballCount);
         getTelemetryMultiBall();
 
         if (!pause) {
@@ -829,14 +830,14 @@ function runProgram() {
     // - [?] Notify the player that this and autoPlay can't coexist
     // - [x] Slider to choose which player to play as
     // - [x] Make the slider greyish if singlePlayer isn't activated, and make it grey if it is disabled
-    // [ ] multiBall
+    // [-] multiBall
     // - [-] Make a field to tell how many balls ("Balls" underneath it)
-    // - [ ] Disable the button if the number is not a valid one
+    // - [x] Disable the button if the number is not a valid one
     // - [ ] Put a warning message if the number is not a valid one
-    // - [ ] Arrow buttons next to the field to increment the number
+    // - [x] Arrow buttons next to the field to increment the number
     // - [ ] "Confirm" button (this could just be the MultiBall button)
-    // - [ ] Warn the player of a restart before activating/deactivating
-    // - [ ] Restart the game upon activating/deactivating
+    // - [x] Warn the player of a restart before activating/deactivating
+    // - [x] Restart the game upon activating/deactivating
     // [x] paddleControl
 
     function toggleCheatModeMute() {
@@ -946,33 +947,38 @@ function runProgram() {
         console.log(playerChosen + " joins the battle!");
     }
 
+    // This will toggle the button, and also set the ballCount
     function toggleCheatModeMulti() {
         if (cheatMode) {
             disableCheatMode("multiBall");
-        } else if (multiBall) { // Deactivate MultiBall 
-            deactivateCheatMode("multiBall");
-            if (autoPlay || singlePlayer || !pause) {
-                disableCheatMode("cheatMode");
-            } else {
-                deactivateCheatMode("cheatMode");
+        } else if (!restartingRound && multiBall) { // Deactivate MultiBall 
+            if (confirm("Deactivating MultiBall will restart the current game. Do you still want to continue?")) {
+                ballCount = 1;
+                deactivateCheatMode("multiBall");
+                if (autoPlay || singlePlayer || !pause) {
+                    disableCheatMode("cheatMode");
+                } else {
+                    deactivateCheatMode("cheatMode");
+                }
+                restartGame(p2.id);
             }
-        } else { // Activate MultiBall
+        } else if (!restartingRound && confirm(((multiBall) ? "Rea" : "A") + "ctivating MultiBall will restart the current game. Do you still want to continue?")) { // Activate MultiBall
+            ballCount = $("#ballCount").val();
+            alert("MultiBall activated with " + ballCount + " balls!\nType 'noMulti' to deactivate it.");
             activateCheatMode("multiBall");
             disableCheatMode("cheatMode");
+            restartGame(p2.id);
         }
         console.log(multiBall);
     }
 
     // FIXME: Working on getting ballCount logic streamlined
+    // This will ONLY check if the button is alright to press
     function checkBallCountValidity() {
-        let ballCountOld = ballCount;
-        ballCount = $("#ballCount").val();
-        if (ballCount != null && ballCount != "") {
-            ballCount = Number(ballCount);
-            if (ballCount < 2 || ballCount > 50) {
-                disableCheatMode("multiBall");
-                ballCount = ballCountOld;
-            } else {
+        let ballCountValue = $("#ballCount").val();
+        if (!cheatMode && ballCountValue != null && ballCountValue != "" && ballCountValue != "e") {
+            ballCountValue = Math.floor(Number(ballCountValue));
+            if (ballCountValue >= 2 && ballCountValue <= 50) {
                 if (multiBall) {
                     activateCheatMode("multiBall");
                     disableCheatMode("cheatMode");
@@ -984,16 +990,16 @@ function runProgram() {
                         deactivateCheatMode("cheatMode");
                     }
                 }
+            } else {
+                disableCheatMode("multiBall");
             }
         } else {
             disableCheatMode("multiBall");
-            ballCount = ballCountOld;
         }
     }
 
     function multiBallLogic() {
         if (confirm("Activating MultiBall will restart the current game. Do you still want to continue?")) {
-            checkBallCountValidity(ballCount);
             if (showTelemetryMultiBall) {
                 console.log("ballCountOld: " + ballCountOld);
                 console.log("ballCount: " + ballCount);
