@@ -239,12 +239,14 @@ function runProgram() {
                     console.log("w pressed");
                 } if (keycode === KEY.A) {          // left
                     if (paddleControl) {paddleLeft.speed.left = PPF;}
+                    else {paddleLeft.speed.left = PPF_STOP}
                     console.log("a pressed");
                 } if (keycode === KEY.S) {          // down
                     paddleLeft.speed.down = PPF;
                     console.log("s pressed");
                 } if (keycode === KEY.D) {          // right
                     if (paddleControl) {paddleLeft.speed.right = PPF;}
+                    else {paddleLeft.speed.right = PPF_STOP}
                     console.log("d pressed");
                 }
             }
@@ -256,12 +258,14 @@ function runProgram() {
                     console.log("up pressed");
                 } if (keycode === KEY.LEFT) {       // left
                     if (paddleControl) {paddleRight.speed.left = PPF;}
+                    else {paddleRight.speed.left = PPF_STOP}
                     console.log("left pressed");
                 } if (keycode === KEY.DOWN) {       // down
                     paddleRight.speed.down = PPF;
                     console.log("down pressed");
                 } if (keycode === KEY.RIGHT) {      // right
                     if (paddleControl) {paddleRight.speed.right = PPF;}
+                    else {paddleRight.speed.right = PPF_STOP}
                     console.log("right pressed");
                 }
             }
@@ -1046,7 +1050,6 @@ function runProgram() {
         updateCheatModeVelocities();
     }
 
-    // FIXME: When a side movement key is held when FreePlay is turned off, the paddle doesn't stop moving until the key is released
     function chooseCheatMode() {
         if (!restartingRound) {
             let answer = prompt("Password:");
