@@ -29,7 +29,7 @@ function runProgram() {
     }
     var KEY = {
         /* general controls */
-        ENTER: 16,  // ???
+        ENTER: 13,  // ???
         SPACE: 32,  // pause
         R: 82,      // restart
         C: 67,      // cheat
@@ -104,8 +104,8 @@ function runProgram() {
     $("#paddleControl").on("click", toggleCheatButton);
     $("#choosePlayer").on("click", togglePlayer);
 
-    $("#cheatIcon").on("click", chooseCheatMode); // listen for click events
-    $("#cheatIcon").hide();
+    // $("#cheatIcon").on("click", chooseCheatMode); // listen for click events
+    // $("#cheatIcon").hide();
 
     // Pause Variables
     var mute = true;
@@ -216,8 +216,10 @@ function runProgram() {
 
         /* general controls */
         if (keycode === KEY.ENTER) {        // ???
+            event.preventDefault();
             console.log("enter pressed");
         } if (keycode === KEY.SPACE) {      // pause
+            event.preventDefault();
             spaceIsDown = true;
             console.log("space pressed");
         } if (keycode === KEY.R) {          // restart
@@ -632,14 +634,14 @@ function runProgram() {
             firstTimePaused = true;
         }
 
-        if (pause) {
-            $("#cheatIcon").show();
-        } else {
-            $("#cheatIcon").hide();
-        }
+        // if (pause) {
+        //     $("#cheatIcon").show();
+        // } else {
+        //     $("#cheatIcon").hide();
+        // }
     }
 
-    // TODOING: Create a better cheat mode interface. Probably a sidebar
+    // TODONE: Create a better cheat mode interface. Probably a sidebar
     // [x] Include buttons!! Steal code from the StopLight program
     // [x] Create a DIV to hold the buttons
     // [x] Position the DIV next to the board
@@ -658,9 +660,8 @@ function runProgram() {
     // [x] Create the rest of the buttons
     // [x] Copy all of the logic over
     // [x] Make the buttons actually do their jobs
-    // [ ] Prevent the keyboard from pressing the buttons
-    // [ ] Prevent buttons from being pressed after the game ends
-    // [ ] Create a constructor function that creates a button with new variables to toggle it with
+    // [x] Prevent the keyboard from pressing the buttons
+    // [x] Prevent buttons from being pressed after the game ends
 
     // TODO: Create a startup menu for choosing initial game modes
 
@@ -2076,5 +2077,9 @@ function runProgram() {
 
         // turn off event handlers
         $(document).off();
+
+        // disable the dashboard
+        $("button").attr("disabled", true);
+        $("input").attr("disabled", true);
     }
 }
