@@ -8,7 +8,7 @@ function runProgram() {
     ////////////////////////////////////////////////////////////////////////////////
 
     // Constant Variables
-    var FRAMES = 60; // default is 60
+    var FRAMES = 10; // default is 60
     var framesPerSecondInterval = 1000 / FRAMES;
     var BORDERS = {
         TOP: 0,
@@ -115,9 +115,9 @@ function runProgram() {
     // Mode Variables
     var cheatMode = false;
     var firstTimeCheat = true;
-    var freePlay = false;
+    var freePlay = true;
     var autoPlay = false;
-    var singlePlayer = false;
+    var singlePlayer = true;
     var multiBall = false;
     var paddleControl = false;
     // MultiBall Variables
@@ -128,7 +128,7 @@ function runProgram() {
     var targetedBallLeft = ballNullLeft;
     var targetedBallRight = ballNullRight;
     // SinglePlayer Variables
-    var playerChosen = "p1";
+    var playerChosen = "p2";
     // Motion Variables
     var xDirection = -1;
     var varVelocityY = 5;
@@ -145,7 +145,7 @@ function runProgram() {
     var showTelemetryMetaData = false;      // Shows the hidden miscellaneous telemetry below the scoreboard.
     var showTelemetryTicks = false;         // Shows the tick count in the console 
     var showTelemetryFPS = false;           // Shows FPS telemetry in the console
-    var showTelemetryCollision = false;     // Shows collision telemetry
+    var showTelemetryCollision = true;     // Shows collision telemetry
     var showTelemetryVelocity = false;      // Shows velocity telemetry
     var showTelemetryCheatModes = false;    // Shows cheat mode telemetry
     var showTelemetryCheatColors = false;   // Shows cheat mode values
@@ -166,6 +166,7 @@ function runProgram() {
     by calling this function and executing the code inside.
     */
     function newFrame() {
+        console.log("NEW FRAME");
         // Notify how MultiBall will be played
         checkBallCountValidity(ballCount);
         handleCheatModesColors();
@@ -189,7 +190,7 @@ function runProgram() {
 
         // Slow the game down if we need to
         debugSlowDown();
-        // Update the temporary velocity for if we decide to pause the game            
+        // Update the temporary velocity for if we decide to go into cheatMode            
         updateTemporaryVelocity(ball0);
         // Detect whether we want to pause the game
         pauseGame();
@@ -197,11 +198,21 @@ function runProgram() {
         changeColors();
 
         if (!gameWon && !pause) {
-            // Collision Telemetry
-            getTelemetryCollision(ball0, paddleRight);
+            getTelemetryCollision(ball0, paddleLeft);
+            
             // Moves all the game items
+            console.log("REPOSITIONING...");
             repositionAllGameItems();
+
+            getTelemetryCollision(ball0, paddleLeft);
+
+            // Uncollides all objects
+            console.log("UNCOLLIDING...");
             handleCollisions();
+
+            getTelemetryCollision(ball0, paddleLeft);
+
+            console.log("REDRAWING...");
         }
         // Updates everything on the big screen
         redrawAllGameItems();
@@ -526,13 +537,15 @@ function runProgram() {
     function getTelemetryCollision(obj1, obj2) {
         if (showTelemetryCollision) {
             console.log("---------------------------");
+            console.log("---------------------------");
+            console.log("varPredictedPositionY: " + varPredictedPositionY);
             console.log(">>> COLLISION DETECTION <<<");
             console.log("Do " + obj1.id + " and " + obj2.id + " collide? " + doCollide(obj1, obj2));
             console.log("They collide on the paddle's *" + whichBorder(obj1, obj2) + "* border.");
             console.log("Calculated Time: " + calculateTime(obj2, obj1, obj1));
             console.log("Predicted Position: " + predictBallPosition(obj2, obj1));
             console.log("paddleLeft.y = " + obj2.y);
-            console.log("Predicted Movement: " + (predictBallPosition(obj2, obj1)-obj2.y) / (calculateTime(obj2, obj1, obj1)))
+            console.log("Predicted Movement: " + (predictBallPosition(obj2, obj1)-obj2.y) / (calculateTime(obj2, obj1, obj1)));
             console.log("---------------------------");
             console.log("OBJECT 1: " + obj1.id);
             console.log("Left Border: " + obj1.borderLeft);
@@ -545,7 +558,8 @@ function runProgram() {
             console.log("Right Border: " + obj2.borderRight);
             console.log("Top Border: " + obj2.borderTop);
             console.log("Bottom Border: " + obj2.borderBottom);
-            console.log("---------------------------")
+            console.log("---------------------------");
+            console.log("---------------------------");
         }
     }
 
@@ -1517,6 +1531,7 @@ function runProgram() {
     function handlePaddleCollisions(ball, paddle) {
         // if it is the first time bouncing on one
         if (ball.firstTimeBouncedPaddle) {
+            // FIXME: This needs to be placed somewhere else because it is being funky with making SinglePlayer jump
             // Mix up the ball's predicted position in AutoPlay
             randPredictedPositionYMod();
             // if it bounced off the paddle's left border...
@@ -1751,17 +1766,17 @@ function runProgram() {
         else {paddleObj.velocityY = calculatedVelocity;}
     }
 
-    // FIXME: SinglePlayer movement still jumps when multiple balls are in play.
+    // FIXME: SinglePlayer movement still jumps
     function moveToPredictedBallPositionSinglePlayer(paddleObj, ballObj) {
         let predictedPosition = predictBallPosition(paddleObj, ballObj) + varPredictedPositionY;
-
-        if (predictedPosition % PPF != 0) {snapDown(predictedPosition);}
+        // let predictedPosition = predictBallPosition(paddleObj, ballObj) + -7;
+        // if (predictedPosition % PPF != 0) {snapDown(predictedPosition);}
         let predictedMovement = predictedPosition - paddleObj.y;
         
         // Negative predictedMovement: Up
         // Positive predictedMovement: Down
-        updateObjectBorders(paddleObj);
-        updateObjectBorders(ballObj);
+        // updateObjectBorders(paddleObj);
+        // updateObjectBorders(ballObj);
 
         if (predictedPosition < (paddleObj.borderTop - (paddleObj.height/4)*1.5) ||
             predictedPosition > (paddleObj.borderTop + (paddleObj.height/4)*1.5)) {
@@ -1778,11 +1793,11 @@ function runProgram() {
     }
 
     function repositionAllGameItems() {
-        // update all velocities
-        updateAllVelocities();
-
         // update the object borders
         updateAllObjectBorders();
+
+        // update all velocities
+        updateAllVelocities();
 
         // Paddle Repositioning
         if (autoPlay) {
