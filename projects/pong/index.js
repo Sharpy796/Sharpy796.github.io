@@ -148,9 +148,9 @@ function runProgram() {
     var showTelemetryCollision = false;     // Shows collision telemetry
     var showTelemetryVelocity = false;      // Shows velocity telemetry
     var showTelemetryCheatModes = false;    // Shows cheat mode telemetry
-    var showTelemetryCheatColors = true;   // Shows cheat mode values
+    var showTelemetryCheatColors = false;   // Shows cheat mode values
 
-    // FIXME: Put this back when needed
+    // NOTE: Put this back when needed
     // alert(  "Welcome to Pong!\n" +
     //         "P1 Controls: W S\n" +
     //         "P2 Controls: Up Down\n" +
@@ -990,7 +990,7 @@ function runProgram() {
         console.log(multiBall);
     }
 
-    // FIXME: Also make sure to be able to disable the button at all times
+    // NOTE: Also make sure to be able to disable the button at all times
     // This will ONLY check if the button is alright to press
     function checkBallCountValidity() {
         let ballCountValue = $("#ballCount").val();
@@ -1809,7 +1809,7 @@ function runProgram() {
     ////////////////////////// REDRAWING FUNCTIONS /////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
 
-    function changeColors() { // FIXME: Make color changing more efficient. I don't need to constantly change colors; colors need to change the first time certain actions happen.
+    function changeColors() {
         // Ball colors
         if (showTelemetryBallBounce) {
             for (let ball of ballPit) {
@@ -1870,7 +1870,7 @@ function runProgram() {
             $("#paddleRight").css("box-shadow", "0px 0px 0px 3px maroon inset");
         }
 
-        // singlePlayer
+        // testing modes
         // testMode(singlePlayer);
     }
 
@@ -1888,19 +1888,8 @@ function runProgram() {
     }
 
     function redrawScoreBoard() {
-        // $(".p1TallyMark").css("background-color", "darkblue");
-        // $(".p2TallyMark").css("background-color", "maroon");
-        // $(".winTallyMark").css("background-color", "limegreen");
-        // $(".p1TallyMark").css("box-shadow", "none");
-        // $(".p2TallyMark").css("box-shadow", "none");
-        // $(".winTallyMark").css("box-shadow", "none");
-
-        // FIXME: Find a more efficient method of updating the scoreboard
         $("#p1Tally"+score.p1).css("background-color", "blue");
         $("#p2Tally"+score.p2).css("background-color", "red");
-        
-        // for (let i = 1; i <= score.p1; i++) {$("#p1Tally"+i).css("background-color", "blue");}
-        // for (let i = 1; i <= score.p2; i++) {$("#p2Tally"+i).css("background-color", "red");}
 
         if (score.p1 >= 10 || score.p2 >= 10) {
             $(".winTallyMark").css("background-color", "lime");
