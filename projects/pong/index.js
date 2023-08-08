@@ -99,6 +99,7 @@ function runProgram() {
     $("#freePlay").on("click", toggleCheatButton);
     $("#autoPlay").on("click", toggleCheatButton);
     $("#multiBall").on("click", toggleCheatButton);
+    $("#confirmBallCount").on("click", toggleCheatButton);
     $("#singlePlayer").on("click", toggleCheatButton);
     $("#paddleControl").on("click", toggleCheatButton);
     $("#choosePlayer").on("click", togglePlayer);
@@ -167,6 +168,7 @@ function runProgram() {
     function newFrame() {
         // Notify how MultiBall will be played
         checkBallCountValidity(ballCount);
+        handleCheatModesColors();
         getTelemetryMultiBall();
 
         if (!pause) {
@@ -655,7 +657,7 @@ function runProgram() {
     // [x] Create some basic logic between swapping between classes
     // [x] Create the rest of the buttons
     // [x] Copy all of the logic over
-    // [-] Make the buttons actually do their jobs
+    // [x] Make the buttons actually do their jobs
     // [ ] Prevent the keyboard from pressing the buttons
     // [ ] Prevent buttons from being pressed after the game ends
     // [ ] Create a constructor function that creates a button with new variables to toggle it with
@@ -687,7 +689,6 @@ function runProgram() {
 
     function toggleCheatButton() {
         toggleCheatModesAll(this);
-        handleCheatModesColors();
     }
 
     function handleCheatModes(element, boolean) {
@@ -697,6 +698,7 @@ function runProgram() {
         else if (element === "freePlay") {freePlay = boolean;}
         else if (element === "autoPlay") {autoPlay = boolean;}
         else if (element === "multiBall") {multiBall = boolean;}
+        else if (element === "confirmBallCount") {multiBall = boolean;}
         else if (element === "singlePlayer") {singlePlayer = boolean;}
         else if (element === "paddleControl") {paddleControl = boolean;}
         getTelemetryCheatModes();
@@ -818,24 +820,22 @@ function runProgram() {
     // [x] multiBall
     // [x] paddleControl
 
-    // TODOING: Make the buttons do what they need to do correctly
+    // TODONE: Make the buttons do what they need to do correctly
     // [x] pause
     // - [x] Make this work with the spacebar as well
     // [x] cheatMode
     // - [x] Make the ball direction work properly
     // [x] freePlay
-    // [ ] autoPlay
-    // - [?] Notify the player that this and singlePlayer can't coexist
-    // [-] singlePlayer
-    // - [?] Notify the player that this and autoPlay can't coexist
+    // [x] autoPlay
+    // [x] singlePlayer
     // - [x] Slider to choose which player to play as
     // - [x] Make the slider greyish if singlePlayer isn't activated, and make it grey if it is disabled
-    // [-] multiBall
+    // [x] multiBall
     // - [x] Make a field to tell how many balls ("Balls" underneath it)
     // - [x] Disable the button if the number is not a valid one
-    // - [?] Put a warning message if the number is not a valid one
+    // - [x] Put a warning message if the number is not a valid one
     // - [x] Arrow buttons next to the field to increment the number
-    // - [?] "Confirm" button to reactivate MultiBall if it is already active
+    // - [x] "Confirm" button to reactivate MultiBall if it is already active
     // - [x] Warn the player of a restart before activating/deactivating
     // - [x] Restart the game upon activating/deactivating
     // [x] paddleControl
@@ -972,27 +972,35 @@ function runProgram() {
         console.log(multiBall);
     }
 
-    // FIXME: Make this more efficient by cleaning up the if statements (YOU ONLY NEED ONE)
+    function confirmCheatModeMulti() {
+        if (cheatMode) {
+            disableCheatMode("multiBall");
+        } else if (!restartingRound && confirm(((multiBall) ? "Rea" : "A") + "ctivating MultiBall will restart the current game. Do you still want to continue?")) { // (Re)Activate MultiBall
+            ballCount = $("#ballCount").val();
+            alert("MultiBall activated with " + ballCount + " balls!\nType 'noMulti' to deactivate it.");
+            activateCheatMode("multiBall");
+            disableCheatMode("cheatMode");
+            restartGame(p2.id);
+        }
+        console.log(multiBall);
+    }
+
     // FIXME: Also make sure to be able to disable the button at all times
     // This will ONLY check if the button is alright to press
     function checkBallCountValidity() {
         let ballCountValue = $("#ballCount").val();
-        if (!cheatMode && ballCountValue != null && ballCountValue != "" && ballCountValue != "e") {
-            ballCountValue = Math.floor(Number(ballCountValue));
-            if (ballCountValue >= 2 && ballCountValue <= 50) {
-                if (multiBall) {
-                    activateCheatMode("multiBall");
+        ballCountValue = Math.floor(Number(ballCountValue));
+        if (!cheatMode && !isNaN(ballCountValue) && ballCountValue >= 2 && ballCountValue <= 50) {
+            if (multiBall) {
+                activateCheatMode("multiBall");
+                disableCheatMode("cheatMode");
+            } else {
+                deactivateCheatMode("multiBall");
+                if (autoPlay || singlePlayer || !pause) {
                     disableCheatMode("cheatMode");
                 } else {
-                    deactivateCheatMode("multiBall");
-                    if (autoPlay || singlePlayer || !pause) {
-                        disableCheatMode("cheatMode");
-                    } else {
-                        deactivateCheatMode("cheatMode");
-                    }
+                    deactivateCheatMode("cheatMode");
                 }
-            } else {
-                disableCheatMode("multiBall");
             }
         } else {
             disableCheatMode("multiBall");
@@ -1030,6 +1038,7 @@ function runProgram() {
         else if (cheatId === "autoPlay") {toggleCheatModeAuto();}
         else if (cheatId === "singlePlayer") {toggleCheatModeSingle();}
         else if (cheatId === "multiBall") {toggleCheatModeMulti();}
+        else if (cheatId === "confirmBallCount" && getElementClass("#multiBall") != "disabled") {confirmCheatModeMulti();}
         else if (cheatId === "paddleControl") {toggleCheatModePaddle();}
 
         console.log(cheatClass);
