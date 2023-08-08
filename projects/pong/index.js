@@ -8,7 +8,7 @@ function runProgram() {
     ////////////////////////////////////////////////////////////////////////////////
 
     // Constant Variables
-    var FRAMES = 10; // default is 60
+    var FRAMES = 60; // default is 60
     var framesPerSecondInterval = 1000 / FRAMES;
     var BORDERS = {
         TOP: 0,
@@ -60,15 +60,21 @@ function runProgram() {
     // Game Item Objects
 
     // player 1
-    var paddleLeft = createGameObject(50, CENTERS.BORDER.VERTICAL-CENTERS.PADDLE.VERTICAL, 0, 0, "#paddleLeft");
+    // var paddleLeft = createGameObject(50, CENTERS.BORDER.VERTICAL-CENTERS.PADDLE.VERTICAL, 0, 0, "#paddleLeft");
+    // var paddleLeft = createGameObject(50, 240-40, 0, 0, "#paddleLeft");
+    var paddleLeft = createGameObject(50, 200, 0, 0, "#paddleLeft");
     var p1 = paddleLeft;
 
     // player 2
-    var paddleRight = createGameObject(BORDERS.RIGHT-50-$("#paddleRight").width(), CENTERS.BORDER.VERTICAL-CENTERS.PADDLE.VERTICAL, 0, 0, "#paddleRight");
+    // var paddleRight = createGameObject(BORDERS.RIGHT-50-$("#paddleRight").width(), CENTERS.BORDER.VERTICAL-CENTERS.PADDLE.VERTICAL, 0, 0, "#paddleRight");
+    // var paddleRight = createGameObject(750-50-20, 240-40, 0, 0, "#paddleRight");
+    var paddleRight = createGameObject(680, 200, 0, 0, "#paddleRight");
     var p2 = paddleRight;
 
     // initial ball
-    var ball0 = createGameObject(CENTERS.BORDER.HORIZONTAL-CENTERS.BALL, CENTERS.BORDER.VERTICAL-CENTERS.BALL, -PPF, -2.5, "#ball0");
+    // var ball0 = createGameObject(CENTERS.BORDER.HORIZONTAL-CENTERS.BALL, CENTERS.BORDER.VERTICAL-CENTERS.BALL, -PPF, -2.5, "#ball0");
+    // var ball0 = createGameObject(375-10, 240-10, -PPF, -2.5, "#ball0");
+    var ball0 = createGameObject(365, 230, -PPF, -2.5, "#ball0");
 
     // references for targeting balls in AutoPlay
     var ballNullLeft = createGameObject(99999, 0, 0, 0, "#ballNull");
@@ -104,6 +110,7 @@ function runProgram() {
     $("#paddleControl").on("click", toggleCheatButton);
     $("#choosePlayer").on("click", togglePlayer);
 
+    // FIXME: Streamline chooseCheatMode() by pressing "c"
     // $("#cheatIcon").on("click", chooseCheatMode); // listen for click events
     // $("#cheatIcon").hide();
 
@@ -140,12 +147,12 @@ function runProgram() {
     // Telemetry Variables
     var slowDown = false;                   // Slows down the game at some intervals
     var showTelemetryMultiBall = false;     // Shows MultiBall telemetry
-    var showTelemetryBallBounce = false;    // Makes ball colors change according to the direction they're bouncing
+    var showTelemetryBallBounce = true;    // Makes ball colors change according to the direction they're bouncing
     var showTelemetryBallNumbers = false;   // Shows each ball's number on the balls
     var showTelemetryMetaData = false;      // Shows the hidden miscellaneous telemetry below the scoreboard.
     var showTelemetryTicks = false;         // Shows the tick count in the console 
     var showTelemetryFPS = false;           // Shows FPS telemetry in the console
-    var showTelemetryCollision = true;     // Shows collision telemetry
+    var showTelemetryCollision = false;     // Shows collision telemetry
     var showTelemetryVelocity = false;      // Shows velocity telemetry
     var showTelemetryCheatModes = false;    // Shows cheat mode telemetry
     var showTelemetryCheatColors = false;   // Shows cheat mode values
@@ -179,9 +186,6 @@ function runProgram() {
                 createNewBall();
             }
 
-            // Decide which ball to automatically target
-            if (autoPlay || singlePlayer) {targetBall();}
-
             // Telemetry on the game
             getTelemetryTicks();
             getTelemetryFPS();
@@ -198,22 +202,14 @@ function runProgram() {
         changeColors();
 
         if (!gameWon && !pause) {
-            getTelemetryCollision(ball0, paddleLeft);
-            
             // Moves all the game items
-            console.log("REPOSITIONING...");
             repositionAllGameItems();
-
+            // Collision Telemetry
             getTelemetryCollision(ball0, paddleLeft);
-
             // Uncollides all objects
-            console.log("UNCOLLIDING...");
             handleCollisions();
-
-            getTelemetryCollision(ball0, paddleLeft);
-
-            console.log("REDRAWING...");
         }
+
         // Updates everything on the big screen
         redrawAllGameItems();
     }
@@ -1330,7 +1326,7 @@ function runProgram() {
             }
         } while (playerChosen != "p1" && playerChosen != "p2");
     }
-
+    
     function targetBall() {
         
         if (targetedBallLeft.velocityX >= 0 ||
@@ -1397,6 +1393,15 @@ function runProgram() {
                 ball.firstTimeBouncedPaddle = true;
             }
         }
+
+        // update all velocities
+        updateAllVelocities();
+
+        // update object borders
+        updateAllObjectBorders();
+        
+        // Decide which ball to automatically target
+        if (autoPlay || singlePlayer) {targetBall();}
     }
 
     function updateObjectBorders(obj) {
@@ -1531,7 +1536,6 @@ function runProgram() {
     function handlePaddleCollisions(ball, paddle) {
         // if it is the first time bouncing on one
         if (ball.firstTimeBouncedPaddle) {
-            // FIXME: This needs to be placed somewhere else because it is being funky with making SinglePlayer jump
             // Mix up the ball's predicted position in AutoPlay
             randPredictedPositionYMod();
             // if it bounced off the paddle's left border...
@@ -1766,17 +1770,15 @@ function runProgram() {
         else {paddleObj.velocityY = calculatedVelocity;}
     }
 
-    // FIXME: SinglePlayer movement still jumps
     function moveToPredictedBallPositionSinglePlayer(paddleObj, ballObj) {
         let predictedPosition = predictBallPosition(paddleObj, ballObj) + varPredictedPositionY;
-        // let predictedPosition = predictBallPosition(paddleObj, ballObj) + -7;
-        // if (predictedPosition % PPF != 0) {snapDown(predictedPosition);}
+        if (predictedPosition % PPF != 0) {snapDown(predictedPosition);}
         let predictedMovement = predictedPosition - paddleObj.y;
         
         // Negative predictedMovement: Up
         // Positive predictedMovement: Down
-        // updateObjectBorders(paddleObj);
-        // updateObjectBorders(ballObj);
+        updateObjectBorders(paddleObj);
+        updateObjectBorders(ballObj);
 
         if (predictedPosition < (paddleObj.borderTop - (paddleObj.height/4)*1.5) ||
             predictedPosition > (paddleObj.borderTop + (paddleObj.height/4)*1.5)) {
