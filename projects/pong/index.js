@@ -60,21 +60,22 @@ function runProgram() {
     // Game Item Objects
 
     // player 1
-    // var paddleLeft = createGameObject(50, CENTERS.BORDER.VERTICAL-CENTERS.PADDLE.VERTICAL, 0, 0, "#paddleLeft");
+    var paddleLeft = createGameObject(50, CENTERS.BORDER.VERTICAL-CENTERS.PADDLE.VERTICAL, 0, 0, "#paddleLeft");
     // var paddleLeft = createGameObject(50, 240-40, 0, 0, "#paddleLeft");
-    var paddleLeft = createGameObject(50, 200, 0, 0, "#paddleLeft");
+    // var paddleLeft = createGameObject(50, 200, 0, 0, "#paddleLeft");
     var p1 = paddleLeft;
 
     // player 2
-    // var paddleRight = createGameObject(BORDERS.RIGHT-50-$("#paddleRight").width(), CENTERS.BORDER.VERTICAL-CENTERS.PADDLE.VERTICAL, 0, 0, "#paddleRight");
+    var paddleRight = createGameObject(BORDERS.RIGHT-50-$("#paddleRight").width(), CENTERS.BORDER.VERTICAL-CENTERS.PADDLE.VERTICAL, 0, 0, "#paddleRight");
     // var paddleRight = createGameObject(750-50-20, 240-40, 0, 0, "#paddleRight");
-    var paddleRight = createGameObject(680, 200, 0, 0, "#paddleRight");
+    // var paddleRight = createGameObject(680, 200, 0, 0, "#paddleRight");
     var p2 = paddleRight;
 
     // initial ball
-    // var ball0 = createGameObject(CENTERS.BORDER.HORIZONTAL-CENTERS.BALL, CENTERS.BORDER.VERTICAL-CENTERS.BALL, -PPF, -2.5, "#ball0");
+    // var ball0 = createGameObject(snapDown(CENTERS.BORDER.HORIZONTAL-CENTERS.BALL), snapUp(CENTERS.BORDER.VERTICAL-CENTERS.BALL), -PPF, -2.5, "#ball0");
+    var ball0 = createGameObject(CENTERS.BORDER.HORIZONTAL-CENTERS.BALL, CENTERS.BORDER.VERTICAL-CENTERS.BALL, -PPF, -2.5, "#ball0");
     // var ball0 = createGameObject(375-10, 240-10, -PPF, -2.5, "#ball0");
-    var ball0 = createGameObject(365, 230, -PPF, -2.5, "#ball0");
+    // var ball0 = createGameObject(365, 230, -PPF, -2.5, "#ball0");
 
     // references for targeting balls in AutoPlay
     var ballNullLeft = createGameObject(99999, 0, 0, 0, "#ballNull");
@@ -122,9 +123,9 @@ function runProgram() {
     // Mode Variables
     var cheatMode = false;
     var firstTimeCheat = true;
-    var freePlay = true;
+    var freePlay = false;
     var autoPlay = false;
-    var singlePlayer = true;
+    var singlePlayer = false;
     var multiBall = false;
     var paddleControl = false;
     // MultiBall Variables
@@ -147,7 +148,7 @@ function runProgram() {
     // Telemetry Variables
     var slowDown = false;                   // Slows down the game at some intervals
     var showTelemetryMultiBall = false;     // Shows MultiBall telemetry
-    var showTelemetryBallBounce = true;    // Makes ball colors change according to the direction they're bouncing
+    var showTelemetryBallBounce = false;    // Makes ball colors change according to the direction they're bouncing
     var showTelemetryBallNumbers = false;   // Shows each ball's number on the balls
     var showTelemetryMetaData = false;      // Shows the hidden miscellaneous telemetry below the scoreboard.
     var showTelemetryTicks = false;         // Shows the tick count in the console 
@@ -173,7 +174,8 @@ function runProgram() {
     by calling this function and executing the code inside.
     */
     function newFrame() {
-        console.log("NEW FRAME");
+        // console.log("NEW FRAME");
+
         // Notify how MultiBall will be played
         checkBallCountValidity(ballCount);
         handleCheatModesColors();
@@ -916,7 +918,6 @@ function runProgram() {
             disableCheatMode("autoPlay");
         } else if (autoPlay) { // Deactivate AutoPlay
             deactivateCheatMode("autoPlay");
-            snapPaddles();
             if (multiBall || singlePlayer || !pause) {
                 disableCheatMode("cheatMode");
             } else {
@@ -925,7 +926,6 @@ function runProgram() {
         } else { // Activate AutoPlay
             activateCheatMode("autoPlay");
             deactivateCheatMode("singlePlayer");
-            snapPaddles();
             deactivateCheatMode("playerSlider");
             disableCheatMode("cheatMode");
         }
@@ -938,7 +938,6 @@ function runProgram() {
             disableCheatMode("playerSlider");
         } else if (singlePlayer) { // Deactivate SinglePlayer
             deactivateCheatMode("singlePlayer");
-            snapPaddles();
             deactivateCheatMode("playerSlider");
             deactivateCheatMode("playerSlider");
             if (autoPlay || multiBall || !pause) {
@@ -948,7 +947,6 @@ function runProgram() {
             }
         } else { // Activate SinglePlayer
             activateCheatMode("singlePlayer");
-            snapPaddles();
             activateCheatMode("playerSlider");
             deactivateCheatMode("autoPlay");
             disableCheatMode("cheatMode");
@@ -1137,7 +1135,6 @@ function runProgram() {
                             alert("Single Player Mode activated!\nType 'multiPlayer' to deactivate it.\n\nAutoPlay deactivated.\nType 'autoPlay' to reactivate it.");
                             autoPlay = false;
                             singlePlayer = true;
-                            snapPaddles();
                         }
                     } else {
                         alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to activate Single Player Mode.\nType 'noAuto' to deactivate AutoPlay.");
@@ -1152,7 +1149,6 @@ function runProgram() {
                         } else {
                             alert("Single Player Mode reactivated!\nType 'multiPlayer' to deactivate it.");
                             singlePlayer = true;
-                            snapPaddles();
                         }
                     } else {
                         alert("Single Player Mode activation cancelled.\nType 'singlePlayer' to choose a different player.\nType 'multiPlayer' to deactivate Single Player Mode.");
@@ -1165,7 +1161,6 @@ function runProgram() {
                     } else {
                         alert("Single Player Mode activated!\nType 'multiPlayer' to deactivate it.");
                         singlePlayer = true;
-                        snapPaddles();
                     }
                 }
             }
@@ -1249,7 +1244,6 @@ function runProgram() {
             else if (answer === "noAuto") {
                 if (autoPlay) {
                     alert("AutoPlay deactivated.\nType 'autoPlay' to reactivate it.");
-                    snapPaddles();
                 } else {
                     alert("AutoPlay is already deactivated.\nType 'autoPlay' to activate it.");
                 }
@@ -1276,7 +1270,6 @@ function runProgram() {
             else if (answer === "multiPlayer") {
                 if (singlePlayer) {
                     alert("Single Player Mode deactivated\nType 'singlePlayer to reactivate it.");
-                    snapPaddles();
                 } else {
                     alert("Single Player Mode is already deactivated.\nType 'singlePlayer' to activate it.");
                 }
@@ -1454,6 +1447,8 @@ function runProgram() {
     // [x] Allow specifying for each bounce sound in the method
     // [x] Make the mute button work
     // [x] Credit the person who the sounds came from somehow
+    // FIXME: Fix the sounds so they actually sound nice
+    // FIXME: Fix the sound file names so they make more sense
     function playSound(source) {
         if (!mute) {
             if (source === "p1") {$("audio#p1")[0].play();}
@@ -1662,6 +1657,13 @@ function runProgram() {
     ////////////////////////// REPOSITIONING FUNCTIONS /////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Snap position to a multiple of the pixels per frame speed to prevent
+     * collision between the paddles and wall from being off, and to prevent
+     * odd collision bugs with the paddle and ball.
+     * @param {double} position - The position to be snapped.
+     */
+    function snapUp(position) {position -= position % PPF; return position;}
     
     /**
      * Snap position to a multiple of the pixels per frame speed to prevent
@@ -1669,15 +1671,7 @@ function runProgram() {
      * odd collision bugs with the paddle and ball.
      * @param {double} position - The position to be snapped.
      */
-    function snapUp(position) {position -= position % PPF;}
-    
-    /**
-     * Snap position to a multiple of the pixels per frame speed to prevent
-     * collision between the paddles and wall from being off, and to prevent
-     * odd collision bugs with the paddle and ball.
-     * @param {double} position - The position to be snapped.
-     */
-    function snapDown(position) {position += PPF - (position % PPF);}
+    function snapDown(position) {position += PPF - (position % PPF); return position;}
 
     /**
      * Snap position to a multiple of the pixels per frame speed to prevent
@@ -1772,7 +1766,6 @@ function runProgram() {
 
     function moveToPredictedBallPositionSinglePlayer(paddleObj, ballObj) {
         let predictedPosition = predictBallPosition(paddleObj, ballObj) + varPredictedPositionY;
-        if (predictedPosition % PPF != 0) {snapDown(predictedPosition);}
         let predictedMovement = predictedPosition - paddleObj.y;
         
         // Negative predictedMovement: Up
