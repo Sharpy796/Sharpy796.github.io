@@ -1447,8 +1447,6 @@ function runProgram() {
     // [x] Allow specifying for each bounce sound in the method
     // [x] Make the mute button work
     // [x] Credit the person who the sounds came from somehow
-    // FIXME: Fix the sounds so they actually sound nice
-    // FIXME: Fix the sound file names so they make more sense
     function playSound(source) {
         if (!mute) {
             if (source === "p1") {$("audio#p1")[0].play();}
