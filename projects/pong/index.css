@@ -77,19 +77,6 @@ body {
   top: 230px;
 }
 
-/* #cheatIcon {
-    width: 50px;
-    height: 50px;
-    border-radius: 30px;
-    background-color: darkgrey;
-    border-style: solid;
-    border-color: grey;
-    border-width: 4px;
-
-    left: 10px;
-    top: 10px;
-} */
-
 .scoreboard {
   /* appearance */
   background-color: black;
@@ -209,10 +196,6 @@ button {
   height: 60px;
   width: 60px;
   border-radius: 100%;
-  /* margin-right: 15px; */
-  /* border-width: 2px;
-  border-color: black;
-  border-style: solid;   */
   border: none;
   cursor: pointer;
   outline: none;
@@ -282,15 +265,12 @@ button.disabled:active {
 }
 
 #ballCount {
-  /* position: relative; */
-  /* display: block; */
   margin-top: auto;
   margin-bottom: auto;
   height: 40px; /*40px*/
   width: 50px;
   border-radius: 20%;
   font-family: 'Comic Sans MS';
-  /* font-family:'Courier New', Courier, monospace; */
   text-align: center;
   font-size: 15pt;
   border: none;
@@ -304,7 +284,6 @@ div#label {
 
 .multiBall label {
   position: relative;
-  /* display: block; */
   color: white;
   font-size: 12pt;
   font-family: 'Courier New', Courier, monospace;
@@ -318,12 +297,10 @@ div#label {
   width: 30px;
   border-radius: 20%;
   border: none;
-  /* font-family:'Courier New', Courier, monospace; */
   font-family: 'Comic Sans MS';
   font-size: 12pt;
   background-color: rgb(0, 255, 0);
   box-shadow: 0px 3px rgb(0, 165, 0);
-  /* color: rgb(0, 165, 0); */
 }
 
 #confirmBallCount:hover {

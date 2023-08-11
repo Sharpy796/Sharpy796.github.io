@@ -48,10 +48,10 @@ function runProgram() {
         RIGHT: 39,  // right
 
         /* ball controls */
-        U: 85,      // up
-        H: 72,      // left
-        J: 74,      // down
-        K: 75,      // right
+        I: 73,      // up
+        J: 74,      // left
+        K: 75,      // down
+        L: 76,      // right
     }
     
     var PPF_STOP = 0;   // Pixels Per Frame at rest
@@ -111,8 +111,9 @@ function runProgram() {
     $("#paddleControl").on("click", toggleCheatButton);
     $("#choosePlayer").on("click", togglePlayer);
 
+    // Mute Variable
+    var mute = false;
     // Pause Variables
-    var mute = true;
     var pause = false;
     var spaceIsDown = false
     var firstTimePaused = true;
@@ -155,11 +156,11 @@ function runProgram() {
     var showTelemetryCheatColors = false;   // Shows cheat mode values
 
     // NOTE: Put this back when needed
-    // alert(  "Welcome to Pong!\n" +
-    //         "P1 Controls: W S\n" +
-    //         "P2 Controls: Up Down\n" +
-    //         "Pause: Space\n" + 
-    //         "Restart: R");
+    alert(  "Welcome to Pong!\n" +
+            "P1 Controls: W S\n" +
+            "P2 Controls: Up Down\n" +
+            "Pause: Space\n" + 
+            "Restart: R");
 
     ////////////////////////////////////////////////////////////////////////////////
     ///////////////////////// CORE LOGIC ///////////////////////////////////////////
@@ -174,7 +175,6 @@ function runProgram() {
 
         // Notify how MultiBall will be played
         checkBallCountValidity(ballCount);
-        handleCheatModesColors();
         getTelemetryMultiBall();
 
         if (!pause) {
@@ -229,7 +229,8 @@ function runProgram() {
             console.log("space pressed");
         } if (keycode === KEY.R) {          // restart
             console.log("r pressed");
-            // if (confirm("Reset Game?")) {restartGame(p2.id);}
+            // NOTE: Uncomment this when done testing
+            if (confirm("Reset Game?")) {restartGame(p2.id);}
         } if (keycode === KEY.C) {          // cheat
             console.log("c pressed");
         } if (keycode === KEY.M) {          // mute
@@ -285,16 +286,16 @@ function runProgram() {
                 ball0.speed.right = 0;
                 updateVelocity(ball0);
             } firstTimeCheat = false;
-            if (keycode === KEY.U) {        // up
+            if (keycode === KEY.I) {        // up
                 ball0.speed.up = PPF;
                 console.log("u pressed");
-            } if (keycode === KEY.H) {      // left
+            } if (keycode === KEY.J) {      // left
                 ball0.speed.left = PPF;
                 console.log("h pressed");
-            } if (keycode === KEY.J) {      // down
+            } if (keycode === KEY.K) {      // down
                 ball0.speed.down = PPF;
                 console.log("j pressed");
-            } if (keycode === KEY.K) {      // right
+            } if (keycode === KEY.L) {      // right
                 ball0.speed.right = PPF;
                 console.log("k pressed");
             }
@@ -362,16 +363,16 @@ function runProgram() {
 
             /* ball controls */
             if (cheatMode) {
-                if (keycode === KEY.U) {
+                if (keycode === KEY.I) {
                     console.log("u released");
                     ball0.speed.up = PPF_STOP;
-                } if (keycode === KEY.H) {
+                } if (keycode === KEY.J) {
                     console.log("h released");
                     ball0.speed.left = PPF_STOP;
-                } if (keycode === KEY.J) {
+                } if (keycode === KEY.K) {
                     console.log("j released");
                     ball0.speed.down = PPF_STOP;
-                } if (keycode === KEY.K) {
+                } if (keycode === KEY.L) {
                     console.log("k released");
                     ball0.speed.right = PPF_STOP;
                 }
@@ -443,7 +444,7 @@ function runProgram() {
             "#"+ballId);
         $($newBall.id).css("background-color", $newBall.color);
         randBallVelocityY($newBall);
-        // push the new body into the ballPit
+        // push the new ball into the ballPit
         ballPit.push($newBall);
         console.log("#"+ballId+" created!");
         if (showTelemetryMultiBall) {console.log(ballPit);}
@@ -572,6 +573,18 @@ function runProgram() {
         }
     }
 
+    function getTelemetryCheatModes() {
+        if (showTelemetryCheatModes) {
+            console.log("pause: " + pause);
+            console.log("cheatMode: " + cheatMode);
+            console.log("freePlay: " + freePlay);
+            console.log("autoPlay: " + autoPlay);
+            console.log("multiBall: " + multiBall);
+            console.log("singlePlayer: " + singlePlayer);
+            console.log("paddleControl: " + paddleControl);
+        }
+    }
+
 
     ////////////////////////////////////////////////////////////////////////////////
     ////////////////////////// VELOCITY FUNCTIONS //////////////////////////////////
@@ -624,9 +637,7 @@ function runProgram() {
         } else if (varVelocityY < 0) {
             ballObj.speed.up = 0;
             ballObj.speed.down = -varVelocityY;
-        } else {
-            console.log(text.error + " in randBallVelocityY");
-        }
+        } else {console.log(text.error + " in randBallVelocityY");}
         console.log("changed " + ballObj.id + " velocityY to " + varVelocityY);
     }
 
@@ -642,32 +653,8 @@ function runProgram() {
                 console.log("Pause: " + pause);
             }
             firstTimePaused = false;
-        } else {
-            firstTimePaused = true;
-        }
+        } else {firstTimePaused = true;}
     }
-
-    // TODONE: Create a better cheat mode interface. Probably a sidebar
-    // [x] Include buttons!! Steal code from the StopLight program
-    // [x] Create a DIV to hold the buttons
-    // [x] Position the DIV next to the board
-    // [x] Create three buttons
-    // [x] Create a class that defines the size and spacing of the buttons
-    // button - Includes the basic size for buttons (some weird color like fuchsia)
-    // button:active - Includes movement
-    // [x] Create three unique classes, each with individual CSS properties
-    // .activated: Green
-    // .deactivated: Red
-    // .disabled: Grey
-    // [x] Include a unique ID for each of the buttons
-    // #cheatMode #autoPlay #freePlay #paddleControl #singlePlayer #multiBall #pause
-    // [x] Create a way to swap between activation classes - DO NOT USE A FOR LOOP
-    // [x] Create some basic logic between swapping between classes
-    // [x] Create the rest of the buttons
-    // [x] Copy all of the logic over
-    // [x] Make the buttons actually do their jobs
-    // [x] Prevent the keyboard from pressing the buttons
-    // [x] Prevent buttons from being pressed after the game ends
 
     // TODO: Create a startup menu for choosing initial game modes
 
@@ -779,18 +766,6 @@ function runProgram() {
         }
     }
 
-    function getTelemetryCheatModes() {
-        if (showTelemetryCheatModes) {
-            console.log("pause: " + pause);
-            console.log("cheatMode: " + cheatMode);
-            console.log("freePlay: " + freePlay);
-            console.log("autoPlay: " + autoPlay);
-            console.log("multiBall: " + multiBall);
-            console.log("singlePlayer: " + singlePlayer);
-            console.log("paddleControl: " + paddleControl);
-        }
-    }
-
     function activateCheatMode(element) {
         handleCheatModes(element, true);
         // change the color
@@ -817,35 +792,6 @@ function runProgram() {
         $(element).removeClass("deactivated");
         $(element).addClass("disabled");
     }
-
-    // TODONE: Situate the logic for the cheatmodes into this method
-    // [x] pause
-    // [x] cheatMode
-    // [x] freePlay
-    // [x] autoPlay
-    // [x] singlePlayer
-    // [x] multiBall
-    // [x] paddleControl
-
-    // TODONE: Make the buttons do what they need to do correctly
-    // [x] pause
-    // - [x] Make this work with the spacebar as well
-    // [x] cheatMode
-    // - [x] Make the ball direction work properly
-    // [x] freePlay
-    // [x] autoPlay
-    // [x] singlePlayer
-    // - [x] Slider to choose which player to play as
-    // - [x] Make the slider greyish if singlePlayer isn't activated, and make it grey if it is disabled
-    // [x] multiBall
-    // - [x] Make a field to tell how many balls ("Balls" underneath it)
-    // - [x] Disable the button if the number is not a valid one
-    // - [x] Put a warning message if the number is not a valid one
-    // - [x] Arrow buttons next to the field to increment the number
-    // - [x] "Confirm" button to reactivate MultiBall if it is already active
-    // - [x] Warn the player of a restart before activating/deactivating
-    // - [x] Restart the game upon activating/deactivating
-    // [x] paddleControl
 
     function toggleCheatModeMute() {
         if (mute) { // Unmute
@@ -884,6 +830,7 @@ function runProgram() {
             deactivateCheatMode("multiBall");
             activateCheatMode("pause");
         } else { // Activate CheatMode
+            alert("Cheat Mode activated!\nUse these controls to move the ball:\nI: Up\nJ: Left\nK: Down\nL: Right");
             activateCheatMode("cheatMode");
             disableCheatMode("autoPlay");
             disableCheatMode("singlePlayer");
@@ -966,7 +913,7 @@ function runProgram() {
             }
         } else if (!restartingRound && confirm(((multiBall) ? "Rea" : "A") + "ctivating MultiBall will restart the current game. Do you still want to continue?")) { // Activate MultiBall
             ballCount = $("#ballCount").val();
-            alert("MultiBall activated with " + ballCount + " balls!\nType 'noMulti' to deactivate it.");
+            alert("MultiBall activated with " + ballCount + " balls!");
             activateCheatMode("multiBall");
             disableCheatMode("cheatMode");
             restartGame(p2.id);
@@ -979,7 +926,7 @@ function runProgram() {
             disableCheatMode("multiBall");
         } else if (!restartingRound && confirm(((multiBall) ? "Rea" : "A") + "ctivating MultiBall will restart the current game. Do you still want to continue?")) { // (Re)Activate MultiBall
             ballCount = $("#ballCount").val();
-            alert("MultiBall activated with " + ballCount + " balls!\nType 'noMulti' to deactivate it.");
+            alert("MultiBall activated with " + ballCount + " balls!");
             activateCheatMode("multiBall");
             disableCheatMode("cheatMode");
             restartGame(p2.id);
@@ -987,8 +934,7 @@ function runProgram() {
         console.log(multiBall);
     }
 
-    // NOTE: Also make sure to be able to disable the button at all times
-    // This will ONLY check if the button is alright to press
+    // This will ONLY check if the button is alright to press. It WON'T change any actual ballCount values.
     function checkBallCountValidity() {
         let ballCountValue = $("#ballCount").val();
         ballCountValue = Math.floor(Number(ballCountValue));
@@ -1074,7 +1020,7 @@ function runProgram() {
                     alert("Cheat Mode is already activated.\nType 'noCheat' to deactivate it.");
                     activateCheatMode("cheatMode");
                 } else {
-                    alert("Cheat Mode activated!\nUse these controls to move the ball:\nU: Up\nH: Left\nJ: Down\nK: Right\nType 'noCheat' to deactivate Cheat Mode.");
+                    alert("Cheat Mode activated!\nUse these controls to move the ball:\nI: Up\nJ: Left\nK: Down\nL: Right\nType 'noCheat' to deactivate Cheat Mode.");
                     activateCheatMode("cheatMode");
                     disableCheatMode("autoPlay");
                     disableCheatMode("singlePlayer");
@@ -1362,6 +1308,7 @@ function runProgram() {
         }
     }
 
+    // NOTE: I'm keeping this commented out in the code for now, in case I need it again.
     // function chooseCheatModeOLD() {
     //     if (!restartingRound) {
     //         let answer = prompt("Password:");
@@ -1627,7 +1574,7 @@ function runProgram() {
     }
     
     function targetBall() {
-        
+        // Set the targeted ball to no targeted ball if it doesn't have a ball to target
         if (targetedBallLeft.velocityX >= 0 ||
             targetedBallLeft.x <= (paddleLeft.x)
             ) {
@@ -1639,6 +1586,7 @@ function runProgram() {
             targetedBallRight = ballNullRight;
         }
 
+        // Find ball closest to the paddle that's also moving towards it, but isn't behind it
         for (let ball of ballPit) {
             if (ball.velocityX < 0 && 
                 ball.x > (paddleLeft.x) && 
@@ -1741,18 +1689,7 @@ function runProgram() {
             console.log(obj.id + " passed bottom border");
         }
     }
-
-    // TODONE: Add sounds to bounces!!!
-    // [x] Get the audio to play
-    // [x] Add the audio to any bounces
-    // [x] Add separate sounds for each type of bounce
-    // - [x] p1
-    // - [x] p2
-    // - [x] top/bottom wall
-    // - [x] left/right wall
-    // [x] Allow specifying for each bounce sound in the method
-    // [x] Make the mute button work
-    // [x] Credit the person who the sounds came from somehow
+    
     function playSound(source) {
         if (!mute) {
             if (source === "p1") {$("audio#p1")[0].play();}
@@ -1876,11 +1813,11 @@ function runProgram() {
 
     function whichBorder(obj1, obj2) {
         if ((obj1.borderRight > obj2.borderLeft && obj1.borderLeft < (obj2.borderRight - obj2.width / 2)) &&    // right border is in the left border
-            (obj1.borderTop < obj2.borderBottom && obj1.borderBottom > obj2.borderTop)) {                               // and the top and bottom borders are between the other's top and bottom borders
+            (obj1.borderTop < obj2.borderBottom && obj1.borderBottom > obj2.borderTop)) {                       // and the top and bottom borders are between the other's top and bottom borders
             return "left";
         }
         if ((obj1.borderLeft < obj2.borderRight && obj1.borderRight > (obj2.borderLeft + obj2.width / 2)) &&    // left border is in the right border and the right border in halfway in the left border
-            (obj1.borderTop < obj2.borderBottom && obj1.borderBottom > obj2.borderTop)) {                               // and the top and bottom borders are between the other's top and bottom borders
+            (obj1.borderTop < obj2.borderBottom && obj1.borderBottom > obj2.borderTop)) {                       // and the top and bottom borders are between the other's top and bottom borders
             return "right";
         }
     }
@@ -2146,7 +2083,7 @@ function runProgram() {
             $(".balls span").hide();
         }
         
-        // cheat mode colors
+        // Cheat Mode Colors
         if (cheatMode) {
             if (pause) {
                 $("#ball0").css("background-color", "green");
@@ -2159,7 +2096,7 @@ function runProgram() {
             $(".balls").css("box-shadow", "none");
         }
 
-        // Border colors
+        // Border Colors
         if (pause) {
             $(".board").css("border-color", "lime");
         } else if (freePlay) {
@@ -2168,7 +2105,7 @@ function runProgram() {
             $(".board").css("border-color", "white");
         }
 
-        // paddle colors
+        // Paddle Colors
         if (autoPlay || (singlePlayer && playerChosen === "p2")) {
             $("#paddleLeft").css("background-color", "blue");
             $("#paddleLeft").css("box-shadow", "0px 0px 0px 3px cyan inset");
@@ -2183,8 +2120,11 @@ function runProgram() {
             $("#paddleRight").css("background-color", "hotpink");
             $("#paddleRight").css("box-shadow", "0px 0px 0px 3px maroon inset");
         }
+        
+        // Dashboard Colors
+        handleCheatModesColors();
 
-        // testing modes
+        // Testing Modes
         // testMode(singlePlayer);
     }
 
