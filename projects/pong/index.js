@@ -156,11 +156,11 @@ function runProgram() {
     var showTelemetryCheatColors = false;   // Shows cheat mode values
 
     // NOTE: Put this back when needed
-    alert(  "Welcome to Pong!\n" +
-            "P1 Controls: W S\n" +
-            "P2 Controls: Up Down\n" +
-            "Pause: Space\n" + 
-            "Restart: R");
+    // alert(  "Welcome to Pong!\n" +
+    //         "P1 Controls: W S\n" +
+    //         "P2 Controls: Up Down\n" +
+    //         "Pause: Space\n" + 
+    //         "Restart: R");
 
     ////////////////////////////////////////////////////////////////////////////////
     ///////////////////////// CORE LOGIC ///////////////////////////////////////////
@@ -230,7 +230,7 @@ function runProgram() {
         } if (keycode === KEY.R) {          // restart
             console.log("r pressed");
             // NOTE: Uncomment this when done testing
-            if (confirm("Reset Game?")) {restartGame(p2.id);}
+            // if (confirm("Reset Game?")) {restartGame(p2.id);}
         } if (keycode === KEY.C) {          // cheat
             console.log("c pressed");
         } if (keycode === KEY.M) {          // mute
