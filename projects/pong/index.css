@@ -17,8 +17,15 @@ body {
 }
 
 #paused {
-  -webkit-mask-image: radial-gradient(circle, black 50%, rgba(0, 0, 0, 0.5) 50%);
-  /* mask-image: radial-gradient(circle, black 30%, rgba(0, 0, 0, 0.5) 0%); */
+  position: absolute; /* Sit on top of the page content */
+  display: none; /* Hidden by default */
+  width: 750px;
+  height: 480px;
+  top: 9px;
+  left: 9px;
+  background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+  z-index: 3; /* Specify a stack order in case you're using a different order for other elements */
+  cursor: pointer; /* Add a pointer on hover */
 }
 
 .gameItem {

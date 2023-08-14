@@ -767,16 +767,26 @@ function runProgram() {
     }
 
     function activateCheatMode(element) {
+        // change the variable value
         handleCheatModes(element, true);
+        // handle the pause menu
+        // if (element === "pause") {$(".board").attr("id", "paused");}
+        if (element === "pause") {$("#paused").show();}
         // change the color
         element = "#" + element;
         $(element).removeClass("deactivated");
         $(element).removeClass("disabled");
         $(element).addClass("activated");
     }
+    // $(".board").removeAttr("id");
+    // $(".board").attr("id", "paused");
 
     function deactivateCheatMode(element) {
+        // change the variable value
         handleCheatModes(element, false);
+        // handle the pause menu
+        // if (element === "pause") {$(".board").removeAttr("id");}
+        if (element === "pause") {$("#paused").hide();}
         // change the color
         element = "#" + element;
         $(element).removeClass("activated");
@@ -802,18 +812,21 @@ function runProgram() {
         console.log(mute);
     }
 
+    // FIXME: do the pause menu things
     function toggleCheatModePause() {
-        if (pause) { // Unpause
-            deactivateCheatMode("pause");
-            disableCheatMode("cheatMode");
-        } else { // Pause
-            activateCheatMode("pause");
-            if (autoPlay || singlePlayer || multiBall) {
+        if (!restartingRound) {
+            if (pause) { // Unpause
+                deactivateCheatMode("pause");
                 disableCheatMode("cheatMode");
-            } else if (cheatMode) {
-                activateCheatMode("cheatMode");
-            } else {
-                deactivateCheatMode("cheatMode");
+            } else { // Pause
+                activateCheatMode("pause");
+                if (autoPlay || singlePlayer || multiBall) {
+                    disableCheatMode("cheatMode");
+                } else if (cheatMode) {
+                    activateCheatMode("cheatMode");
+                } else {
+                    deactivateCheatMode("cheatMode");
+                }
             }
         }
         console.log(pause);
