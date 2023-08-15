@@ -770,23 +770,19 @@ function runProgram() {
         // change the variable value
         handleCheatModes(element, true);
         // handle the pause menu
-        // if (element === "pause") {$(".board").attr("id", "paused");}
-        if (element === "pause") {$("#paused").show();}
+        // if (element === "pause") {$("#paused").show();}
         // change the color
         element = "#" + element;
         $(element).removeClass("deactivated");
         $(element).removeClass("disabled");
         $(element).addClass("activated");
     }
-    // $(".board").removeAttr("id");
-    // $(".board").attr("id", "paused");
 
     function deactivateCheatMode(element) {
         // change the variable value
         handleCheatModes(element, false);
         // handle the pause menu
-        // if (element === "pause") {$(".board").removeAttr("id");}
-        if (element === "pause") {$("#paused").hide();}
+        // if (element === "pause") {$("#paused").hide();}
         // change the color
         element = "#" + element;
         $(element).removeClass("activated");

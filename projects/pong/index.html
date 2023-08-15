@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 
-<!-- Port 10049 -->
+<!-- Port 10051 -->
 
 <head>
     <title>Pong</title>
@@ -40,7 +40,63 @@
                 <div class="gameItem balls" id="ball0"><span>0</span></div>
             </div>
         </div>
-        <div id="paused"></div>
+        <div id="paused">
+            <div class="pauseText">
+                <h1 id="title">Welcome to Pong!</h1>
+                <h3 id="subtitle">Coded by Christian Bankovic</h3>
+                <div id="controls">
+                    <div class="controls">
+                        <p>Player 1 Controls:</p>
+                        <div class="container">
+                            <img src="assets/keyboard-key.png" class="key">
+                            <div class="key-text">W</div>
+                        </div>
+                        <div>
+                            <div class="container-inline">
+                                <img src="assets/keyboard-key.png" class="key">
+                                <div class="key-text">A</div>
+                            </div>
+                            <div class="container-inline">
+                                <img src="assets/keyboard-key.png" class="key">
+                                <div class="key-text">S</div>
+                            </div>
+                            <div class="container-inline">
+                                <img src="assets/keyboard-key.png" class="key">
+                                <div class="key-text">D</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="controls">
+                        <p>CheatMode Controls:</p>
+                        <div class="container">
+                            <img src="assets/keyboard-key.png" class="key">
+                            <div class="key-text">I</div>
+                            <!-- <span class="key-text">W</span> -->
+                        </div>
+                        <div class="container">
+                            <img src="assets/keyboard-key.png" class="key">
+                            <div class="key-text">J</div>
+                            <img src="assets/keyboard-key.png" class="key">
+                            <div class="key-text">K</div>
+                            <img src="assets/keyboard-key.png" class="key">
+                            <div class="key-text">L</div>
+                        </div>
+                    </div>
+                    <div class="controls">
+                        <p>Player 2 Controls:</p>
+                        <div>
+                            <img src="assets/keyboard-key.png" class="key">
+                            <!-- <span class="key-text">W</span> -->
+                        </div>
+                        <div>
+                            <img src="assets/keyboard-key.png" class="key">
+                            <img src="assets/keyboard-key.png" class="key">
+                            <img src="assets/keyboard-key.png" class="key">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <table class="scoreboard">
             <tr>
                 <td colspan="6" class="scores" id="p1"><b>P1 Score: <span>000</span></b></td>
@@ -48,31 +104,28 @@
                 <td colspan="6" class="scores" id="p2"><b>P2 Score: <span>000</span></b></td>
             </tr>
             <tr>
-                <div> <!-- P1 Score Row -->
-                    <td class="tallyMark p1TallyMark" id="p1Tally1"></td>
-                    <td class="tallyMark p1TallyMark" id="p1Tally2"></td>
-                    <td class="tallyMark p1TallyMark" id="p1Tally3"></td>
-                    <td class="tallyMark p1TallyMark" id="p1Tally4"></td>
-                    <td class="tallyMark p1TallyMark" id="p1Tally5"></td>
-                    <td class="tallyMark p1TallyMark" id="p1Tally6"></td>
-                    <td class="tallyMark p1TallyMark" id="p1Tally7"></td>
-                    <td class="tallyMark p1TallyMark" id="p1Tally8"></td>
-                    <td class="tallyMark p1TallyMark" id="p1Tally9"></td>
-                </div>
-                <div>
-                    <td class="tallyMark winTallyMark"></td> <!-- Win Column -->
-                </div>
-                <div> <!-- P2 Score Row -->
-                    <td class="tallyMark p2TallyMark" id="p2Tally9"></td>
-                    <td class="tallyMark p2TallyMark" id="p2Tally8"></td>
-                    <td class="tallyMark p2TallyMark" id="p2Tally7"></td>
-                    <td class="tallyMark p2TallyMark" id="p2Tally6"></td>
-                    <td class="tallyMark p2TallyMark" id="p2Tally5"></td>
-                    <td class="tallyMark p2TallyMark" id="p2Tally4"></td>
-                    <td class="tallyMark p2TallyMark" id="p2Tally3"></td>
-                    <td class="tallyMark p2TallyMark" id="p2Tally2"></td>
-                    <td class="tallyMark p2TallyMark" id="p2Tally1"></td>
-                </div>
+                <!-- P1 Score Columns -->
+                <td class="tallyMark p1TallyMark" id="p1Tally1"></td>
+                <td class="tallyMark p1TallyMark" id="p1Tally2"></td>
+                <td class="tallyMark p1TallyMark" id="p1Tally3"></td>
+                <td class="tallyMark p1TallyMark" id="p1Tally4"></td>
+                <td class="tallyMark p1TallyMark" id="p1Tally5"></td>
+                <td class="tallyMark p1TallyMark" id="p1Tally6"></td>
+                <td class="tallyMark p1TallyMark" id="p1Tally7"></td>
+                <td class="tallyMark p1TallyMark" id="p1Tally8"></td>
+                <td class="tallyMark p1TallyMark" id="p1Tally9"></td>
+                <!-- Win Column -->
+                <td class="tallyMark winTallyMark"></td>
+                <!-- P2 Score Columns -->
+                <td class="tallyMark p2TallyMark" id="p2Tally9"></td>
+                <td class="tallyMark p2TallyMark" id="p2Tally8"></td>
+                <td class="tallyMark p2TallyMark" id="p2Tally7"></td>
+                <td class="tallyMark p2TallyMark" id="p2Tally6"></td>
+                <td class="tallyMark p2TallyMark" id="p2Tally5"></td>
+                <td class="tallyMark p2TallyMark" id="p2Tally4"></td>
+                <td class="tallyMark p2TallyMark" id="p2Tally3"></td>
+                <td class="tallyMark p2TallyMark" id="p2Tally2"></td>
+                <td class="tallyMark p2TallyMark" id="p2Tally1"></td>
             </tr>
         </table>
         <div>
