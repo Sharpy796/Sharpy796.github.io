@@ -114,7 +114,7 @@ function runProgram() {
     // Mute Variable
     var mute = false;
     // Pause Variables
-    var pause = false;
+    var pause = true;
     var spaceIsDown = false
     var firstTimePaused = true;
     // Mode Variables
@@ -838,7 +838,6 @@ function runProgram() {
             deactivateCheatMode("multiBall");
             activateCheatMode("pause");
         } else { // Activate CheatMode
-            alert("Cheat Mode activated!\nUse these controls to move the ball:\nI: Up\nJ: Left\nK: Down\nL: Right");
             activateCheatMode("cheatMode");
             disableCheatMode("autoPlay");
             disableCheatMode("singlePlayer");

@@ -18,7 +18,7 @@ body {
 
 #paused {
   position: absolute; /* Sit on top of the page content */
-  display: none; /* Hidden by default */
+  display: block; /* Hidden by default */
   width: 750px;
   height: 480px;
   top: 9px;
