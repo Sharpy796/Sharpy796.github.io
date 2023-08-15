@@ -230,7 +230,7 @@ function runProgram() {
         } if (keycode === KEY.R) {          // restart
             console.log("r pressed");
             // NOTE: Uncomment this when done testing
-            // if (confirm("Reset Game?")) {restartGame(p2.id);}
+            if (confirm("Reset Game?")) {restartGame(p2.id);}
         } if (keycode === KEY.C) {          // cheat
             console.log("c pressed");
         } if (keycode === KEY.M) {          // mute
