@@ -18,19 +18,17 @@ body {
 
 #paused {
   position: absolute; /* Sit on top of the page content */
-  display: block; /* Hidden by default */
+  display: none; /* Hidden by default */
   width: 750px;
   height: 480px;
   top: 9px;
   left: 9px;
-  background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+  background-color: rgba(0,0,0,0.6); /* Black background with opacity */
   z-index: 3; /* Specify a stack order in case you're using a different order for other elements */
-  /* cursor: pointer; Add a pointer on hover */
 }
 
 .pauseText {
-  /* margin: 0; */
-  position: absolute;
+  position: relative;
   width: 100%;
   top: 50%;
   -ms-transform: translateY(-50%);
@@ -38,25 +36,23 @@ body {
   text-align: center;
   font-family: "Comic Sans MS";
   color: white;
-  border: 1px solid white;
-  /* border: none; */
+  /* border: 1px solid red; */
+  border: none;
 }
 
 #title {
+  margin-top: 0;
   position: relative;
-  /* height: 25%; */
   border: inherit;
 }
 
 #subtitle {
   position: relative;
-  /* height: 25%; */
   border: inherit;
 }
 
 #controls {
   position: relative;
-  /* height: 50%; */
   border: inherit;
 }
 
@@ -64,21 +60,42 @@ div.controls {
   position: static;
   display: inline-block;
   width: 32%;
-  /* height: 100%; */
+  height: 100%;
+  border: inherit;
+}
+
+.row {
+  display: block;
+  position: relative;
+  height: 70px;
   border: inherit;
 }
 
 .key {
+  margin-top: 5px;
+  display: inline-block;
   position: relative;
-  filter: invert();
-  width: 25%;
-  text-align: center;
+  border: inherit;
+  height: 65px;
+  width: 65px;
 }
 
-.container {
+.key img {
   position: relative;
-  text-align: center;
-  color: white;
+  display: inline;
+  filter: invert();
+  max-height: 100%;
+  border: inherit;
+}
+
+.key span {
+  position: absolute;
+  display: inline;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 16pt;
+  border: inherit;
 }
 
 .container-inline {
@@ -86,13 +103,6 @@ div.controls {
   text-align: center;
   color: white;
   display: block;
-}
-
-.key-text {
-  position: absolute;
-  top:50%;
-  left:50%;
-  transform: translate(-50%, -50%);
 }
 
 .gameItem {

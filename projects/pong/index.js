@@ -770,7 +770,7 @@ function runProgram() {
         // change the variable value
         handleCheatModes(element, true);
         // handle the pause menu
-        // if (element === "pause") {$("#paused").show();}
+        if (element === "pause") {$("#paused").show();}
         // change the color
         element = "#" + element;
         $(element).removeClass("deactivated");
@@ -782,7 +782,7 @@ function runProgram() {
         // change the variable value
         handleCheatModes(element, false);
         // handle the pause menu
-        // if (element === "pause") {$("#paused").hide();}
+        if (element === "pause") {$("#paused").hide();}
         // change the color
         element = "#" + element;
         $(element).removeClass("activated");
@@ -1858,7 +1858,7 @@ function runProgram() {
     ////////////////////////////////////////////////////////////////////////////////
 
     // TODO: Find a way to update the scoreboard *before* the game alerts who has won
-    // ...this is so simple. I'd need to move away from alert()s and // TODO: start using on-screen text for menus
+    // ...this is so simple. I'd need to move away from alert()s and // TODOING: start using on-screen text for menus
     function playerLose(ballObj, player) {
         if (ballObj.firstTimeBouncedWall) {
             if (player === p1.id) {         // player 1's side
