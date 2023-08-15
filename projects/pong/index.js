@@ -808,7 +808,6 @@ function runProgram() {
         console.log(mute);
     }
 
-    // FIXME: do the pause menu things
     function toggleCheatModePause() {
         if (!restartingRound) {
             if (pause) { // Unpause
