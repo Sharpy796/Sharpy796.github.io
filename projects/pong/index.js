@@ -119,7 +119,7 @@ function runProgram() {
     var firstTimePaused = true;
     // Mode Variables
     var cheatMode = false;
-    var firstTimeCheat = true; // TESTING VISUAL STUDIO COMMIT AND PUSH
+    var firstTimeCheat = true;
     var freePlay = false;
     var autoPlay = false;
     var singlePlayer = false;
