@@ -88,6 +88,11 @@ div.controls {
   border: inherit;
 }
 
+#spacebar {
+    max-width: 30px;
+    background-color: red;
+}
+
 .key span {
   position: absolute;
   display: inline;
