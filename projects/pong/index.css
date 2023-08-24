@@ -36,8 +36,8 @@ body {
   text-align: center;
   font-family: "Comic Sans MS";
   color: white;
-  /* border: 1px solid red; */
   border: none;
+  /* border: 1px solid red; */
 }
 
 #title {
@@ -60,8 +60,28 @@ div.controls {
   position: static;
   display: inline-block;
   width: 32%;
-  height: 100%;
+  height: 200px;
   border: inherit;
+}
+
+#cheatModeControls {
+  display: none;
+  border: inherit;
+}
+
+#pauseMessage {
+  /* display: none; */
+  border: inherit;
+  /* top: 0; */
+}
+
+#pauseMessage p {
+  /* position: static; */
+  /* font-size: 12pt; */
+  /* margin-top: 0px; */
+  /* margin-bottom: auto; */
+  /* margin-top: 0px;
+  margin-bottom: 0px; */
 }
 
 .row {
@@ -80,6 +100,14 @@ div.controls {
   width: 65px;
 }
 
+#begin-continue .key {
+  width: 100px;
+}
+
+#begin-continue span {
+  width: 100px;
+}
+
 .key img {
   position: relative;
   display: inline;
@@ -89,8 +117,7 @@ div.controls {
 }
 
 #spacebar {
-    max-width: 30px;
-    background-color: red;
+    width: 150px;
 }
 
 .key span {
@@ -99,7 +126,7 @@ div.controls {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 16pt;
+  font-size: 16pt !important;
   border: inherit;
 }
 

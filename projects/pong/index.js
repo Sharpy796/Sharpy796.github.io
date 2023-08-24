@@ -230,7 +230,7 @@ function runProgram() {
         } if (keycode === KEY.R) {          // restart
             console.log("r pressed");
             // NOTE: Uncomment this when done testing
-            if (confirm("Reset Game?")) {restartGame(p2.id);}
+            // if (confirm("Reset Game?")) {restartGame(p2.id);}
         } if (keycode === KEY.C) {          // cheat
             console.log("c pressed");
         } if (keycode === KEY.M) {          // mute
@@ -832,6 +832,7 @@ function runProgram() {
             disableCheatMode("cheatMode");
         } else if (cheatMode) { // Deactivate CheatMode
             deactivateCheatMode("cheatMode");
+            toggleCheatModeControls(false);
             deactivateCheatMode("autoPlay");
             deactivateCheatMode("singlePlayer");
             deactivateCheatMode("playerSlider");
@@ -839,6 +840,7 @@ function runProgram() {
             activateCheatMode("pause");
         } else { // Activate CheatMode
             activateCheatMode("cheatMode");
+            toggleCheatModeControls(true);
             disableCheatMode("autoPlay");
             disableCheatMode("singlePlayer");
             disableCheatMode("playerSlider");
@@ -846,6 +848,16 @@ function runProgram() {
             activateCheatMode("pause");
         }
         console.log(cheatMode);
+    }
+
+    function toggleCheatModeControls(bool) {
+        if (bool) {
+            $("#pauseMessage").hide();
+            $("#cheatModeControls").show();
+        } else {
+            $("#cheatModeControls").hide();
+            $("#pauseMessage").show();
+        }
     }
 
     function toggleCheatModeFree() {
