@@ -994,6 +994,22 @@ function runProgram() {
             activateCheatMode("paddleControl");
         }
         console.log(paddleControl);
+        togglePaddleControls()
+    }
+
+    function togglePaddleControls() {
+        if (paddleControl) {
+            $("#A").show();
+            $("#D").show();
+            $("#left").show();
+            $("#right").show();
+        } else {
+            $("#A").hide();
+            $("#D").hide();
+            $("#left").hide();
+            $("#right").hide();
+
+        }
     }
     
     function toggleCheatModesAll(element) {
