@@ -184,6 +184,8 @@ function runProgram() {
                 createNewBall();
             }
 
+            pauseMenuBeginContinue();
+
             // Telemetry on the game
             getTelemetryTicks();
             getTelemetryFPS();
@@ -859,6 +861,8 @@ function runProgram() {
             $("#pauseMessage").show();
         }
     }
+
+    function pauseMenuBeginContinue() {if (ticks === 1) {$("#begin-continue span").text("to continue!");}}
 
     function toggleCheatModeFree() {
         if (freePlay) { // Deactivate FreePlay
