@@ -84,7 +84,7 @@ function runProgram() {
     // scores
     var score = {
         bounced: 0,
-        p1: 0,
+        p1: 10, // NOTE: Remember to change this back when done
         p2: 0,
         WIN: 10,
     }
@@ -102,6 +102,8 @@ function runProgram() {
     $(document).on("keyup", handleKeyUp);           // listen for keyup events
     $("#mute").on("click", toggleCheatButton);
     $("#pause").on("click", toggleCheatButton);
+    $("#restartGame").on("click", restartGame);
+    $("#endGame").on("click", endGame);
     $("#cheatMode").on("click", toggleCheatButton);
     $("#freePlay").on("click", toggleCheatButton);
     $("#autoPlay").on("click", toggleCheatButton);
@@ -651,7 +653,7 @@ function runProgram() {
     function pauseGame() {
         if (spaceIsDown) {
             if (firstTimePaused) {
-                toggleCheatModePause();
+                togglePause();
                 console.log("Pause: " + pause);
             }
             firstTimePaused = false;
@@ -768,6 +770,12 @@ function runProgram() {
         }
     }
 
+    function showEndGameScreen() {
+        $(".pauseText").hide();
+        $(".endGameScreen").show();
+        $("#paused").show();
+    }
+
     function activateCheatMode(element) {
         // change the variable value
         handleCheatModes(element, true);
@@ -810,7 +818,7 @@ function runProgram() {
         console.log(mute);
     }
 
-    function toggleCheatModePause() {
+    function togglePause() {
         if (!restartingRound) {
             if (pause) { // Unpause
                 deactivateCheatMode("pause");
@@ -1019,7 +1027,7 @@ function runProgram() {
 
         if (cheatClass === "disabled") {disableCheatMode(cheatId);}
         else if (cheatId === "mute") {toggleCheatModeMute();}
-        else if (cheatId === "pause") {toggleCheatModePause();}
+        else if (cheatId === "pause") {togglePause();}
         else if (cheatId === "cheatMode") {toggleCheatModeCheat();}
         else if (cheatId === "freePlay") {toggleCheatModeFree();}
         else if (cheatId === "autoPlay") {toggleCheatModeAuto();}
@@ -1911,8 +1919,10 @@ function runProgram() {
                 setTimeout(restartRound.bind(null, player), 1000);
             } else {
                 $(".balls").css("background-color", "lime");
-                if (playAgain()){restartGame(player);}
-                else {endGame();}
+                showEndGameScreen();
+
+                // if (playAgain()){restartGame(player);}
+                // else {endGame();}
             }
         }
         // tell us it isn't the first time bouncing anymore
@@ -2231,13 +2241,18 @@ function runProgram() {
     ////////////////////////// GAME FUNCTIONS //////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
 
+    // TODOING: Move out of alert()s for starting a new game
     function playAgain() {
+        // Pause game
+        // Show new menu: "Good game! Play again? Yes/No"
+        // Attach functions to those
+        // - "Yes": Close menu and restartGame()
+        // - "No": Close menu and endGame()
+
         return confirm("Good game! Play again?");
     }
 
     function restartRound(player) {
-        // Check if the game is won
-        if (gameWon) {resetGame();}
         
         // Reset the score
         score.bounced = 0;
@@ -2282,6 +2297,9 @@ function runProgram() {
         // Unpause the game
         deactivateCheatMode("pause");
 
+        // Check if the game is won
+        if (gameWon) {resetGame();}
+
         // Tell that we have finished restarting the round
         restartingRound = false;
     }
@@ -2295,14 +2313,16 @@ function runProgram() {
 
     function resetGame() {
         resetVariables();
+        resetPauseMenu();
         resetSpeeds(paddleLeft);
         resetSpeeds(paddleRight);
         resetScores();
         resetScoreBoard();
+        activateCheatMode("pause");
     }
 
     function resetVariables() {
-        deactivateCheatMode("pause");
+        // deactivateCheatMode("pause");
         spaceIsDown = false
         firstTimeCheat = true;
         ball0.firstTimeBouncedPaddle = true;
@@ -2310,6 +2330,11 @@ function runProgram() {
         firstTimePaused = true;
         gameWon = false;
         varPredictedPositionY = 0;
+    }
+
+    function resetPauseMenu() {
+        $(".endGameScreen").hide();
+        $(".pauseText").show();
     }
 
     function resetScores() {
