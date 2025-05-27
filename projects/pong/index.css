@@ -321,12 +321,39 @@ div.controls {
   margin-right: 20px;
   font-family: 'Courier New', Courier, monospace;
 }
+
 .on {
   background-color: rgb(0, 100, 0);
 }
 
 .off {
   background-color: rgb(100, 0, 0);
+}
+
+.endGameScreen span {
+  color: black;
+  font-family: "Comic Sans MS";
+  font-size: 12pt;
+}
+
+.endGameScreen button {
+  /* background-color: grey; */
+  border-radius: 10%;
+  height: 40px;
+  width: 60;
+  /* box-shadow: 0px 5px rgb(64, 64, 64); */
+  
+  box-shadow: 0px 6px;
+}
+
+.endGameScreen button:hover {
+  /* background-color: darkgrey; */
+}
+
+.endGameScreen button:active {
+  /* background-color: white; */
+  box-shadow: 0px 2px;
+  transform: translateY(4px);
 }
 
 button {

@@ -771,9 +771,26 @@ function runProgram() {
     }
 
     function showEndGameScreen() {
+        enableEndGameButtons();
+        disableCheatMode("pause");
+        
         $(".pauseText").hide();
         $(".endGameScreen").show();
         $("#paused").show();
+    }
+
+    function disableEndGameButtons() {
+        $("#restartGame").removeClass("activated");
+        $("#endGame").removeClass("deactivated");
+        $("#restartGame").addClass("disabled");
+        $("#endGame").addClass("disabled");
+    }
+
+    function enableEndGameButtons() {
+        $("#restartGame").removeClass("disabled");
+        $("#endGame").removeClass("disabled");
+        $("#restartGame").addClass("activated");
+        $("#endGame").addClass("deactivated");
     }
 
     function activateCheatMode(element) {
@@ -2171,7 +2188,7 @@ function runProgram() {
         }
         
         // Dashboard Colors
-        handleCheatModesColors();
+        handleCheatModesColors(); // FIXME: Is this redundant? It's a catch-all in case something is mismatched in the code.
 
         // Testing Modes
         // testMode(singlePlayer);
@@ -2305,10 +2322,13 @@ function runProgram() {
     }
 
     function restartGame(player) {
-        restartingRound = true;
-        gameWon = true;
-        clearInterval(interval);
-        setTimeout(restartRound.bind(null, player), 1000);
+        if (!restartingRound) {
+            restartingRound = true;
+            gameWon = true;
+            disableEndGameButtons();
+            clearInterval(interval);
+            setTimeout(restartRound.bind(null, player), 1000);
+        }
     }
 
     function resetGame() {
@@ -2383,14 +2403,18 @@ function runProgram() {
     }
 
     function endGame() {
-        // stop the interval timer
-        clearInterval(interval);
+        if (!restartingRound) {
+            disableEndGameButtons();
 
-        // turn off event handlers
-        $(document).off();
+            // stop the interval timer
+            clearInterval(interval);
 
-        // disable the dashboard
-        $("button").attr("disabled", true);
-        $("input").attr("disabled", true);
+            // turn off event handlers
+            $(document).off();
+
+            // disable the dashboard
+            $("button").attr("disabled", true);
+            $("input").attr("disabled", true);
+        }
     }
 }
