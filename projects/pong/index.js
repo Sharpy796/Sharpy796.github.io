@@ -2312,6 +2312,7 @@ function runProgram() {
     }
 
     function resetGame() {
+        $("#begin-continue span").text("to begin!");
         resetVariables();
         resetPauseMenu();
         resetSpeeds(paddleLeft);
