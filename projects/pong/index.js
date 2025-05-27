@@ -84,9 +84,9 @@ function runProgram() {
     // scores
     var score = {
         bounced: 0,
-        p1: 10, // NOTE: Remember to change this back when done
+        p1: 0,
         p2: 0,
-        WIN: 10,
+        WIN: 1,
     }
 
     var text = {
@@ -771,7 +771,7 @@ function runProgram() {
     }
 
     function showEndGameScreen() {
-        enableEndGameButtons();
+        enableEndGameButtons(true,true);
         disableCheatMode("pause");
         
         $(".pauseText").hide();
@@ -779,18 +779,26 @@ function runProgram() {
         $("#paused").show();
     }
 
-    function disableEndGameButtons() {
-        $("#restartGame").removeClass("activated");
-        $("#endGame").removeClass("deactivated");
-        $("#restartGame").addClass("disabled");
-        $("#endGame").addClass("disabled");
+    function disableEndGameButtons(yes,no) {
+        if (yes) {
+            $("#restartGame").removeClass("activated");
+            $("#restartGame").addClass("disabled");
+        }
+        if (no) {
+            $("#endGame").removeClass("deactivated");
+            $("#endGame").addClass("disabled");
+        }
     }
 
-    function enableEndGameButtons() {
-        $("#restartGame").removeClass("disabled");
-        $("#endGame").removeClass("disabled");
-        $("#restartGame").addClass("activated");
-        $("#endGame").addClass("deactivated");
+    function enableEndGameButtons(yes,no) {
+        if (yes) {
+            $("#restartGame").removeClass("disabled");
+            $("#restartGame").addClass("activated");
+        }
+        if (no) {
+            $("#endGame").removeClass("disabled");
+            $("#endGame").addClass("deactivated");
+        }
     }
 
     function activateCheatMode(element) {
@@ -2325,7 +2333,7 @@ function runProgram() {
         if (!restartingRound) {
             restartingRound = true;
             gameWon = true;
-            disableEndGameButtons();
+            disableEndGameButtons(false,true);
             clearInterval(interval);
             setTimeout(restartRound.bind(null, player), 1000);
         }
@@ -2404,7 +2412,7 @@ function runProgram() {
 
     function endGame() {
         if (!restartingRound) {
-            disableEndGameButtons();
+            disableEndGameButtons(true,false);
 
             // stop the interval timer
             clearInterval(interval);
