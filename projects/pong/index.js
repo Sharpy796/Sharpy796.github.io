@@ -91,19 +91,20 @@ function runProgram() {
         error: "ERROR",
     }
 
-    const defaultRestart = function(){return restartGame(p2.id);}
-    function continueTheGame() {
+    function continueGame() {
+        choosingToRestart = false;
         $(".endGameScreen").hide();
-        deactivateCheatMode("pauyse");
+        deactivateCheatMode("pause");
+        $("#endGame").off("click");
+        $("#endGame").on("click",endGame);
     }
-    var noButtonBehavior = defaultRestart;
     // one-time setup
     var interval = setInterval(newFrame, framesPerSecondInterval);   // execute newFrame every 0.0166 seconds (60 frames per second)
     $(document).on("keydown", handleKeyDown);       // listen for keydown events
     $(document).on("keyup", handleKeyUp);           // listen for keyup events
     $("#mute").on("click", toggleCheatButton);
     $("#pause").on("click", toggleCheatButton);
-    $("#restartGame").on("click",noButtonBehavior);
+    $("#restartGame").on("click",function(){return restartGame(p2.id);});
     $("#endGame").on("click", endGame);
     $("#cheatMode").on("click", toggleCheatButton);
     $("#freePlay").on("click", toggleCheatButton);
@@ -145,6 +146,7 @@ function runProgram() {
     var ticks = 0;
     var gameWon = false;
     var restartingRound = false;
+    var choosingToRestart = false;
     const Winner = {
         BOTH: -1,
         NEITHER: 0,
@@ -234,8 +236,10 @@ function runProgram() {
         } if (keycode === KEY.R) {          // restart
             console.log("r pressed");
             // TODOING: Make the "no" button here continue the game
-            activateCheatMode("pause");
-            showEndGameScreen(Winner.NEITHER);
+            if (!gameWon) {
+                activateCheatMode("pause");
+                showEndGameScreen(Winner.NEITHER);
+            }
         } if (keycode === KEY.C) {          // cheat
             console.log("c pressed");
         } if (keycode === KEY.M) {          // mute
@@ -652,7 +656,7 @@ function runProgram() {
     ////////////////////////////////////////////////////////////////////////////////
 
     function pauseGame() {
-        if (spaceIsDown) {
+        if (spaceIsDown && !gameWon) {
             if (firstTimePaused) {
                 togglePause();
                 console.log("Pause: " + pause);
@@ -783,11 +787,11 @@ function runProgram() {
         } else if (winner == Winner.BOTH) {
             winText = text.tie;
         } else if (winner == Winner.NEITHER) {
+            choosingToRestart = true;
             winText = text.restart;
             $(".endGameScreen h3").hide(); // TODOING: making no button continue here
-            // noButtonBehavior = continueTheGame;
-            $("#endGame").off("click",noButtonBehavior);
-            $("#endGame").on("click",continueTheGame);
+            $("#endGame").off("click");
+            $("#endGame").on("click",continueGame);
         }
         $(".endGameScreen h1").text(winText);
         
@@ -822,7 +826,11 @@ function runProgram() {
         // change the variable value
         handleCheatModes(element, true);
         // handle the pause menu
-        if (element === "pause") {$("#paused").show();}
+        if (element === "pause") {
+            $(".endGameScreen").hide();
+            $(".pauseText").show();
+            $("#paused").show();
+        }
         // change the color
         element = "#" + element;
         $(element).removeClass("deactivated");
@@ -861,7 +869,8 @@ function runProgram() {
     }
 
     function togglePause() {
-        if (!restartingRound) {
+        console.log("choosing to restart?\t"+choosingToRestart);
+        if (!restartingRound && !choosingToRestart) {
             if (pause) { // Unpause
                 deactivateCheatMode("pause");
                 disableCheatMode("cheatMode");
@@ -889,7 +898,7 @@ function runProgram() {
             deactivateCheatMode("singlePlayer");
             deactivateCheatMode("playerSlider");
             deactivateCheatMode("multiBall");
-            activateCheatMode("pause");
+            if (!choosingToRestart) {activateCheatMode("pause");}
         } else { // Activate CheatMode
             activateCheatMode("cheatMode");
             toggleCheatModeControls(true);
@@ -897,7 +906,7 @@ function runProgram() {
             disableCheatMode("singlePlayer");
             disableCheatMode("playerSlider");
             disableCheatMode("multiBall");
-            activateCheatMode("pause");
+            if (!choosingToRestart) {activateCheatMode("pause");}
         }
         console.log(cheatMode);
     }
