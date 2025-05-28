@@ -61,21 +61,14 @@ function runProgram() {
 
     // player 1
     var paddleLeft = createGameObject(50, CENTERS.BORDER.VERTICAL-CENTERS.PADDLE.VERTICAL, 0, 0, "#paddleLeft");
-    // var paddleLeft = createGameObject(50, 240-40, 0, 0, "#paddleLeft");
-    // var paddleLeft = createGameObject(50, 200, 0, 0, "#paddleLeft");
     var p1 = paddleLeft;
 
     // player 2
     var paddleRight = createGameObject(BORDERS.RIGHT-50-$("#paddleRight").width(), CENTERS.BORDER.VERTICAL-CENTERS.PADDLE.VERTICAL, 0, 0, "#paddleRight");
-    // var paddleRight = createGameObject(750-50-20, 240-40, 0, 0, "#paddleRight");
-    // var paddleRight = createGameObject(680, 200, 0, 0, "#paddleRight");
     var p2 = paddleRight;
 
     // initial ball
-    // var ball0 = createGameObject(snapDown(CENTERS.BORDER.HORIZONTAL-CENTERS.BALL), snapUp(CENTERS.BORDER.VERTICAL-CENTERS.BALL), -PPF, -2.5, "#ball0");
     var ball0 = createGameObject(CENTERS.BORDER.HORIZONTAL-CENTERS.BALL, CENTERS.BORDER.VERTICAL-CENTERS.BALL, -PPF, -2.5, "#ball0");
-    // var ball0 = createGameObject(375-10, 240-10, -PPF, -2.5, "#ball0");
-    // var ball0 = createGameObject(365, 230, -PPF, -2.5, "#ball0");
 
     // references for targeting balls in AutoPlay
     var ballNullLeft = createGameObject(99999, 0, 0, 0, "#ballNull");
@@ -84,14 +77,16 @@ function runProgram() {
     // scores
     var score = {
         bounced: 0,
-        p1: 0,
-        p2: 0,
+        p1: 1,
+        p2: 1,
         WIN: 1,
     }
 
     var text = {
-        p1: "P1 WINS!",
-        p2: "P2 WINS!",
+        p1: "P1 Wins!",
+        p2: "P2 Wins!",
+        tie: "It's a tie!",
+        restart: "Restart Game?",
         pause: "PAUSED",
         error: "ERROR",
     }
@@ -102,7 +97,7 @@ function runProgram() {
     $(document).on("keyup", handleKeyUp);           // listen for keyup events
     $("#mute").on("click", toggleCheatButton);
     $("#pause").on("click", toggleCheatButton);
-    $("#restartGame").on("click", restartGame);
+    $("#restartGame").on("click",function(){return restartGame(p2.id);});
     $("#endGame").on("click", endGame);
     $("#cheatMode").on("click", toggleCheatButton);
     $("#freePlay").on("click", toggleCheatButton);
@@ -144,6 +139,12 @@ function runProgram() {
     var ticks = 0;
     var gameWon = false;
     var restartingRound = false;
+    const Winner = {
+        BOTH: -1,
+        NEITHER: 0,
+        P1: 1,
+        P2: 2,
+    }
     // Telemetry Variables
     var slowDown = false;                   // Slows down the game at some intervals
     var showTelemetryMultiBall = false;     // Shows MultiBall telemetry
@@ -156,13 +157,6 @@ function runProgram() {
     var showTelemetryVelocity = false;      // Shows velocity telemetry
     var showTelemetryCheatModes = false;    // Shows cheat mode telemetry
     var showTelemetryCheatColors = false;   // Shows cheat mode values
-
-    // NOTE: Put this back when needed
-    // alert(  "Welcome to Pong!\n" +
-    //         "P1 Controls: W S\n" +
-    //         "P2 Controls: Up Down\n" +
-    //         "Pause: Space\n" + 
-    //         "Restart: R");
 
     ////////////////////////////////////////////////////////////////////////////////
     ///////////////////////// CORE LOGIC ///////////////////////////////////////////
@@ -233,8 +227,9 @@ function runProgram() {
             console.log("space pressed");
         } if (keycode === KEY.R) {          // restart
             console.log("r pressed");
-            // NOTE: Uncomment this when done testing
-            // if (confirm("Reset Game?")) {restartGame(p2.id);}
+            // TODOING: Make the "no" button here continue the game
+            activateCheatMode("pause");
+            showEndGameScreen(Winner.NEITHER);
         } if (keycode === KEY.C) {          // cheat
             console.log("c pressed");
         } if (keycode === KEY.M) {          // mute
@@ -770,9 +765,22 @@ function runProgram() {
         }
     }
 
-    function showEndGameScreen() {
+    function showEndGameScreen(winner) {
         enableEndGameButtons(true,true);
         disableCheatMode("pause");
+        $(".endGameScreen h3").show();
+        var winText = text.error;
+        if (winner == Winner.P1) {
+            winText = text.p1;
+        } else if (winner == Winner.P2) {
+            winText = text.p2;
+        } else if (winner == Winner.BOTH) {
+            winText = text.tie;
+        } else if (winner == Winner.NEITHER) {
+            winText = text.restart;
+            $(".endGameScreen h3").hide();
+        }
+        $(".endGameScreen h1").text(winText);
         
         $(".pauseText").hide();
         $(".endGameScreen").show();
@@ -1937,14 +1945,14 @@ function runProgram() {
         }
         if (!freePlay) {
             $(".balls").css("background-color", "red");
-            whoWon();
+            var winner = whoWon();
             if (!gameWon) {
                 restartingRound = true;
                 clearInterval(interval);
                 setTimeout(restartRound.bind(null, player), 1000);
             } else {
                 $(".balls").css("background-color", "lime");
-                showEndGameScreen();
+                showEndGameScreen(winner);
 
                 // if (playAgain()){restartGame(player);}
                 // else {endGame();}
@@ -1954,17 +1962,26 @@ function runProgram() {
         ballObj.firstTimeBouncedWall = false;
     }
 
-    function whoWon() { // TODO: Implement methods for if there is a tie, somehow (eh, maybe). It would get rid of the redundant double-win processes.
-        if (score.p1 >= score.WIN || isNaN(score.p1)) {
-            $("#paddleLeft").css("background-color", "lime");
-            alert(text.p1);
+    function whoWon() { // TODOING: Implement methods for if there is a tie, somehow (eh, maybe). It would get rid of the redundant double-win processes.
+        var winner = Winner.NEITHER;
+
+        // Initial win condiditions
+        if (score.p1 >= score.WIN || score.p2 >= score.WIN || isNaN(score.p1) || isNaN(score.p2)) {
+            if ((isNaN(score.p1) && isNaN(score.p1)) || (score.p1 == score.p2)) { // Tie
+                $(p1.id).css("background-color", "violet");
+                $(p2.id).css("background-color", "violet");
+                winner = Winner.BOTH;
+            } else if (isNaN(score.p1) || score.p1 > score.p2) { // P1
+                $(p1.id).css("background-color", "lime");
+                winner = Winner.P1;
+            } else if (isNaN(score.p2) || score.p2 > score.p1) { // P2
+                $(p2.id).css("background-color", "lime");
+                winner = Winner.P2;
+            }
             gameWon = true;
         }
-        if (score.p2 >= score.WIN || isNaN(score.p2)) {
-            $("#paddleRight").css("background-color", "lime");
-            alert(text.p2);
-            gameWon = true;
-        }
+        console.log("WINNER:\t"+winner);
+        return winner;
     }
 
 
@@ -2219,24 +2236,24 @@ function runProgram() {
         $("#p1Tally"+score.p1).css("background-color", "blue");
         $("#p2Tally"+score.p2).css("background-color", "red");
 
-        if (score.p1 >= 10 || score.p2 >= 10) {
+        if (score.p1 >= 10 || score.p2 >= 10 || isNaN(score.p1) || isNaN(score.p2)) {
             $(".winTallyMark").css("background-color", "lime");
-            if (score.p1 == score.p2) {
+            if ((score.p1 == score.p2) || (isNaN(score.p1) && isNaN(score.p2))) {
                 $(".tallyMark").css("box-shadow", "0px 0px 0px 3px violet inset");
                 $(".winTallyMark").css("box-shadow", "0px 0px 0px 3px violet inset");
-                if (score.p1 >= 10) {$(".p1TallyMark").css("background-color", "blue");}
-                if (score.p2 >= 10) {$(".p2TallyMark").css("background-color", "red");}
-            } else if (score.p1 > score.p2) {
+                if (score.p1 >= 10 || isNaN(score.p1)) {$(".p1TallyMark").css("background-color", "blue");}
+                if (score.p2 >= 10 || isNaN(score.p2)) {$(".p2TallyMark").css("background-color", "red");}
+            } else if (score.p1 > score.p2 || isNaN(score.p1)) {
                 $(".tallyMark").css("box-shadow", "none");
                 $(".p1TallyMark").css("background-color", "lime");
                 $(".p1TallyMark").css("box-shadow", "0px 0px 0px 3px blue inset");
-                if (score.p2 >= 10) {$(".p2TallyMark").css("background-color", "red");}
+                if (score.p2 >= 10 || isNaN(score.p2)) {$(".p2TallyMark").css("background-color", "red");}
                 $(".winTallyMark").css("box-shadow", "0px 0px 0px 3px blue inset");
-            } else if (score.p2 > score.p1) {
+            } else if (score.p2 > score.p1 || isNaN(score.p2)) {
                 $(".tallyMark").css("box-shadow", "none");
                 $(".p2TallyMark").css("background-color", "lime");
                 $(".p2TallyMark").css("box-shadow", "0px 0px 0px 3px red inset");
-                if (score.p1 >= 10) {$(".p1TallyMark").css("background-color", "blue");}
+                if (score.p1 >= 10 || isNaN(score.p1)) {$(".p1TallyMark").css("background-color", "blue");}
                 $(".winTallyMark").css("box-shadow", "0px 0px 0px 3px red inset");
             }
         }
