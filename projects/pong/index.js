@@ -91,13 +91,19 @@ function runProgram() {
         error: "ERROR",
     }
 
+    const defaultRestart = function(){return restartGame(p2.id);}
+    function continueTheGame() {
+        $(".endGameScreen").hide();
+        deactivateCheatMode("pauyse");
+    }
+    var noButtonBehavior = defaultRestart;
     // one-time setup
     var interval = setInterval(newFrame, framesPerSecondInterval);   // execute newFrame every 0.0166 seconds (60 frames per second)
     $(document).on("keydown", handleKeyDown);       // listen for keydown events
     $(document).on("keyup", handleKeyUp);           // listen for keyup events
     $("#mute").on("click", toggleCheatButton);
     $("#pause").on("click", toggleCheatButton);
-    $("#restartGame").on("click",function(){return restartGame(p2.id);});
+    $("#restartGame").on("click",noButtonBehavior);
     $("#endGame").on("click", endGame);
     $("#cheatMode").on("click", toggleCheatButton);
     $("#freePlay").on("click", toggleCheatButton);
@@ -778,7 +784,10 @@ function runProgram() {
             winText = text.tie;
         } else if (winner == Winner.NEITHER) {
             winText = text.restart;
-            $(".endGameScreen h3").hide();
+            $(".endGameScreen h3").hide(); // TODOING: making no button continue here
+            // noButtonBehavior = continueTheGame;
+            $("#endGame").off("click",noButtonBehavior);
+            $("#endGame").on("click",continueTheGame);
         }
         $(".endGameScreen h1").text(winText);
         
