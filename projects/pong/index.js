@@ -79,7 +79,7 @@ function runProgram() {
         bounced: 0,
         p1: 1,
         p2: 1,
-        WIN: 1,
+        WIN: 1, // NOTE: Put this back to 10 when done
     }
 
     var text = {
@@ -116,7 +116,7 @@ function runProgram() {
     $("#choosePlayer").on("click", togglePlayer);
 
     // Mute Variable
-    var mute = false;
+    var mute = true; // NOTE: Set to false when done
     // Pause Variables
     var pause = true;
     var spaceIsDown = false
@@ -888,7 +888,7 @@ function runProgram() {
         console.log(pause);
     }
 
-    function toggleCheatModeCheat() {
+    function toggleCheatModeCheat() { // FIXME: Cheatmode stays green after clicking "no" to restarting the game
         if (autoPlay || singlePlayer || multiBall || !pause) {
             disableCheatMode("cheatMode");
         } else if (cheatMode) { // Deactivate CheatMode
@@ -1072,23 +1072,25 @@ function runProgram() {
     }
     
     function toggleCheatModesAll(element) {
-        let cheatId = getElementId(element);
-        let cheatClass = getElementClass(element);
-        console.log(cheatId);
+        if (!choosingToRestart) {
+            let cheatId = getElementId(element);
+            let cheatClass = getElementClass(element);
+            console.log(cheatId);
 
-        if (cheatClass === "disabled") {disableCheatMode(cheatId);}
-        else if (cheatId === "mute") {toggleCheatModeMute();}
-        else if (cheatId === "pause") {togglePause();}
-        else if (cheatId === "cheatMode") {toggleCheatModeCheat();}
-        else if (cheatId === "freePlay") {toggleCheatModeFree();}
-        else if (cheatId === "autoPlay") {toggleCheatModeAuto();}
-        else if (cheatId === "singlePlayer") {toggleCheatModeSingle();}
-        else if (cheatId === "multiBall") {toggleCheatModeMulti();}
-        else if (cheatId === "confirmBallCount" && getElementClass("#multiBall") != "disabled") {confirmCheatModeMulti();}
-        else if (cheatId === "paddleControl") {toggleCheatModePaddle();}
+            if (cheatClass === "disabled") {disableCheatMode(cheatId);}
+            else if (cheatId === "mute") {toggleCheatModeMute();}
+            else if (cheatId === "pause") {togglePause();}
+            else if (cheatId === "cheatMode") {toggleCheatModeCheat();}
+            else if (cheatId === "freePlay") {toggleCheatModeFree();}
+            else if (cheatId === "autoPlay") {toggleCheatModeAuto();}
+            else if (cheatId === "singlePlayer") {toggleCheatModeSingle();}
+            else if (cheatId === "multiBall") {toggleCheatModeMulti();}
+            else if (cheatId === "confirmBallCount" && getElementClass("#multiBall") != "disabled") {confirmCheatModeMulti();}
+            else if (cheatId === "paddleControl") {toggleCheatModePaddle();}
 
-        console.log(cheatClass);
-        updateCheatModeVelocities();
+            console.log(cheatClass);
+            updateCheatModeVelocities();
+        }
     }
 
     function chooseCheatMode() {
@@ -2365,6 +2367,7 @@ function runProgram() {
     }
 
     function restartGame(player) {
+        choosingToRestart = false;
         if (!restartingRound) {
             restartingRound = true;
             gameWon = true;
