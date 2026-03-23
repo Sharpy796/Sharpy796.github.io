@@ -937,6 +937,7 @@ function runProgram() {
         console.log(freePlay);
     }
 
+    // TODO: Add graphics that change how the controls on the pause menu view. Remove the up/down controls and read "sit back and let it play itself!"
     function toggleCheatModeAuto() {
         if (cheatMode) {
             disableCheatMode("autoPlay");
@@ -956,6 +957,7 @@ function runProgram() {
         console.log(autoPlay);
     }
 
+    // TODO: Add graphics that change how the controls on the pause menu view. Remove the up/down controls and read "sit back and let it play itself!"
     function toggleCheatModeSingle() {
         if (cheatMode) {
             disableCheatMode("singlePlayer");
