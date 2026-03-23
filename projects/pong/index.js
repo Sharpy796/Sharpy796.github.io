@@ -79,7 +79,7 @@ function runProgram() {
         bounced: 0,
         p1: 1,
         p2: 1,
-        WIN: 1, // NOTE: Put this back to 10 when done
+        WIN: 3, // NOTE: Put this back to 10 when done
     }
 
     var text = {
@@ -91,10 +91,13 @@ function runProgram() {
         error: "ERROR",
     }
 
-    function continueGame() {
+    function continueGame() { // Made to put things back to how they were
         choosingToRestart = false;
         $(".endGameScreen").hide();
-        deactivateCheatMode("pause");
+        // if (pause) {activateCheatMode("pause");}
+        // else {deactivateCheatMode("pause");}
+        // activateCheatMode("pause");
+        pauseActually();
         $("#endGame").off("click");
         $("#endGame").on("click",endGame);
     }
@@ -153,7 +156,7 @@ function runProgram() {
         P1: 1,
         P2: 2,
     }
-    // Telemetry Variables
+    // Telemetry Variables // NOTE: FIX THIS WHEN DONE
     var slowDown = false;                   // Slows down the game at some intervals
     var showTelemetryMultiBall = false;     // Shows MultiBall telemetry
     var showTelemetryBallBounce = false;    // Makes ball colors change according to the direction they're bouncing
@@ -164,7 +167,7 @@ function runProgram() {
     var showTelemetryCollision = false;     // Shows collision telemetry
     var showTelemetryVelocity = false;      // Shows velocity telemetry
     var showTelemetryCheatModes = false;    // Shows cheat mode telemetry
-    var showTelemetryCheatColors = false;   // Shows cheat mode values
+    var showTelemetryCheatColors = true;   // Shows cheat mode values
 
     ////////////////////////////////////////////////////////////////////////////////
     ///////////////////////// CORE LOGIC ///////////////////////////////////////////
@@ -235,9 +238,10 @@ function runProgram() {
             console.log("space pressed");
         } if (keycode === KEY.R) {          // restart
             console.log("r pressed");
-            // TODOING: Make the "no" button here continue the game
+            // TODONE: Make the "no" button here continue the game
             if (!gameWon) {
-                activateCheatMode("pause");
+                // activateCheatMode("pause");
+                pauseActually();
                 showEndGameScreen(Winner.NEITHER);
             }
         } if (keycode === KEY.C) {          // cheat
@@ -665,7 +669,7 @@ function runProgram() {
         } else {firstTimePaused = true;}
     }
 
-    // TODO: Create a startup menu for choosing initial game modes
+    // TODONE: Create a startup menu for choosing initial game modes
 
     function updateCheatModeVelocities() {
         if (cheatMode) {
@@ -707,7 +711,7 @@ function runProgram() {
         getTelemetryCheatModes();
     }
 
-    function handleCheatModesColors() {
+    function handleTelemetryCheatColors() {
         if (showTelemetryCheatColors) {
             if (mute) {
                 $(".mute").removeClass("off");
@@ -786,10 +790,10 @@ function runProgram() {
             winText = text.p2;
         } else if (winner == Winner.BOTH) {
             winText = text.tie;
-        } else if (winner == Winner.NEITHER) {
+        } else if (winner == Winner.NEITHER) { // Used when restarting, not when ending the game
             choosingToRestart = true;
             winText = text.restart;
-            $(".endGameScreen h3").hide(); // TODOING: making no button continue here
+            $(".endGameScreen h3").hide(); // TODONE: making no button continue here from pause menu
             $("#endGame").off("click");
             $("#endGame").on("click",continueGame);
         }
@@ -868,27 +872,35 @@ function runProgram() {
         console.log(mute);
     }
 
+    function pauseActually() {
+        activateCheatMode("pause");
+        if (autoPlay || singlePlayer || multiBall) {
+            disableCheatMode("cheatMode");
+        } else if (cheatMode) {
+            activateCheatMode("cheatMode");
+        } else {
+            deactivateCheatMode("cheatMode");
+        }
+    }
+
+    function unPauseActually() {
+        deactivateCheatMode("pause");
+        disableCheatMode("cheatMode");
+    }
+
     function togglePause() {
         console.log("choosing to restart?\t"+choosingToRestart);
         if (!restartingRound && !choosingToRestart) {
             if (pause) { // Unpause
-                deactivateCheatMode("pause");
-                disableCheatMode("cheatMode");
+                unPauseActually();
             } else { // Pause
-                activateCheatMode("pause");
-                if (autoPlay || singlePlayer || multiBall) {
-                    disableCheatMode("cheatMode");
-                } else if (cheatMode) {
-                    activateCheatMode("cheatMode");
-                } else {
-                    deactivateCheatMode("cheatMode");
-                }
+                pauseActually();
             }
         }
         console.log(pause);
     }
 
-    function toggleCheatModeCheat() { // FIXME: Cheatmode stays green after clicking "no" to restarting the game
+    function toggleCheatModeCheat() {
         if (autoPlay || singlePlayer || multiBall || !pause) {
             disableCheatMode("cheatMode");
         } else if (cheatMode) { // Deactivate CheatMode
@@ -979,7 +991,7 @@ function runProgram() {
     }
 
     // This will toggle the button, and also set the ballCount
-    function toggleCheatModeMulti() {
+    function toggleCheatModeMulti() { // TODO: Move away from alerts here and use the new pause menu
         if (cheatMode) {
             disableCheatMode("multiBall");
         } else if (!restartingRound && multiBall) { // Deactivate MultiBall 
@@ -1948,7 +1960,7 @@ function runProgram() {
     ////////////////////////// POINTS & SCOREBOARD /////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
 
-    // TODO: Find a way to update the scoreboard *before* the game alerts who has won
+    // TODONE: Find a way to update the scoreboard *before* the game alerts who has won
     // ...this is so simple. I'd need to move away from alert()s and // TODOING: start using on-screen text for menus
     function playerLose(ballObj, player) {
         if (ballObj.firstTimeBouncedWall) {
@@ -1982,7 +1994,7 @@ function runProgram() {
         ballObj.firstTimeBouncedWall = false;
     }
 
-    function whoWon() { // TODOING: Implement methods for if there is a tie, somehow (eh, maybe). It would get rid of the redundant double-win processes.
+    function whoWon() { // TODONE: Implement methods for if there is a tie, somehow (eh, maybe). It would get rid of the redundant double-win processes.
         var winner = Winner.NEITHER;
 
         // Initial win condiditions
@@ -2232,8 +2244,8 @@ function runProgram() {
             $("#paddleRight").css("box-shadow", "0px 0px 0px 3px maroon inset");
         }
         
-        // Dashboard Colors
-        handleCheatModesColors(); // FIXME: Is this redundant? It's a catch-all in case something is mismatched in the code.
+        // Dashboard Colors for testing
+        handleTelemetryCheatColors();
 
         // Testing Modes
         // testMode(singlePlayer);
@@ -2303,7 +2315,7 @@ function runProgram() {
     ////////////////////////// GAME FUNCTIONS //////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
 
-    // TODOING: Move out of alert()s for starting a new game
+    // TODONE: Move out of alert()s for starting a new game
     function playAgain() {
         // Pause game
         // Show new menu: "Good game! Play again? Yes/No"
@@ -2357,7 +2369,8 @@ function runProgram() {
         targetedBallLeft = ballNullLeft;
         targetedBallRight = ballNullRight;
         // Unpause the game
-        deactivateCheatMode("pause");
+        unPauseActually();
+        // deactivateCheatMode("pause");
 
         // Check if the game is won
         if (gameWon) {resetGame();}
@@ -2385,7 +2398,8 @@ function runProgram() {
         resetSpeeds(paddleRight);
         resetScores();
         resetScoreBoard();
-        activateCheatMode("pause");
+        pauseActually();
+        // activateCheatMode("pause");
     }
 
     function resetVariables() {
