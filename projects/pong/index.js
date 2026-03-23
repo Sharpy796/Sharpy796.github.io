@@ -237,7 +237,6 @@ function runProgram() {
         } if (keycode === KEY.R) {          // restart
             console.log("r pressed");
             if (!gameWon) {
-                // activateCheatMode("pause");
                 pauseActually();
                 showEndGameScreen(Winner.NEITHER);
             }
@@ -850,7 +849,6 @@ function runProgram() {
     }
 
     function disableCheatMode(element) {
-        // handleCheatModes(element, false);
         // change the color
         element = "#" + element;
         $(element).removeClass("activated");
@@ -986,7 +984,7 @@ function runProgram() {
     }
 
     // This will toggle the button, and also set the ballCount
-    function toggleCheatModeMulti() { // TODO: Move away from alerts here and use the new pause menu
+    function toggleCheatModeMulti() { // TODO: Move away from alerts in multiball and use the new pause menu
         if (cheatMode) {
             disableCheatMode("multiBall");
         } else if (!restartingRound && multiBall) { // Deactivate MultiBall 
@@ -1415,7 +1413,7 @@ function runProgram() {
         }
     }
 
-    // NOTE: I'm keeping this commented out in the code for now, in case I need it again.
+    // NOTE: I'm keeping this commented out in the code for now, in case I need it again. (I'll delete it once I'm done with mutliball changes.)
     // function chooseCheatModeOLD() {
     //     if (!restartingRound) {
     //         let answer = prompt("Password:");
@@ -1979,9 +1977,6 @@ function runProgram() {
             } else {
                 $(".balls").css("background-color", "lime");
                 showEndGameScreen(winner);
-
-                // if (playAgain()){restartGame(player);}
-                // else {endGame();}
             }
         }
         // tell us it isn't the first time bouncing anymore
@@ -2381,11 +2376,9 @@ function runProgram() {
         resetScores();
         resetScoreBoard();
         pauseActually();
-        // activateCheatMode("pause");
     }
 
     function resetVariables() {
-        // deactivateCheatMode("pause");
         spaceIsDown = false
         firstTimeCheat = true;
         ball0.firstTimeBouncedPaddle = true;
