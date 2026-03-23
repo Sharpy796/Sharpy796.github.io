@@ -117,7 +117,7 @@ function runProgram() {
     $("#choosePlayer").on("click", togglePlayer);
 
     // Mute Variable
-    var mute = true; // NOTE: Set to false when done
+    var mute = false; // NOTE: Set to false when done
     // Pause Variables
     var pause = true;
     var spaceIsDown = false
