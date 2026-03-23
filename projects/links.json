@@ -1,0 +1,32 @@
+{
+    "links": [
+        {
+            "title": "GitHub",
+            "link": "https://github.com/Sharpy796",
+            "description": "Repositories of all the code I've ever written - including for this website!",
+            "color": "#010409",
+            "background": "#e5e9ee"
+        },
+        {
+            "title": "LinkedIn",
+            "link": "https://www.linkedin.com/in/christianbankovic",
+            "description": "Admittedly, a WIP currently.",
+            "color": "#0072b1",
+            "background": "#b5e5ff"
+        },
+        {
+            "title": "YouTube",
+            "link": "https://www.youtube.com/@Sharpyy796",
+            "description": "Mostly videos of my Noita gameplay.",
+            "color": "#ff000b",
+            "background": "#ffb5c4"
+        },
+        {
+            "title": "Twitch",
+            "link": "https://twitch.tv/sharpy796",
+            "description": "Where I stream (when I decide to)!",
+            "color": "#6441a5",
+            "background": "#d3bbff"
+        }
+    ]
+}

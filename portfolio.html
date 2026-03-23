@@ -13,8 +13,7 @@
          \____________/
 
 
-    Hey, good job finding this!
-            ~(:D)
+ Hey, nerd! Good job finding this!
 
            Fun Fact:
         CSS stands for
@@ -25,109 +24,38 @@
 <!DOCTYPE HTML>
 <html>
     <head>
-        <title>ChrisChips's Amazing Website</title>
+        <title>Sharpy's Amazing Website</title>
         <meta name="author" content="Christian Bankovic">
         <meta name="description" content="A place for all of my projects.">
+        <link rel="stylesheet" type="text/css" href="index.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
         
         <style type="text/css">
-            body {
-                background: rgb(0, 35, 102);
-                color: rgb(45, 45, 45);
-                padding: 10px;
-                font-family: "Comic Sans MS";
-            }
-            header {
-                font-size: 1.5em;
-                font-weight: bold;
-            }
-            h1 {
-                margin: 10px;
-            }
-            #all-contents {
-                max-width: 800px;
-                margin: auto;
-            }
-    
-            /* Navigation Menu */
-            nav {
-                background: rgb(34, 139, 34);
-                margin: 0 auto;
-                margin-bottom: 20px;
-                display: flex;
-                padding: 10px;
-                border-radius: 10px;
-            }
-            nav header {
-                display: flex;
-                align-items: center;
-                color: rgb(255, 255, 255);
-                flex: 1;
-            }
-            nav ul {
-                list-style-image: none;
-            }
-            nav li {
-                display: inline-block;
-                padding: 0 10px;
-            }
-            nav a {
-                text-decoration: none;
-                color: #fff;
-            }
-    
-            /* Main Container Area Beneath Menu */
-            main {
-                background: rgb(245, 238, 219);
-                display: flex;
-                border-radius: 5px;
-            }
-            .content {
-                flex: 1;
-                padding: 15px;
-            }
-            
-            /* Portfolio Styles */
-            #portfolio {
-                list-style-type: none;
-                padding-left: 0;
-            }
-            
-            #portfolio li {
-                background: #fff;
-                padding: 10px;
-                border-radius: 10px;
-                margin-bottom: 10px;
-            }
-            
-            #portfolio li:hover {
-                border-left-style: solid;
-                border-left-width: 10px;
-                border-left-color: #2dbd17;
-                background: #deffd9;
-            } 
-            
-            #portfolio a {
-                text-decoration: none;
-                color: #454545;
-            }
-            footer {
-                color: white;
-            }
         </style>
     </head>
 
-    <body>
+    <body class="portfolio">
         <div id="all-contents">
             <nav>
-                <header>ChrisChips's Amazing Website</header>
+                <header>Christian's Amazing Website</header>
                 <ul>
                     <li><a href="index.html">Home</a></li>
                     <li><a href="portfolio.html">Portfolio</a></li>
+                    <li><a href="contact.html">Contact</a></li>
                 </ul>
             </nav>
             <main>
                 <div class="content">
                     <h1>Portfolio</h1>
+                    <h2>Links</h2>
+                    <ul id="linktree">
+
+                    </ul>
+                    <h2>Browser Games</h2>
+                    <p>This is a list of the many browser games I've made! Most of these started out of Operation Spark, but some have been updated and improved upon as I learned more about programming. <b>Especially check out Pong! This is the project I'm the proudest of.</b></p>
+                    <p>If many of these projects seem simple, it is because they are what kickstarted my programming journey: 14 years old in high school during 2020, with a Windows XP-turned-Linux Mint brick of a laptop and an online IDE.</p>
                     <ul id="portfolio">
                         
                     </ul>
@@ -135,10 +63,11 @@
             </main>
             
             <footer>
-                <p>&copy Christian Bankovic 2021</p>
+                <p>&copy Christian Bankovic 2026</p>
             </footer>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-        <script id="portfolioScript">$(document).ready(function() {$.getJSON('projects/projects.json').then(function(data) { data.projects.forEach(function(project){ $('#portfolio').append('<li><a href="projects/' + project.name + '/">' + project.title + ' : ' + project.description + '</a></li>'); }); }); });</script>
+        <script id="linktreeScript">$(document).ready(function() {$.getJSON('projects/links.json').then(function(data) { data.links.forEach(function(linktree){ $('#linktree').append('<li onpointerenter="this.setAttribute(\'style\', \'color: ' + linktree.color + '; background: ' + linktree.background + '\')" onpointerleave="this.setAttribute(\'style\', \'color: red; background: white\')"><a target="_blank" href="' + linktree.link + '/"><b>' + linktree.title + ' : </b>' + linktree.description + '</a></li>'); }); }); });</script>
+        <script id="portfolioScript">$(document).ready(function() {$.getJSON('projects/projects.json').then(function(data) { data.projects.forEach(function(project){ $('#portfolio').append('<li><a target="_blank" href="projects/' + project.name + '/"><b>' + project.title + ' : </b>' + project.description + '</a></li>'); }); }); });</script>
     </body>
 </html>

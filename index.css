@@ -1,0 +1,189 @@
+body {
+    background: rgb(0, 35, 102);
+    color: rgb(45, 45, 45);
+    padding: 10px;
+    font-family: "Ubuntu";
+}
+header {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+#all-contents {
+    max-width: 800px;
+    margin: auto;
+}
+/* Navigation Menu */
+nav {
+    background: rgb(34, 139, 34);
+    margin: 0 auto;
+    margin-bottom: 20px;
+    display: flex;
+    padding: 10px;
+    border-radius: 10px;
+}
+nav header {
+    display: flex;
+    align-items: center;
+    color: rgb(255, 255, 255);
+    flex: 1;
+}
+nav ul {
+    list-style-image: none;
+}
+nav li {
+    display: inline-block;
+    padding: 0 10px;
+}
+nav a {
+    text-decoration: none;
+    color: #fff;
+}
+/* Main Container Area Beneath Menu */
+main {
+    background: rgb(245, 238, 219);
+    display: flex;
+    border-radius: 5px;
+}
+.sidebar {
+    margin-right: 25px;
+    padding: 10px;
+}
+.sidebar img {
+    width: 200px;
+    margin-top: 10px;
+    margin-left: 10px;
+    border-radius: 5px;
+    border-color: black;
+    border-style: solid;
+    box-shadow: 0px 0px 15px;
+}
+.content {
+    flex: 1;
+    padding: 15px;
+}
+.interests header {
+    font-size: 1.25em;
+}
+#school-link {
+    color: forestgreen;
+    text-decoration: none
+}
+footer {
+    color: white;
+}
+
+/* PORTFOLIO CSS */
+.portfolio h1 {
+    margin: 10px;
+    margin-bottom: 20px;
+}
+.portfolio h2 {
+    margin: 10px;
+}
+.portfolio p {
+    margin: 10px;
+}
+#all-contents {
+    max-width: 800px;
+    margin: auto;
+}
+
+/* Linktree Styles */
+#linktree {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+#linktree li {
+    background: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+#linktree li:hover {
+    border-left-style: solid;
+    border-left-width: 10px;
+    /* border-right-color: #e5e9ee;  */
+    /* border-left-color: #bd1717;
+    background: #ffd9d9; */
+} 
+
+#linktree a {
+    text-decoration: none;
+    color: #454545;
+}
+
+/* Portfolio Styles */
+#portfolio {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+#portfolio li {
+    background: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+#portfolio li:hover {
+    border-left-style: solid;
+    border-left-width: 10px;
+    border-left-color: #2dbd17;
+    background: #deffd9;
+} 
+
+#portfolio a {
+    text-decoration: none;
+    color: #454545;
+}
+
+/* FONTS */
+.ubuntu-light {
+  font-family: "Ubuntu", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.ubuntu-regular {
+  font-family: "Ubuntu", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.ubuntu-medium {
+  font-family: "Ubuntu", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.ubuntu-bold {
+  font-family: "Ubuntu", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.ubuntu-light-italic {
+  font-family: "Ubuntu", sans-serif;
+  font-weight: 300;
+  font-style: italic;
+}
+
+.ubuntu-regular-italic {
+  font-family: "Ubuntu", sans-serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.ubuntu-medium-italic {
+  font-family: "Ubuntu", sans-serif;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.ubuntu-bold-italic {
+  font-family: "Ubuntu", sans-serif;
+  font-weight: 700;
+  font-style: italic;
+}
