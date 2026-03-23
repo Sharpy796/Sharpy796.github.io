@@ -61,21 +61,14 @@ function runProgram() {
 
     // player 1
     var paddleLeft = createGameObject(50, CENTERS.BORDER.VERTICAL-CENTERS.PADDLE.VERTICAL, 0, 0, "#paddleLeft");
-    // var paddleLeft = createGameObject(50, 240-40, 0, 0, "#paddleLeft");
-    // var paddleLeft = createGameObject(50, 200, 0, 0, "#paddleLeft");
     var p1 = paddleLeft;
 
     // player 2
     var paddleRight = createGameObject(BORDERS.RIGHT-50-$("#paddleRight").width(), CENTERS.BORDER.VERTICAL-CENTERS.PADDLE.VERTICAL, 0, 0, "#paddleRight");
-    // var paddleRight = createGameObject(750-50-20, 240-40, 0, 0, "#paddleRight");
-    // var paddleRight = createGameObject(680, 200, 0, 0, "#paddleRight");
     var p2 = paddleRight;
 
     // initial ball
-    // var ball0 = createGameObject(snapDown(CENTERS.BORDER.HORIZONTAL-CENTERS.BALL), snapUp(CENTERS.BORDER.VERTICAL-CENTERS.BALL), -PPF, -2.5, "#ball0");
     var ball0 = createGameObject(CENTERS.BORDER.HORIZONTAL-CENTERS.BALL, CENTERS.BORDER.VERTICAL-CENTERS.BALL, -PPF, -2.5, "#ball0");
-    // var ball0 = createGameObject(375-10, 240-10, -PPF, -2.5, "#ball0");
-    // var ball0 = createGameObject(365, 230, -PPF, -2.5, "#ball0");
 
     // references for targeting balls in AutoPlay
     var ballNullLeft = createGameObject(99999, 0, 0, 0, "#ballNull");
@@ -84,24 +77,36 @@ function runProgram() {
     // scores
     var score = {
         bounced: 0,
-        p1: 0,
-        p2: 0,
-        WIN: 10,
+        p1: 1,
+        p2: 1,
+        WIN: 10, // NOTE: Change this when testing.
     }
 
     var text = {
-        p1: "P1 WINS!",
-        p2: "P2 WINS!",
+        p1: "P1 Wins!",
+        p2: "P2 Wins!",
+        tie: "It's a tie!",
+        restart: "Restart Game?",
         pause: "PAUSED",
         error: "ERROR",
     }
 
+    function continueGame() { // Made to put things back to how they were
+        choosingToRestart = false;
+        $(".endGameScreen").hide();
+        pauseActually();
+        $("#endGame").off("click");
+        $("#endGame").on("click",endGame);
+    }
+    
     // one-time setup
     var interval = setInterval(newFrame, framesPerSecondInterval);   // execute newFrame every 0.0166 seconds (60 frames per second)
     $(document).on("keydown", handleKeyDown);       // listen for keydown events
     $(document).on("keyup", handleKeyUp);           // listen for keyup events
     $("#mute").on("click", toggleCheatButton);
     $("#pause").on("click", toggleCheatButton);
+    $("#restartGame").on("click",function(){return restartGame(p2.id);});
+    $("#endGame").on("click", endGame);
     $("#cheatMode").on("click", toggleCheatButton);
     $("#freePlay").on("click", toggleCheatButton);
     $("#autoPlay").on("click", toggleCheatButton);
@@ -112,7 +117,7 @@ function runProgram() {
     $("#choosePlayer").on("click", togglePlayer);
 
     // Mute Variable
-    var mute = false;
+    var mute = true; // NOTE: Set to false when done
     // Pause Variables
     var pause = true;
     var spaceIsDown = false
@@ -142,6 +147,13 @@ function runProgram() {
     var ticks = 0;
     var gameWon = false;
     var restartingRound = false;
+    var choosingToRestart = false;
+    const Winner = {
+        BOTH: -1,
+        NEITHER: 0,
+        P1: 1,
+        P2: 2,
+    }
     // Telemetry Variables
     var slowDown = false;                   // Slows down the game at some intervals
     var showTelemetryMultiBall = false;     // Shows MultiBall telemetry
@@ -154,13 +166,6 @@ function runProgram() {
     var showTelemetryVelocity = false;      // Shows velocity telemetry
     var showTelemetryCheatModes = false;    // Shows cheat mode telemetry
     var showTelemetryCheatColors = false;   // Shows cheat mode values
-
-    // NOTE: Put this back when needed
-    // alert(  "Welcome to Pong!\n" +
-    //         "P1 Controls: W S\n" +
-    //         "P2 Controls: Up Down\n" +
-    //         "Pause: Space\n" + 
-    //         "Restart: R");
 
     ////////////////////////////////////////////////////////////////////////////////
     ///////////////////////// CORE LOGIC ///////////////////////////////////////////
@@ -183,6 +188,8 @@ function runProgram() {
             if (multiBall && ticks%ticksPerBall == 0 && ticks <= ticksPerBall*(ballCount-1)) {
                 createNewBall();
             }
+
+            pauseMenuBeginContinue();
 
             // Telemetry on the game
             getTelemetryTicks();
@@ -229,8 +236,10 @@ function runProgram() {
             console.log("space pressed");
         } if (keycode === KEY.R) {          // restart
             console.log("r pressed");
-            // NOTE: Uncomment this when done testing
-            if (confirm("Reset Game?")) {restartGame(p2.id);}
+            if (!gameWon) {
+                pauseActually();
+                showEndGameScreen(Winner.NEITHER);
+            }
         } if (keycode === KEY.C) {          // cheat
             console.log("c pressed");
         } if (keycode === KEY.M) {          // mute
@@ -647,16 +656,14 @@ function runProgram() {
     ////////////////////////////////////////////////////////////////////////////////
 
     function pauseGame() {
-        if (spaceIsDown) {
+        if (spaceIsDown && !gameWon) {
             if (firstTimePaused) {
-                toggleCheatModePause();
+                togglePause();
                 console.log("Pause: " + pause);
             }
             firstTimePaused = false;
         } else {firstTimePaused = true;}
     }
-
-    // TODO: Create a startup menu for choosing initial game modes
 
     function updateCheatModeVelocities() {
         if (cheatMode) {
@@ -698,7 +705,7 @@ function runProgram() {
         getTelemetryCheatModes();
     }
 
-    function handleCheatModesColors() {
+    function handleTelemetryCheatColors() {
         if (showTelemetryCheatColors) {
             if (mute) {
                 $(".mute").removeClass("off");
@@ -766,11 +773,62 @@ function runProgram() {
         }
     }
 
+    function showEndGameScreen(winner) {
+        enableEndGameButtons(true,true);
+        disableCheatMode("pause");
+        $(".endGameScreen h3").show();
+        var winText = text.error;
+        if (winner == Winner.P1) {
+            winText = text.p1;
+        } else if (winner == Winner.P2) {
+            winText = text.p2;
+        } else if (winner == Winner.BOTH) {
+            winText = text.tie;
+        } else if (winner == Winner.NEITHER) { // Used when restarting, not when ending the game
+            choosingToRestart = true;
+            winText = text.restart;
+            $(".endGameScreen h3").hide();
+            $("#endGame").off("click");
+            $("#endGame").on("click",continueGame);
+        }
+        $(".endGameScreen h1").text(winText);
+        
+        $(".pauseText").hide();
+        $(".endGameScreen").show();
+        $("#paused").show();
+    }
+
+    function disableEndGameButtons(yes,no) {
+        if (yes) {
+            $("#restartGame").removeClass("activated");
+            $("#restartGame").addClass("disabled");
+        }
+        if (no) {
+            $("#endGame").removeClass("deactivated");
+            $("#endGame").addClass("disabled");
+        }
+    }
+
+    function enableEndGameButtons(yes,no) {
+        if (yes) {
+            $("#restartGame").removeClass("disabled");
+            $("#restartGame").addClass("activated");
+        }
+        if (no) {
+            $("#endGame").removeClass("disabled");
+            $("#endGame").addClass("deactivated");
+        }
+    }
+
     function activateCheatMode(element) {
         // change the variable value
         handleCheatModes(element, true);
         // handle the pause menu
-        if (element === "pause") {$("#paused").show();}
+        if (element === "pause") {
+            $(".endGameScreen").hide();
+            $(".pauseText").show();
+            $("#paused").show();
+        }
         // change the color
         element = "#" + element;
         $(element).removeClass("deactivated");
@@ -791,7 +849,6 @@ function runProgram() {
     }
 
     function disableCheatMode(element) {
-        // handleCheatModes(element, false);
         // change the color
         element = "#" + element;
         $(element).removeClass("activated");
@@ -808,20 +865,29 @@ function runProgram() {
         console.log(mute);
     }
 
-    function toggleCheatModePause() {
-        if (!restartingRound) {
+    function pauseActually() {
+        activateCheatMode("pause");
+        if (autoPlay || singlePlayer || multiBall) {
+            disableCheatMode("cheatMode");
+        } else if (cheatMode) {
+            activateCheatMode("cheatMode");
+        } else {
+            deactivateCheatMode("cheatMode");
+        }
+    }
+
+    function unPauseActually() {
+        deactivateCheatMode("pause");
+        disableCheatMode("cheatMode");
+    }
+
+    function togglePause() {
+        console.log("choosing to restart?\t"+choosingToRestart);
+        if (!restartingRound && !choosingToRestart) {
             if (pause) { // Unpause
-                deactivateCheatMode("pause");
-                disableCheatMode("cheatMode");
+                unPauseActually();
             } else { // Pause
-                activateCheatMode("pause");
-                if (autoPlay || singlePlayer || multiBall) {
-                    disableCheatMode("cheatMode");
-                } else if (cheatMode) {
-                    activateCheatMode("cheatMode");
-                } else {
-                    deactivateCheatMode("cheatMode");
-                }
+                pauseActually();
             }
         }
         console.log(pause);
@@ -832,21 +898,35 @@ function runProgram() {
             disableCheatMode("cheatMode");
         } else if (cheatMode) { // Deactivate CheatMode
             deactivateCheatMode("cheatMode");
+            toggleCheatModeControls(false);
             deactivateCheatMode("autoPlay");
             deactivateCheatMode("singlePlayer");
             deactivateCheatMode("playerSlider");
             deactivateCheatMode("multiBall");
-            activateCheatMode("pause");
+            if (!choosingToRestart) {activateCheatMode("pause");}
         } else { // Activate CheatMode
             activateCheatMode("cheatMode");
+            toggleCheatModeControls(true);
             disableCheatMode("autoPlay");
             disableCheatMode("singlePlayer");
             disableCheatMode("playerSlider");
             disableCheatMode("multiBall");
-            activateCheatMode("pause");
+            if (!choosingToRestart) {activateCheatMode("pause");}
         }
         console.log(cheatMode);
     }
+
+    function toggleCheatModeControls(bool) {
+        if (bool) {
+            $("#pauseMessage").hide();
+            $("#cheatModeControls").show();
+        } else {
+            $("#cheatModeControls").hide();
+            $("#pauseMessage").show();
+        }
+    }
+
+    function pauseMenuBeginContinue() {if (ticks === 1) {$("#begin-continue span").text("to continue!");}}
 
     function toggleCheatModeFree() {
         if (freePlay) { // Deactivate FreePlay
@@ -904,7 +984,7 @@ function runProgram() {
     }
 
     // This will toggle the button, and also set the ballCount
-    function toggleCheatModeMulti() {
+    function toggleCheatModeMulti() { // TODO: Move away from alerts in multiball and use the new pause menu
         if (cheatMode) {
             disableCheatMode("multiBall");
         } else if (!restartingRound && multiBall) { // Deactivate MultiBall 
@@ -978,26 +1058,44 @@ function runProgram() {
             activateCheatMode("paddleControl");
         }
         console.log(paddleControl);
+        togglePaddleControls()
+    }
+
+    function togglePaddleControls() {
+        if (paddleControl) {
+            $("#A").show();
+            $("#D").show();
+            $("#left").show();
+            $("#right").show();
+        } else {
+            $("#A").hide();
+            $("#D").hide();
+            $("#left").hide();
+            $("#right").hide();
+
+        }
     }
     
     function toggleCheatModesAll(element) {
-        let cheatId = getElementId(element);
-        let cheatClass = getElementClass(element);
-        console.log(cheatId);
+        if (!choosingToRestart) {
+            let cheatId = getElementId(element);
+            let cheatClass = getElementClass(element);
+            console.log(cheatId);
 
-        if (cheatClass === "disabled") {disableCheatMode(cheatId);}
-        else if (cheatId === "mute") {toggleCheatModeMute();}
-        else if (cheatId === "pause") {toggleCheatModePause();}
-        else if (cheatId === "cheatMode") {toggleCheatModeCheat();}
-        else if (cheatId === "freePlay") {toggleCheatModeFree();}
-        else if (cheatId === "autoPlay") {toggleCheatModeAuto();}
-        else if (cheatId === "singlePlayer") {toggleCheatModeSingle();}
-        else if (cheatId === "multiBall") {toggleCheatModeMulti();}
-        else if (cheatId === "confirmBallCount" && getElementClass("#multiBall") != "disabled") {confirmCheatModeMulti();}
-        else if (cheatId === "paddleControl") {toggleCheatModePaddle();}
+            if (cheatClass === "disabled") {disableCheatMode(cheatId);}
+            else if (cheatId === "mute") {toggleCheatModeMute();}
+            else if (cheatId === "pause") {togglePause();}
+            else if (cheatId === "cheatMode") {toggleCheatModeCheat();}
+            else if (cheatId === "freePlay") {toggleCheatModeFree();}
+            else if (cheatId === "autoPlay") {toggleCheatModeAuto();}
+            else if (cheatId === "singlePlayer") {toggleCheatModeSingle();}
+            else if (cheatId === "multiBall") {toggleCheatModeMulti();}
+            else if (cheatId === "confirmBallCount" && getElementClass("#multiBall") != "disabled") {confirmCheatModeMulti();}
+            else if (cheatId === "paddleControl") {toggleCheatModePaddle();}
 
-        console.log(cheatClass);
-        updateCheatModeVelocities();
+            console.log(cheatClass);
+            updateCheatModeVelocities();
+        }
     }
 
     function chooseCheatMode() {
@@ -1315,7 +1413,7 @@ function runProgram() {
         }
     }
 
-    // NOTE: I'm keeping this commented out in the code for now, in case I need it again.
+    // NOTE: I'm keeping this commented out in the code for now, in case I need it again. (I'll delete it once I'm done with mutliball changes.)
     // function chooseCheatModeOLD() {
     //     if (!restartingRound) {
     //         let answer = prompt("Password:");
@@ -1855,7 +1953,6 @@ function runProgram() {
     ////////////////////////// POINTS & SCOREBOARD /////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
 
-    // TODO: Find a way to update the scoreboard *before* the game alerts who has won
     // ...this is so simple. I'd need to move away from alert()s and // TODOING: start using on-screen text for menus
     function playerLose(ballObj, player) {
         if (ballObj.firstTimeBouncedWall) {
@@ -1872,32 +1969,40 @@ function runProgram() {
         }
         if (!freePlay) {
             $(".balls").css("background-color", "red");
-            whoWon();
+            var winner = whoWon();
             if (!gameWon) {
                 restartingRound = true;
                 clearInterval(interval);
                 setTimeout(restartRound.bind(null, player), 1000);
             } else {
                 $(".balls").css("background-color", "lime");
-                if (playAgain()){restartGame(player);}
-                else {endGame();}
+                showEndGameScreen(winner);
             }
         }
         // tell us it isn't the first time bouncing anymore
         ballObj.firstTimeBouncedWall = false;
     }
 
-    function whoWon() { // TODO: Implement methods for if there is a tie, somehow (eh, maybe). It would get rid of the redundant double-win processes.
-        if (score.p1 >= score.WIN || isNaN(score.p1)) {
-            $("#paddleLeft").css("background-color", "lime");
-            alert(text.p1);
+    function whoWon() {
+        var winner = Winner.NEITHER;
+
+        // Initial win condiditions
+        if (score.p1 >= score.WIN || score.p2 >= score.WIN || isNaN(score.p1) || isNaN(score.p2)) {
+            if ((isNaN(score.p1) && isNaN(score.p1)) || (score.p1 == score.p2)) { // Tie
+                $(p1.id).css("background-color", "violet");
+                $(p2.id).css("background-color", "violet");
+                winner = Winner.BOTH;
+            } else if (isNaN(score.p1) || score.p1 > score.p2) { // P1
+                $(p1.id).css("background-color", "lime");
+                winner = Winner.P1;
+            } else if (isNaN(score.p2) || score.p2 > score.p1) { // P2
+                $(p2.id).css("background-color", "lime");
+                winner = Winner.P2;
+            }
             gameWon = true;
         }
-        if (score.p2 >= score.WIN || isNaN(score.p2)) {
-            $("#paddleRight").css("background-color", "lime");
-            alert(text.p2);
-            gameWon = true;
-        }
+        console.log("WINNER:\t"+winner);
+        return winner;
     }
 
 
@@ -2128,8 +2233,8 @@ function runProgram() {
             $("#paddleRight").css("box-shadow", "0px 0px 0px 3px maroon inset");
         }
         
-        // Dashboard Colors
-        handleCheatModesColors();
+        // Dashboard Colors for testing
+        handleTelemetryCheatColors();
 
         // Testing Modes
         // testMode(singlePlayer);
@@ -2152,24 +2257,24 @@ function runProgram() {
         $("#p1Tally"+score.p1).css("background-color", "blue");
         $("#p2Tally"+score.p2).css("background-color", "red");
 
-        if (score.p1 >= 10 || score.p2 >= 10) {
+        if (score.p1 >= 10 || score.p2 >= 10 || isNaN(score.p1) || isNaN(score.p2)) {
             $(".winTallyMark").css("background-color", "lime");
-            if (score.p1 == score.p2) {
+            if ((score.p1 == score.p2) || (isNaN(score.p1) && isNaN(score.p2))) {
                 $(".tallyMark").css("box-shadow", "0px 0px 0px 3px violet inset");
                 $(".winTallyMark").css("box-shadow", "0px 0px 0px 3px violet inset");
-                if (score.p1 >= 10) {$(".p1TallyMark").css("background-color", "blue");}
-                if (score.p2 >= 10) {$(".p2TallyMark").css("background-color", "red");}
-            } else if (score.p1 > score.p2) {
+                if (score.p1 >= 10 || isNaN(score.p1)) {$(".p1TallyMark").css("background-color", "blue");}
+                if (score.p2 >= 10 || isNaN(score.p2)) {$(".p2TallyMark").css("background-color", "red");}
+            } else if (score.p1 > score.p2 || isNaN(score.p1)) {
                 $(".tallyMark").css("box-shadow", "none");
                 $(".p1TallyMark").css("background-color", "lime");
                 $(".p1TallyMark").css("box-shadow", "0px 0px 0px 3px blue inset");
-                if (score.p2 >= 10) {$(".p2TallyMark").css("background-color", "red");}
+                if (score.p2 >= 10 || isNaN(score.p2)) {$(".p2TallyMark").css("background-color", "red");}
                 $(".winTallyMark").css("box-shadow", "0px 0px 0px 3px blue inset");
-            } else if (score.p2 > score.p1) {
+            } else if (score.p2 > score.p1 || isNaN(score.p2)) {
                 $(".tallyMark").css("box-shadow", "none");
                 $(".p2TallyMark").css("background-color", "lime");
                 $(".p2TallyMark").css("box-shadow", "0px 0px 0px 3px red inset");
-                if (score.p1 >= 10) {$(".p1TallyMark").css("background-color", "blue");}
+                if (score.p1 >= 10 || isNaN(score.p1)) {$(".p1TallyMark").css("background-color", "blue");}
                 $(".winTallyMark").css("box-shadow", "0px 0px 0px 3px red inset");
             }
         }
@@ -2199,13 +2304,7 @@ function runProgram() {
     ////////////////////////// GAME FUNCTIONS //////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
 
-    function playAgain() {
-        return confirm("Good game! Play again?");
-    }
-
     function restartRound(player) {
-        // Check if the game is won
-        if (gameWon) {resetGame();}
         
         // Reset the score
         score.bounced = 0;
@@ -2248,29 +2347,38 @@ function runProgram() {
         targetedBallLeft = ballNullLeft;
         targetedBallRight = ballNullRight;
         // Unpause the game
-        deactivateCheatMode("pause");
+        unPauseActually();
+
+        // Check if the game is won
+        if (gameWon) {resetGame();}
 
         // Tell that we have finished restarting the round
         restartingRound = false;
     }
 
     function restartGame(player) {
-        restartingRound = true;
-        gameWon = true;
-        clearInterval(interval);
-        setTimeout(restartRound.bind(null, player), 1000);
+        choosingToRestart = false;
+        if (!restartingRound) {
+            restartingRound = true;
+            gameWon = true;
+            disableEndGameButtons(false,true);
+            clearInterval(interval);
+            setTimeout(restartRound.bind(null, player), 1000);
+        }
     }
 
     function resetGame() {
+        $("#begin-continue span").text("to begin!");
         resetVariables();
+        resetPauseMenu();
         resetSpeeds(paddleLeft);
         resetSpeeds(paddleRight);
         resetScores();
         resetScoreBoard();
+        pauseActually();
     }
 
     function resetVariables() {
-        deactivateCheatMode("pause");
         spaceIsDown = false
         firstTimeCheat = true;
         ball0.firstTimeBouncedPaddle = true;
@@ -2278,6 +2386,11 @@ function runProgram() {
         firstTimePaused = true;
         gameWon = false;
         varPredictedPositionY = 0;
+    }
+
+    function resetPauseMenu() {
+        $(".endGameScreen").hide();
+        $(".pauseText").show();
     }
 
     function resetScores() {
@@ -2325,14 +2438,18 @@ function runProgram() {
     }
 
     function endGame() {
-        // stop the interval timer
-        clearInterval(interval);
+        if (!restartingRound) {
+            disableEndGameButtons(true,false);
 
-        // turn off event handlers
-        $(document).off();
+            // stop the interval timer
+            clearInterval(interval);
 
-        // disable the dashboard
-        $("button").attr("disabled", true);
-        $("input").attr("disabled", true);
+            // turn off event handlers
+            $(document).off();
+
+            // disable the dashboard
+            $("button").attr("disabled", true);
+            $("input").attr("disabled", true);
+        }
     }
 }

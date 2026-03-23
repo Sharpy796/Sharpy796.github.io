@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 
-<!-- Port 10053 -->
+<!-- Port 10062 -->
 
 <head>
     <title>Pong</title>
@@ -17,19 +17,19 @@
     <!-- https://freesound.org/people/NoiseCollector/packs/254/ -->
     <audio id="p1">
         <source src="assets/audio/noisecollector-pong-softsynth/pongblipC5.wav" type="audio/wav">
-        Your browser does not support the audio tag.
+        <!--Your browser does not support the audio tag.-->
     </audio>
     <audio id="p2">
         <source src="assets/audio/noisecollector-pong-softsynth/pongblipG5.wav" type="audio/wav">
-        Your browser does not support the audio tag.
+        <!--Your browser does not support the audio tag.-->
     </audio>
     <audio id="top">
         <source src="assets/audio/noisecollector-pong-softsynth/pongblipE5.wav" type="audio/wav">
-        Your browser does not support the audio tag.
+        <!--Your browser does not support the audio tag.-->
     </audio>
     <audio id="side">
         <source src="assets/audio/noisecollector-pong-softsynth/pongblipAs4.wav" type="audio/wav">
-        Your browser does not support the audio tag.
+        <!--Your browser does not support the audio tag.-->
     </audio>
 
     <div class="game">
@@ -41,6 +41,14 @@
             </div>
         </div>
         <div id="paused">
+            <div class="endGameScreen">
+                <h1 id="title">Good game!</h1>
+                <h3 id="subtitle">Play again?</h3>
+                <div class="newGameButtons">
+                    <button class="activated" id="restartGame"><span>Yes</span></button>
+                    <button class="deactivated" id="endGame"><span>No</span></button>
+                </div>
+            </div>
             <div class="pauseText">
                 <h1 id="title">Welcome to Pong!</h1>
                 <h3 id="subtitle">Coded by Christian Bankovic</h3>
@@ -48,67 +56,83 @@
                     <div class="controls">
                         <p>Player 1 Controls:</p>
                         <div class="row">
-                            <div class="key">
+                            <div class="key" id="W">
                                 <img src="assets/keyboard-key.png">
                                 <span>W</span>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="key">
+                            <div class="key" id="A" style="display: none;">
                                 <img src="assets/keyboard-key.png">
                                 <span>A</span>
                             </div>
-                            <div class="key">
+                            <div class="key" id="S">
                                 <img src="assets/keyboard-key.png">
                                 <span>S</span>
                             </div>
-                            <div class="key">
+                            <div class="key" id="D" style="display: none;">
                                 <img src="assets/keyboard-key.png">
                                 <span>D</span>
                             </div>
                         </div>
                     </div>
                     <div class="controls">
-                        <p>CheatMode Controls:</p>
-                        <div class="row">
-                            <div class="key">
-                                <img src="assets/keyboard-key.png">
-                                <span>I</span>
+                        <div id="cheatModeControls">
+                            <p>Ball Controls:</p>
+                            <div class="row">
+                                <div class="key" id="I">
+                                    <img src="assets/keyboard-key.png">
+                                    <span>I</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="key" id="J">
+                                    <img src="assets/keyboard-key.png">
+                                    <span>J</span>
+                                </div>
+                                <div class="key" id="K">
+                                    <img src="assets/keyboard-key.png">
+                                    <span>K</span>
+                                </div>
+                                <div class="key" id="L">
+                                    <img src="assets/keyboard-key.png">
+                                    <span>L</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="key">
-                                <img src="assets/keyboard-key.png">
-                                <span>J</span>
+                        <div id="pauseMessage">
+                            <p>Press</p>
+                            <div class="row">
+                                <div class="key" id="spacebar">
+                                    <img src="assets/keyboard-spacebar.png">
+                                    <span>Space</span>
+                                </div>
                             </div>
-                            <div class="key">
-                                <img src="assets/keyboard-key.png">
-                                <span>K</span>
-                            </div>
-                            <div class="key">
-                                <img src="assets/keyboard-key.png">
-                                <span>L</span>
+                            <div class="row" id="begin-continue">
+                                <div class="key">
+                                    <span>to begin!</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="controls">
                         <p>Player 2 Controls:</p>
                         <div class="row">
-                            <div class="key">
+                            <div class="key" id="up">
                                 <img src="assets/keyboard-key.png">
                                 <span>&#129065</span>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="key">
+                            <div class="key" id="left" style="display: none;">
                                 <img src="assets/keyboard-key.png">
                                 <span>&#129064</span>
                             </div>
-                            <div class="key">
+                            <div class="key" id="down">
                                 <img src="assets/keyboard-key.png">
                                 <span>&#129067</span>
                             </div>
-                            <div class="key">
+                            <div class="key" id="right" style="display: none;">
                                 <img src="assets/keyboard-key.png">
                                 <span>&#129066</span>
                             </div>

@@ -27,6 +27,20 @@ body {
   z-index: 3; /* Specify a stack order in case you're using a different order for other elements */
 }
 
+.endGameScreen {
+  display: none;
+  position: relative;
+  width: 100%;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  text-align: center;
+  font-family: "Comic Sans MS";
+  color: white;
+  border: none;
+  /* border: 1px solid red; */
+}
+
 .pauseText {
   position: relative;
   width: 100%;
@@ -36,8 +50,8 @@ body {
   text-align: center;
   font-family: "Comic Sans MS";
   color: white;
-  /* border: 1px solid red; */
   border: none;
+  /* border: 1px solid red; */
 }
 
 #title {
@@ -60,9 +74,29 @@ div.controls {
   position: static;
   display: inline-block;
   width: 32%;
-  height: 100%;
+  height: 200px;
   border: inherit;
 }
+
+#cheatModeControls {
+  display: none;
+  border: inherit;
+}
+
+#pauseMessage {
+  /* display: none; */
+  border: inherit;
+  /* top: 0; */
+}
+
+/* #pauseMessage p { */
+  /* position: static; */
+  /* font-size: 12pt; */
+  /* margin-top: 0px; */
+  /* margin-bottom: auto; */
+  /* margin-top: 0px;
+  margin-bottom: 0px; */
+/* } */
 
 .row {
   display: block;
@@ -80,6 +114,16 @@ div.controls {
   width: 65px;
 }
 
+#begin-continue .key {
+  width: 200px;
+  /* width: auto; */
+}
+
+#begin-continue span {
+  width: 200px;
+  /* width: auto; */
+}
+
 .key img {
   position: relative;
   display: inline;
@@ -88,13 +132,17 @@ div.controls {
   border: inherit;
 }
 
+#spacebar {
+    width: 150px;
+}
+
 .key span {
   position: absolute;
   display: inline;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 16pt;
+  font-size: 16pt !important;
   border: inherit;
 }
 
@@ -273,12 +321,39 @@ div.controls {
   margin-right: 20px;
   font-family: 'Courier New', Courier, monospace;
 }
+
 .on {
   background-color: rgb(0, 100, 0);
 }
 
 .off {
   background-color: rgb(100, 0, 0);
+}
+
+.endGameScreen span {
+  color: black;
+  font-family: "Comic Sans MS";
+  font-size: 12pt;
+}
+
+.endGameScreen button {
+  /* background-color: grey; */
+  border-radius: 10%;
+  height: 40px;
+  width: 60;
+  /* box-shadow: 0px 5px rgb(64, 64, 64); */
+  
+  box-shadow: 0px 6px;
+}
+
+.endGameScreen button:hover {
+  /* background-color: darkgrey; */
+}
+
+.endGameScreen button:active {
+  /* background-color: white; */
+  box-shadow: 0px 2px;
+  transform: translateY(4px);
 }
 
 button {
