@@ -79,7 +79,7 @@ function runProgram() {
         bounced: 0,
         p1: 1,
         p2: 1,
-        WIN: 3, // NOTE: Put this back to 10 when done
+        WIN: 10, // NOTE: Change this when testing.
     }
 
     var text = {
@@ -94,13 +94,11 @@ function runProgram() {
     function continueGame() { // Made to put things back to how they were
         choosingToRestart = false;
         $(".endGameScreen").hide();
-        // if (pause) {activateCheatMode("pause");}
-        // else {deactivateCheatMode("pause");}
-        // activateCheatMode("pause");
         pauseActually();
         $("#endGame").off("click");
         $("#endGame").on("click",endGame);
     }
+    
     // one-time setup
     var interval = setInterval(newFrame, framesPerSecondInterval);   // execute newFrame every 0.0166 seconds (60 frames per second)
     $(document).on("keydown", handleKeyDown);       // listen for keydown events
@@ -156,7 +154,7 @@ function runProgram() {
         P1: 1,
         P2: 2,
     }
-    // Telemetry Variables // NOTE: FIX THIS WHEN DONE
+    // Telemetry Variables
     var slowDown = false;                   // Slows down the game at some intervals
     var showTelemetryMultiBall = false;     // Shows MultiBall telemetry
     var showTelemetryBallBounce = false;    // Makes ball colors change according to the direction they're bouncing
@@ -167,7 +165,7 @@ function runProgram() {
     var showTelemetryCollision = false;     // Shows collision telemetry
     var showTelemetryVelocity = false;      // Shows velocity telemetry
     var showTelemetryCheatModes = false;    // Shows cheat mode telemetry
-    var showTelemetryCheatColors = true;   // Shows cheat mode values
+    var showTelemetryCheatColors = false;   // Shows cheat mode values
 
     ////////////////////////////////////////////////////////////////////////////////
     ///////////////////////// CORE LOGIC ///////////////////////////////////////////
@@ -238,7 +236,6 @@ function runProgram() {
             console.log("space pressed");
         } if (keycode === KEY.R) {          // restart
             console.log("r pressed");
-            // TODONE: Make the "no" button here continue the game
             if (!gameWon) {
                 // activateCheatMode("pause");
                 pauseActually();
@@ -669,8 +666,6 @@ function runProgram() {
         } else {firstTimePaused = true;}
     }
 
-    // TODONE: Create a startup menu for choosing initial game modes
-
     function updateCheatModeVelocities() {
         if (cheatMode) {
             if (firstTimeCheat) {
@@ -793,7 +788,7 @@ function runProgram() {
         } else if (winner == Winner.NEITHER) { // Used when restarting, not when ending the game
             choosingToRestart = true;
             winText = text.restart;
-            $(".endGameScreen h3").hide(); // TODONE: making no button continue here from pause menu
+            $(".endGameScreen h3").hide();
             $("#endGame").off("click");
             $("#endGame").on("click",continueGame);
         }
@@ -1960,7 +1955,6 @@ function runProgram() {
     ////////////////////////// POINTS & SCOREBOARD /////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
 
-    // TODONE: Find a way to update the scoreboard *before* the game alerts who has won
     // ...this is so simple. I'd need to move away from alert()s and // TODOING: start using on-screen text for menus
     function playerLose(ballObj, player) {
         if (ballObj.firstTimeBouncedWall) {
@@ -1994,7 +1988,7 @@ function runProgram() {
         ballObj.firstTimeBouncedWall = false;
     }
 
-    function whoWon() { // TODONE: Implement methods for if there is a tie, somehow (eh, maybe). It would get rid of the redundant double-win processes.
+    function whoWon() {
         var winner = Winner.NEITHER;
 
         // Initial win condiditions
@@ -2315,17 +2309,6 @@ function runProgram() {
     ////////////////////////// GAME FUNCTIONS //////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
 
-    // TODONE: Move out of alert()s for starting a new game
-    function playAgain() {
-        // Pause game
-        // Show new menu: "Good game! Play again? Yes/No"
-        // Attach functions to those
-        // - "Yes": Close menu and restartGame()
-        // - "No": Close menu and endGame()
-
-        return confirm("Good game! Play again?");
-    }
-
     function restartRound(player) {
         
         // Reset the score
@@ -2370,7 +2353,6 @@ function runProgram() {
         targetedBallRight = ballNullRight;
         // Unpause the game
         unPauseActually();
-        // deactivateCheatMode("pause");
 
         // Check if the game is won
         if (gameWon) {resetGame();}
